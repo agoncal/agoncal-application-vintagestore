@@ -16,4 +16,11 @@ public class BookResource {
   public List<Category> getAllCategories() {
     return Category.listAll();
   }
+
+  @GET
+  @Path("/publishers")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<Publisher> getAllPublishers() {
+    return Publisher.listAll();
+  }
 }

@@ -40,3 +40,16 @@ INSERT INTO LABEL (id, name) VALUES (1005, 'Universal Music Group');
 INSERT INTO LABEL (id, name) VALUES (1006, 'PolyGram');
 INSERT INTO LABEL (id, name) VALUES (1007, 'Apple');
 INSERT INTO LABEL (id, name) VALUES (1008, 'Parlophone');
+
+-- PUBLISHER
+INSERT INTO PUBLISHER (id, name) VALUES (1000, 'Ablex Publishing');
+INSERT INTO PUBLISHER (id, name) VALUES (1001, 'Pearson');
+INSERT INTO PUBLISHER (id, name) VALUES (1002, 'Hachette Livre');
+INSERT INTO PUBLISHER (id, name) VALUES (1003, 'Wiley');
+INSERT INTO PUBLISHER (id, name) VALUES (1004, 'Oxford University Press');
+INSERT INTO PUBLISHER (id, name) VALUES (1005, 'Harlequin');
+INSERT INTO PUBLISHER (id, name) VALUES (1006, 'Flammarion');
+INSERT INTO PUBLISHER (id, name) VALUES (1007, 'Groupe Gallimard');
+INSERT INTO PUBLISHER (id, name) VALUES (1008, 'APress');
+INSERT INTO PUBLISHER (id, name) VALUES (1009, 'O Reilly');
+INSERT INTO PUBLISHER (id, name) VALUES (1010, 'Pottermore');
