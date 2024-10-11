@@ -10,10 +10,10 @@ import java.util.List;
 @Path("/books")
 public class BookResource {
 
-    @GET
-    @Path("/categories")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Category> getAllCategories() {
-        return Category.listAll();
-    }
+  @GET
+  @Path("/categories")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<Category> getAllCategories() {
+    return Category.listAll();
+  }
 }

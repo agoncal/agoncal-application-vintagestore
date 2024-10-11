@@ -1,5 +1,6 @@
 package org.agoncal.application.vintagestore;
 
+
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,14 +14,14 @@ import jakarta.validation.constraints.Size;
  */
 
 @Entity
-public class Category extends PanacheEntity {
+public class Label extends PanacheEntity {
 
   // ======================================
   // =             Attributes             =
   // ======================================
 
-  @Column(length = 100)
+  @Column(length = 30)
   @NotNull
-  @Size(max = 100)
+  @Size(max = 30)
   public String name;
 }

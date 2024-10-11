@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
  */
 
 @Entity
-public class Category extends PanacheEntity {
+public class Genre extends PanacheEntity {
 
   // ======================================
   // =             Attributes             =
