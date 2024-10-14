@@ -9,19 +9,19 @@ import jakarta.validation.constraints.Size;
 
 /**
  * @author Antonio Goncalves
- *         http://www.antoniogoncalves.org
- *         --
+ * http://www.antoniogoncalves.org
+ * --
  */
 
 @Entity
 public class Publisher extends PanacheEntity {
 
-    // ======================================
-    // =             Attributes             =
-    // ======================================
+  // ======================================
+  // =             Attributes             =
+  // ======================================
 
-    @Column(length = 30)
-    @NotNull
-    @Size(max = 30)
-    public String name;
+  @Column(length = 30)
+  @NotNull
+  @Size(max = 30)
+  public String name;
 }

@@ -19,60 +19,60 @@ import java.util.GregorianCalendar;
 
 /**
  * @author Antonio Goncalves
- *         http://www.antoniogoncalves.org
- *         --
+ * http://www.antoniogoncalves.org
+ * --
  */
 
 @MappedSuperclass
 public class Artist extends PanacheEntity {
 
-    // ======================================
-    // =             Attributes             =
-    // ======================================
+  // ======================================
+  // =             Attributes             =
+  // ======================================
 
-    @Column(length = 50, name = "first_name", nullable = false)
-    @NotNull
-    @Size(min = 2, max = 50)
-    public String firstName;
+  @Column(length = 50, name = "first_name", nullable = false)
+  @NotNull
+  @Size(min = 2, max = 50)
+  public String firstName;
 
-    @Column(length = 50, name = "last_name", nullable = false)
-    @NotNull
-    @Size(min = 2, max = 50)
-    public String lastName;
+  @Column(length = 50, name = "last_name", nullable = false)
+  @NotNull
+  @Size(min = 2, max = 50)
+  public String lastName;
 
-    @Column(length = 5000)
-    @Size(max = 5000)
-    public String bio;
+  @Column(length = 5000)
+  @Size(max = 5000)
+  public String bio;
 
-    @Column(name = "date_of_birth")
-    @Temporal(TemporalType.DATE)
-    @Past
-    public Date dateOfBirth;
+  @Column(name = "date_of_birth")
+  @Temporal(TemporalType.DATE)
+  @Past
+  public Date dateOfBirth;
 
-    @Transient
-    public Integer age;
+  @Transient
+  public Integer age;
 
-    // ======================================
-    // =         Lifecycle methods          =
-    // ======================================
+  // ======================================
+  // =         Lifecycle methods          =
+  // ======================================
 
-    @PostLoad
-    @PostPersist
-    @PostUpdate
-    private void calculateAge() {
-        if (dateOfBirth == null) {
-            age = null;
-            return;
-        }
-
-        Calendar birth = new GregorianCalendar();
-        birth.setTime(dateOfBirth);
-        Calendar now = new GregorianCalendar();
-        now.setTime(new Date());
-        int adjust = 0;
-        if (now.get(Calendar.DAY_OF_YEAR) - birth.get(Calendar.DAY_OF_YEAR) < 0) {
-            adjust = -1;
-        }
-        age = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR) + adjust;
+  @PostLoad
+  @PostPersist
+  @PostUpdate
+  private void calculateAge() {
+    if (dateOfBirth == null) {
+      age = null;
+      return;
     }
+
+    Calendar birth = new GregorianCalendar();
+    birth.setTime(dateOfBirth);
+    Calendar now = new GregorianCalendar();
+    now.setTime(new Date());
+    int adjust = 0;
+    if (now.get(Calendar.DAY_OF_YEAR) - birth.get(Calendar.DAY_OF_YEAR) < 0) {
+      adjust = -1;
+    }
+    age = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR) + adjust;
+  }
 }

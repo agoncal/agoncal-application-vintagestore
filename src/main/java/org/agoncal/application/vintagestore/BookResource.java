@@ -7,11 +7,18 @@ import jakarta.ws.rs.core.MediaType;
 import org.agoncal.application.vintagestore.model.Author;
 import org.agoncal.application.vintagestore.model.Category;
 import org.agoncal.application.vintagestore.model.Publisher;
+import org.agoncal.application.vintagestore.model.Book;
 
 import java.util.List;
 
 @Path("/books")
 public class BookResource {
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<Book> getAllBooks() {
+    return Book.listAll();
+  }
 
   @GET
   @Path("/categories")
