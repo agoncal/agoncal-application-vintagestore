@@ -1,4 +1,4 @@
-package org.agoncal.application.vintagestore;
+package org.agoncal.application.vintagestore.api;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
