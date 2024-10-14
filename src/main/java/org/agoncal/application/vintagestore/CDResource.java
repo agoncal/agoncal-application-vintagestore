@@ -4,6 +4,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.agoncal.application.vintagestore.model.CD;
 import org.agoncal.application.vintagestore.model.Genre;
 import org.agoncal.application.vintagestore.model.Label;
 import org.agoncal.application.vintagestore.model.Musician;
@@ -12,6 +13,12 @@ import java.util.List;
 
 @Path("/cds")
 public class CDResource {
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<CD> getAllCDs() {
+    return CD.listAll();
+  }
 
   @GET
   @Path("/genres")

@@ -26,6 +26,11 @@ public class CD extends Item {
   public Label label;
 
   @ManyToMany
+  @JoinTable(
+    name = "cd_musician",
+    joinColumns = @JoinColumn(name = "cd_id"),
+    inverseJoinColumns = @JoinColumn(name = "musician_id")
+  )
   public Set<Musician> musicians = new HashSet<>();
 
   @ManyToOne
