@@ -6,6 +6,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import org.agoncal.application.vintagestore.model.Genre;
 import org.agoncal.application.vintagestore.model.Label;
+import org.agoncal.application.vintagestore.model.Musician;
 
 import java.util.List;
 
@@ -24,5 +25,12 @@ public class CDResource {
   @Produces(MediaType.APPLICATION_JSON)
   public List<Label> getAllLabels() {
     return Label.listAll();
+  }
+
+  @GET
+  @Path("/musicians")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<Musician> getAllMusicians() {
+    return Musician.listAll();
   }
 }
