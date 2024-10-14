@@ -4,6 +4,9 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.agoncal.application.vintagestore.model.Author;
+import org.agoncal.application.vintagestore.model.Category;
+import org.agoncal.application.vintagestore.model.Publisher;
 
 import java.util.List;
 
@@ -22,5 +25,12 @@ public class BookResource {
   @Produces(MediaType.APPLICATION_JSON)
   public List<Publisher> getAllPublishers() {
     return Publisher.listAll();
+  }
+
+  @GET
+  @Path("/authors")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<Author> getAllAuthors() {
+    return Author.listAll();
   }
 }

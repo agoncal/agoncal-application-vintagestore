@@ -1,4 +1,4 @@
-package org.agoncal.application.vintagestore;
+package org.agoncal.application.vintagestore.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
