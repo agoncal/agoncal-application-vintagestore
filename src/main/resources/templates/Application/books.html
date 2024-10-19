@@ -1,0 +1,18 @@
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Title</th>
+    </tr>
+    </thead>
+    <tbody>
+    {#for book in books}
+      <tr>
+        <th>{book.id}</th>
+        <td>{book.title}</td>
+      </tr>
+    {/for}
+    </tbody>
+  </table>
+

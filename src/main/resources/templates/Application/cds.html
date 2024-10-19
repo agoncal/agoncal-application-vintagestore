@@ -1,0 +1,21 @@
+{#include main.html }
+  {#title}CDs{/title}
+
+  <table class="table">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Title</th>
+    </tr>
+    </thead>
+    <tbody>
+    {#for cd in cds}
+      <tr>
+        <th>{cd.id}</th>
+        <td>{cd.title}</td>
+      </tr>
+    {/for}
+    </tbody>
+  </table>
+
+{/include}
