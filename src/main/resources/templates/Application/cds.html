@@ -5,14 +5,18 @@
     <thead>
     <tr>
       <th>#</th>
+      <th>Cover</th>
       <th>Title</th>
+      <th>Genre</th>
     </tr>
     </thead>
     <tbody>
     {#for cd in cds}
       <tr>
         <th>{cd.id}</th>
+        <th><img src="{cd.smallImageURL}" alt="{cd.title}"></th>
         <td>{cd.title}</td>
+        <td>{cd.genre.name}</td>
       </tr>
     {/for}
     </tbody>

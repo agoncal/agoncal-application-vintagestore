@@ -5,14 +5,18 @@
     <thead>
     <tr>
       <th>#</th>
+      <th>Cover</th>
       <th>Title</th>
+      <th>Category</th>
     </tr>
     </thead>
     <tbody>
     {#for book in books}
       <tr>
         <th>{book.id}</th>
+        <th><img src="{book.smallImageURL}" alt="{book.title}"></th>
         <td>{book.title}</td>
+        <td>{book.category.name}</td>
       </tr>
     {/for}
     </tbody>
