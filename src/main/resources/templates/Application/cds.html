@@ -1,20 +1,20 @@
 {#include base.html }
   {#title}CDs{/title}
 
-  <table class="table">
-    <thead>
+  <table class="table table-striped table-bordered">
+    <thead class="thead-light">
     <tr>
-      <th>#</th>
-      <th>Cover</th>
-      <th>Title</th>
-      <th>Genre</th>
+      <th scope="col">#</th>
+      <th scope="col">Cover</th>
+      <th scope="col">Title</th>
+      <th scope="col">Genre</th>
     </tr>
     </thead>
     <tbody>
     {#for cd in cds}
       <tr>
-        <th>{cd.id}</th>
-        <th><img src="{cd.smallImageURL}" alt="{cd.title}"></th>
+        <th scope="row">{cd.id}</th>
+        <td><img src="{cd.smallImageURL}" alt="{cd.title}"></td>
         <td>{cd.title}</td>
         <td>{cd.genre.name}</td>
       </tr>

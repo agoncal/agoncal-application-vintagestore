@@ -85,6 +85,10 @@
       <version>1.11.3</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-web-dependency-locator</artifactId>
+    </dependency>
     <!-- Test -->
     <dependency>
       <groupId>io.quarkus</groupId>
