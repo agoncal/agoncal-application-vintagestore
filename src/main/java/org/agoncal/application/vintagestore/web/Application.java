@@ -13,8 +13,6 @@ public class Application extends Controller {
 
   @CheckedTemplate
   static class Templates {
-//    public static native TemplateInstance main();
-
     public static native TemplateInstance index();
 
     public static native TemplateInstance books(List<Book> books);
