@@ -15,6 +15,8 @@ public class Application extends Controller {
   static class Templates {
     public static native TemplateInstance index();
 
+    public static native TemplateInstance chat();
+
     public static native TemplateInstance books(List<Book> books);
 
     public static native TemplateInstance cds(List<CD> cds);
@@ -23,6 +25,11 @@ public class Application extends Controller {
   @Path("/")
   public TemplateInstance index() {
     return Templates.index();
+  }
+
+  @Path("/view/chat")
+  public TemplateInstance chat() {
+    return Templates.chat();
   }
 
   @Path("/view/books")
