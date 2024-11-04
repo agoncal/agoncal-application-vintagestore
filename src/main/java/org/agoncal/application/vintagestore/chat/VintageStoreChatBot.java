@@ -43,12 +43,16 @@ public class VintageStoreChatBot {
     ChatLanguageModel model = model();
     assistant = assistant(embeddingStore, model);
 
-    return assistant.chat("Hello, how can I help you?");
+    String answer = assistant.chat("Hello, how can I help you?");
+
+    return answer;
   }
 
   @OnTextMessage
   public String onMessage(String message) {
-    return assistant.chat(message);
+    String answer = assistant.chat(message);
+
+    return answer;
   }
 
   private static EmbeddingStore<TextSegment> embeddingStore() throws Exception {
@@ -56,10 +60,13 @@ public class VintageStoreChatBot {
     int qdrantPort = new URI(QDRANT_URL).getPort();
     QdrantGrpcClient.Builder grpcClientBuilder = QdrantGrpcClient.newBuilder(qdrantHostname, qdrantPort, false);
     QdrantClient qdrantClient = new QdrantClient(grpcClientBuilder.build());
-    return QdrantEmbeddingStore.builder()
+
+    EmbeddingStore embeddingStore = QdrantEmbeddingStore.builder()
       .client(qdrantClient)
       .collectionName(INDEX_NAME)
       .build();
+
+    return embeddingStore;
   }
 
   private static ChatLanguageModel model() {
@@ -71,6 +78,7 @@ public class VintageStoreChatBot {
       .logRequests(true)
       .logResponses(true)
       .build();
+
     return model;
   }
 
