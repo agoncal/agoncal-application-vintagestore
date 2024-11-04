@@ -1,6 +1,7 @@
 package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -12,6 +13,8 @@ import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
+import dev.langchain4j.store.memory.chat.ChatMemoryStore;
+import dev.langchain4j.store.memory.chat.redis.RedisChatMemoryStore;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.QdrantGrpcClient;
 import io.quarkus.websockets.next.OnOpen;
@@ -77,11 +80,25 @@ public class VintageStoreChatBot {
 
     VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
       .chatLanguageModel(model)
-      .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
+      .chatMemory(chatMemory())
       .contentRetriever(contentRetriever)
       .tools(new LegalDocumentTools(), new ItemsInStockTools())
       .build();
 
     return assistant;
+  }
+
+  private static ChatMemory chatMemory() {
+    ChatMemoryStore memoryStore = RedisChatMemoryStore.builder()
+      .host("localhost")
+      .port(6379)
+      .build();
+
+    ChatMemory chatMemory = MessageWindowChatMemory.builder()
+      .maxMessages(20)
+      .chatMemoryStore(memoryStore)
+      .build();
+
+    return chatMemory;
   }
 }

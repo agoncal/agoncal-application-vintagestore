@@ -11,7 +11,6 @@
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>3.16.1</quarkus.platform.version>
-    <quarkus.langchain4j.version>0.21.0.CR4</quarkus.langchain4j.version>
     <quarkus.renarde.version>3.0.18</quarkus.renarde.version>
     <!-- LangChain4j -->
     <langchain4j.version>0.35.0</langchain4j.version>
@@ -88,11 +87,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-validator</artifactId>
     </dependency>
-    <!--    <dependency>-->
-    <!--      <groupId>io.quarkiverse.langchain4j</groupId>-->
-    <!--      <artifactId>quarkus-langchain4j-openai</artifactId>-->
-    <!--      <version>${quarkus.langchain4j.version}</version>-->
-    <!--    </dependency>-->
     <!-- LangChain4j -->
     <dependency>
       <groupId>dev.langchain4j</groupId>
@@ -101,6 +95,10 @@
     <dependency>
       <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-open-ai</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-redis</artifactId>
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
