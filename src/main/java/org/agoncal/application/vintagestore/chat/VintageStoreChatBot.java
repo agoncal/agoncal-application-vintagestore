@@ -44,6 +44,7 @@ public class VintageStoreChatBot {
     assistant = assistant(embeddingStore, model);
 
     String answer = assistant.chat("Hello, how can I help you?");
+    LOG.info(answer);
 
     return answer;
   }
@@ -51,6 +52,7 @@ public class VintageStoreChatBot {
   @OnTextMessage
   public String onMessage(String message) {
     String answer = assistant.chat(message);
+    LOG.info(answer);
 
     return answer;
   }
