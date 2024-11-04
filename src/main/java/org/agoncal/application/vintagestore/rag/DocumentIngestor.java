@@ -14,7 +14,8 @@ import io.qdrant.client.QdrantClient;
 import io.qdrant.client.QdrantGrpcClient;
 import io.qdrant.client.grpc.Collections;
 import static java.lang.System.exit;
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
 
 public class DocumentIngestor {
 
-  private static final Logger LOG = Logger.getLogger(DocumentIngestor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DocumentIngestor.class);
 
   private static final String INDEX_NAME = "VintageStoreIndex";
   private static final String QDRANT_URL = "http://localhost:6334";

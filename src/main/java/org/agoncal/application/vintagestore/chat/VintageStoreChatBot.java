@@ -21,14 +21,15 @@ import io.quarkus.websockets.next.OnOpen;
 import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
 import static java.time.Duration.ofSeconds;
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
 
-  private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VintageStoreChatBot.class);
 
   private static final String INDEX_NAME = "VintageStoreIndex";
   private static final String QDRANT_URL = "http://localhost:6334";
