@@ -7,19 +7,31 @@
   <version>1.0.0-SNAPSHOT</version>
 
   <properties>
-    <compiler-plugin.version>3.13.0</compiler-plugin.version>
-    <maven.compiler.release>21</maven.compiler.release>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- Quarkus -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>3.16.1</quarkus.platform.version>
-    <skipITs>true</skipITs>
+    <quarkus.langchain4j.version>0.21.0.CR4</quarkus.langchain4j.version>
+    <quarkus.renarde.version>3.0.18</quarkus.renarde.version>
+    <!-- LangChain4j -->
+    <langchain4j.version>0.35.0</langchain4j.version>
+    <!-- Web -->
+    <bootstrap.version>5.3.3</bootstrap.version>
+    <bootstrap-icons.version>1.11.3</bootstrap-icons.version>
+    <!-- Plugins -->
+    <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <surefire-plugin.version>3.3.1</surefire-plugin.version>
+    <exec-plugin.version>3.5.0</exec-plugin.version>
+    <maven.compiler.release>21</maven.compiler.release>
+    <skipITs>true</skipITs>
+    <!-- Project -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <!-- Quarkus -->
       <dependency>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>${quarkus.platform.artifact-id}</artifactId>
@@ -27,9 +39,18 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- LangChain4j -->
+      <dependency>
+        <groupId>dev.langchain4j</groupId>
+        <artifactId>langchain4j-bom</artifactId>
+        <version>${langchain4j.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
+  <!-- Quarkus -->
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -67,17 +88,29 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-validator</artifactId>
     </dependency>
-    <!-- LangChain4j -->
     <dependency>
       <groupId>io.quarkiverse.langchain4j</groupId>
       <artifactId>quarkus-langchain4j-openai</artifactId>
-      <version>0.21.0.CR4</version>
+      <version>${quarkus.langchain4j.version}</version>
+    </dependency>
+    <!-- LangChain4j -->
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-document-parser-apache-pdfbox</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-qdrant</artifactId>
     </dependency>
     <!-- Web -->
     <dependency>
       <groupId>io.quarkiverse.renarde</groupId>
       <artifactId>quarkus-renarde</artifactId>
-      <version>3.0.18</version>
+      <version>${quarkus.renarde.version}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkiverse.qute.web</groupId>
@@ -86,13 +119,13 @@
     <dependency>
       <groupId>org.mvnpm</groupId>
       <artifactId>bootstrap</artifactId>
-      <version>5.3.3</version>
+      <version>${bootstrap.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mvnpm</groupId>
       <artifactId>bootstrap-icons</artifactId>
-      <version>1.11.3</version>
+      <version>${bootstrap-icons.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -114,6 +147,14 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-plugin.version}</version>
+        <configuration>
+          <mainClass>org.agoncal.application.vintagestore.rag.DocumentIngestor</mainClass>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>

@@ -7,19 +7,19 @@ import io.quarkus.websockets.next.WebSocket;
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
 
-  private final VintageStoreAIService bot;
+  private final VintageStoreAIService aiService;
 
-  public VintageStoreChatBot(VintageStoreAIService bot) {
-    this.bot = bot;
+  public VintageStoreChatBot(VintageStoreAIService aiService) {
+    this.aiService = aiService;
   }
 
   @OnOpen
   public String onOpen() {
-    return bot.chat("Hello, how can I help you?");
+    return aiService.chat("Hello, how can I help you?");
   }
 
   @OnTextMessage
   public String onMessage(String message) {
-    return bot.chat(message);
+    return aiService.chat(message);
   }
 }
