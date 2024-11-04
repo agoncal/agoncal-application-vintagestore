@@ -88,12 +88,20 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-validator</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkiverse.langchain4j</groupId>
-      <artifactId>quarkus-langchain4j-openai</artifactId>
-      <version>${quarkus.langchain4j.version}</version>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>io.quarkiverse.langchain4j</groupId>-->
+    <!--      <artifactId>quarkus-langchain4j-openai</artifactId>-->
+    <!--      <version>${quarkus.langchain4j.version}</version>-->
+    <!--    </dependency>-->
     <!-- LangChain4j -->
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-open-ai</artifactId>
+    </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>

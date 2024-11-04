@@ -1,25 +1,87 @@
 package org.agoncal.application.vintagestore.chat;
 
+import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_O;
+import dev.langchain4j.rag.content.retriever.ContentRetriever;
+import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
+import dev.langchain4j.service.AiServices;
+import dev.langchain4j.store.embedding.EmbeddingStore;
+import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
+import io.qdrant.client.QdrantClient;
+import io.qdrant.client.QdrantGrpcClient;
 import io.quarkus.websockets.next.OnOpen;
 import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
+import static java.time.Duration.ofSeconds;
+import org.jboss.logging.Logger;
+
+import java.net.URI;
 
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
 
-  private final VintageStoreAIService aiService;
+  private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
 
-  public VintageStoreChatBot(VintageStoreAIService aiService) {
-    this.aiService = aiService;
-  }
+  private static final String INDEX_NAME = "VintageStoreIndex";
+  private static final String QDRANT_URL = "http://localhost:6334";
+  private static final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
+
+  private VintageStoreChatAssistant assistant;
 
   @OnOpen
-  public String onOpen() {
-    return aiService.chat("Hello, how can I help you?");
+  public String onOpen() throws Exception {
+    EmbeddingStore<TextSegment> embeddingStore = embeddingStore();
+    ChatLanguageModel model = model();
+    assistant = assistant(embeddingStore, model);
+
+    return assistant.chat("Hello, how can I help you?");
   }
 
   @OnTextMessage
   public String onMessage(String message) {
-    return aiService.chat(message);
+    return assistant.chat(message);
+  }
+
+  private static EmbeddingStore<TextSegment> embeddingStore() throws Exception {
+    String qdrantHostname = new URI(QDRANT_URL).getHost();
+    int qdrantPort = new URI(QDRANT_URL).getPort();
+    QdrantGrpcClient.Builder grpcClientBuilder = QdrantGrpcClient.newBuilder(qdrantHostname, qdrantPort, false);
+    QdrantClient qdrantClient = new QdrantClient(grpcClientBuilder.build());
+    return QdrantEmbeddingStore.builder()
+      .client(qdrantClient)
+      .collectionName(INDEX_NAME)
+      .build();
+  }
+
+  private static ChatLanguageModel model() {
+    ChatLanguageModel model = OpenAiChatModel.builder()
+      .apiKey(OPENAI_API_KEY)
+      .modelName(GPT_4_O)
+      .temperature(0.3)
+      .timeout(ofSeconds(60))
+      .logRequests(true)
+      .logResponses(true)
+      .build();
+    return model;
+  }
+
+  private static VintageStoreChatAssistant assistant(EmbeddingStore<TextSegment> embeddingStore,
+                                                     ChatLanguageModel model) {
+    EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+    ContentRetriever contentRetriever = new EmbeddingStoreContentRetriever(embeddingStore, embeddingModel);
+
+    VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
+      .chatLanguageModel(model)
+      .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
+      .contentRetriever(contentRetriever)
+      .tools(new LegalDocumentTools(), new ItemsInStockTools())
+      .build();
+
+    return assistant;
   }
 }
