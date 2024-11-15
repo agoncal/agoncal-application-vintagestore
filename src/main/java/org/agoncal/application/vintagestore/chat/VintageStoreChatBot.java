@@ -57,7 +57,7 @@ public class VintageStoreChatBot {
     return answer;
   }
 
-  private static EmbeddingStore<TextSegment> embeddingStore() throws Exception {
+  static EmbeddingStore<TextSegment> embeddingStore() throws Exception {
     String qdrantHostname = new URI(QDRANT_URL).getHost();
     int qdrantPort = new URI(QDRANT_URL).getPort();
     QdrantGrpcClient.Builder grpcClientBuilder = QdrantGrpcClient.newBuilder(qdrantHostname, qdrantPort, false);
@@ -71,7 +71,7 @@ public class VintageStoreChatBot {
     return embeddingStore;
   }
 
-  private static ChatLanguageModel model() {
+  static ChatLanguageModel model() {
     ChatLanguageModel model = OpenAiChatModel.builder()
       .apiKey(OPENAI_API_KEY)
       .modelName(GPT_4_O)
@@ -84,7 +84,7 @@ public class VintageStoreChatBot {
     return model;
   }
 
-  private static VintageStoreChatAssistant assistant(EmbeddingStore<TextSegment> embeddingStore,
+  static VintageStoreChatAssistant assistant(EmbeddingStore<TextSegment> embeddingStore,
                                                      ChatLanguageModel model) {
     EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
     ContentRetriever contentRetriever = new EmbeddingStoreContentRetriever(embeddingStore, embeddingModel);
