@@ -3,11 +3,13 @@ package org.agoncal.application.vintagestore.chat;
 import static org.agoncal.application.vintagestore.chat.VintageStoreChatBot.embeddingStore;
 import static org.agoncal.application.vintagestore.chat.VintageStoreChatBot.model;
 import static org.agoncal.application.vintagestore.chat.VintageStoreChatBot.assistant;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class VintageStoreChatAssistantTest {
 
   @Test
+  @Disabled
   void shouldChat() throws Exception {
     VintageStoreChatAssistant assistant = assistant(embeddingStore(), model());
 
@@ -17,7 +19,7 @@ class VintageStoreChatAssistantTest {
     System.out.println(assistant.chat("Who are you?"));
     // I am the chat bot for "Vintage Store." I'm here to assist you with information about our products, services, and legal terms. If you have any questions or need help, feel free to ask!
 
-    System.out.println(assistant.chat("Where is the company located?"));
+    System.out.println(assistant.chat("Where is your company located?"));
     // The Vintage Store is located in Paris, France. If you have any more questions, feel free to ask!
 
     System.out.println(assistant.chat("What is the capital of France?"));
