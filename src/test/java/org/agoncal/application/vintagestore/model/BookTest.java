@@ -10,7 +10,6 @@ class BookTest {
 
   @Test
   void shouldFindAll() {
-
     PanacheQuery<Book> books = Book.findAll();
     assertEquals(99, books.count());
   }

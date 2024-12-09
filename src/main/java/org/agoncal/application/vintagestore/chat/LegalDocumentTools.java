@@ -1,9 +1,11 @@
 package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.agent.tool.Tool;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.time.LocalDate;
 
+@ApplicationScoped
 public class LegalDocumentTools {
 
   @Tool("Returns the last time the ACCEPTABLE USE POLICY document was updated")

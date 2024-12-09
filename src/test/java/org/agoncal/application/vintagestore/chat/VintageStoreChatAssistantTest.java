@@ -27,5 +27,11 @@ class VintageStoreChatAssistantTest {
 
     System.out.println(assistant.chat("What's my name?"));
     // You mentioned earlier that your name is Antonio. If you have any other questions or need assistance, feel free to ask!
+
+    System.out.println(assistant.chat("When was your ACCEPTABLE USE POLICY document updated?"));
+    // ...
+
+    System.out.println(assistant.chat("And when was your BACON BURGER RECIPE document updated?"));
+    // ...
   }
 }
