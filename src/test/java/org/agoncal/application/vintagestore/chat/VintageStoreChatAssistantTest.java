@@ -33,5 +33,12 @@ class VintageStoreChatAssistantTest {
 
     System.out.println(assistant.chat("And when was your BACON BURGER RECIPE document updated?"));
     // ...
+
+    System.out.println(assistant.chat("Do you have any available book on Clojure?"));
+    // ...
+
+    System.out.println(assistant.chat("And any books on Burgers?"));
+    // ...
+
   }
 }
