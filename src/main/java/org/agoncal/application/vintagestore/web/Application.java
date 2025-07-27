@@ -5,6 +5,7 @@ import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import org.agoncal.application.vintagestore.model.Book;
 import org.agoncal.application.vintagestore.model.CD;
 
@@ -25,6 +26,8 @@ public class Application extends Controller {
     public static native TemplateInstance book(Book book);
 
     public static native TemplateInstance cd(CD cd);
+
+    public static native TemplateInstance terms(String selectedDoc);
   }
 
   @Path("/")
@@ -63,5 +66,12 @@ public class Application extends Controller {
       notFound();
     }
     return Templates.cd(cd);
+  }
+
+  @Path("/view/terms")
+  public TemplateInstance terms(@QueryParam("doc") String doc) {
+    // Default to acceptable-use-policy if no doc parameter provided
+    String selectedDoc = (doc != null && !doc.isEmpty()) ? doc : "acceptable-use-policy";
+    return Templates.terms(selectedDoc);
   }
 }
