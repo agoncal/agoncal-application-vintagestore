@@ -1,6 +1,22 @@
 {#include base.html }
   {#title}Vintage Music Collection{/title}
 
+  <!-- Breadcrumbs -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/" class="text-decoration-none">
+            <i class="bi bi-house me-1"></i>Home
+          </a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="bi bi-disc me-1"></i>CDs
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
   <!-- Page Header -->
   <div class="row mb-4">
     <div class="col-12">
@@ -112,7 +128,7 @@
                 <div class="mt-auto pt-2">
                   <div class="d-flex gap-2">
                     <a href="/view/cd/{cd.id}" class="btn btn-outline-primary btn-sm flex-grow-1">
-                      <i class="bi bi-eye me-1"></i>Details
+                      <i class="bi bi-eye me-1"></i>View Details
                     </a>
                     <button class="btn btn-outline-success btn-sm">
                       <i class="bi bi-play-circle"></i>
