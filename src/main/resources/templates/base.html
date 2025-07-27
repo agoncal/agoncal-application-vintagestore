@@ -12,7 +12,7 @@
 <div class="container">
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Vintage Store</a>
+      <a class="navbar-brand" href="/">Vintage Store</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
               aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -41,9 +41,11 @@
             <a class="nav-link" href="/q/dev-ui/extensions" target="_blank">Dev UI</a>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <button class="btn btn-outline-success" type="submit">Chat</button>
-        </form>
+        <div class="d-flex">
+          <a href="/view/chat" class="btn btn-outline-success">
+            <i class="bi bi-chat-dots me-1"></i>Chat
+          </a>
+        </div>
       </div>
     </div>
   </nav>

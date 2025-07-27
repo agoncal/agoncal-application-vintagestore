@@ -1,4 +1,128 @@
 {#include base.html }
-  {#title}Vintage Store{/title}
-  Welcome to Vintage Store
+  {#title}Vintage Store - Discover Vintage Books & CDs{/title}
+  
+  <!-- Hero Section -->
+  <div class="row py-5 mb-4">
+    <div class="col-lg-8 mx-auto text-center">
+      <div class="mb-4">
+        <img src="/static/brand/vintagestore-logo.svg" alt="Vintage Store Logo" class="img-fluid" style="max-height: 120px;">
+      </div>
+      <h1 class="display-4 fw-bold text-primary mb-3">Welcome to Vintage Store</h1>
+      <p class="lead text-muted mb-4">
+        Discover a curated collection of vintage books and classic CDs. 
+        From literary treasures to musical gems, find your next favorite piece of history.
+      </p>
+      <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+        <a href="/view/books" class="btn btn-primary btn-lg px-4">
+          <i class="bi bi-book me-2"></i>Browse Books
+        </a>
+        <a href="/view/cds" class="btn btn-outline-primary btn-lg px-4">
+          <i class="bi bi-disc me-2"></i>Explore CDs
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-book-half text-primary" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="card-title">Rare Books</h5>
+          <p class="card-text text-muted">
+            Discover first editions, signed copies, and hard-to-find literary classics from renowned authors.
+          </p>
+          <a href="/view/books" class="btn btn-outline-primary">Explore Collection</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-vinyl text-primary" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="card-title">Vintage Music</h5>
+          <p class="card-text text-muted">
+            Browse our extensive collection of classic CDs featuring timeless albums and legendary artists.
+          </p>
+          <a href="/view/cds" class="btn btn-outline-primary">Browse Music</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-chat-dots text-primary" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="card-title">AI Assistant</h5>
+          <p class="card-text text-muted">
+            Get personalized recommendations and answers about our inventory with our intelligent chat assistant.
+          </p>
+          <a href="/view/chat" class="btn btn-outline-primary">Start Chatting</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="row text-center mb-5">
+    <div class="col-12">
+      <div class="card bg-primary text-white">
+        <div class="card-body py-5">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3 mb-md-0">
+                <i class="bi bi-collection display-6 mb-3"></i>
+                <h3 class="fw-bold">500+</h3>
+                <p class="mb-0">Rare Books</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3 mb-md-0">
+                <i class="bi bi-music-note-list display-6 mb-3"></i>
+                <h3 class="fw-bold">1000+</h3>
+                <p class="mb-0">Classic CDs</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3 mb-md-0">
+                <i class="bi bi-star-fill display-6 mb-3"></i>
+                <h3 class="fw-bold">4.9/5</h3>
+                <p class="mb-0">Customer Rating</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Access Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h3 class="text-center mb-4">Quick Access</h3>
+      <div class="d-flex flex-wrap justify-content-center gap-2">
+        <a href="/view/books" class="btn btn-outline-secondary">
+          <i class="bi bi-search me-1"></i>Search Books
+        </a>
+        <a href="/view/cds" class="btn btn-outline-secondary">
+          <i class="bi bi-search me-1"></i>Search CDs
+        </a>
+        <a href="/view/chat" class="btn btn-outline-secondary">
+          <i class="bi bi-robot me-1"></i>AI Chat
+        </a>
+        <a href="/static/terms/terms.pdf" class="btn btn-outline-secondary" target="_blank">
+          <i class="bi bi-file-text me-1"></i>Terms
+        </a>
+      </div>
+    </div>
+  </div>
+
 {/include}
