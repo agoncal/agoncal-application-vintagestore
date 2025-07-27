@@ -12,5 +12,5 @@ public enum Language {
   // =             Constants              =
   // ======================================
 
-  ENGLISH, FRENCH, SPANISH, PORTUGUESE, ITALIAN, FINISH, GERMAN, DEUTSCH, RUSSIAN
+  ENGLISH, FRENCH, SPANISH, PORTUGUESE, ITALIAN, FINISH, GERMAN, DEUTSCH, RUSSIAN, CZECH, JAPANESE
 }
