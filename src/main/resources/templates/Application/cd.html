@@ -1,0 +1,206 @@
+{#include base.html }
+  {#title}{cd.title} - CD Details{/title}
+
+  <!-- Back Navigation -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+          <li class="breadcrumb-item"><a href="/view/cds" class="text-decoration-none">CDs</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{cd.title}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- CD Detail Content -->
+  <div class="row">
+    <!-- Album Cover -->
+    <div class="col-lg-4 col-md-5 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="position-relative">
+          {#if cd.smallImageURL}
+            <img src="{cd.smallImageURL}" class="card-img-top" alt="{cd.title}" style="height: 500px; object-fit: cover;">
+          {#else}
+            <div class="d-flex align-items-center justify-content-center bg-light" style="height: 500px;">
+              <i class="bi bi-disc text-muted" style="font-size: 5rem;"></i>
+            </div>
+          {/if}
+          <div class="position-absolute top-0 end-0 m-3">
+            <span class="badge bg-primary fs-6">#{cd.id}</span>
+          </div>
+          {#if cd.nbOfDiscs && cd.nbOfDiscs > 1}
+            <div class="position-absolute bottom-0 start-0 m-3">
+              <span class="badge bg-warning text-dark fs-6">
+                <i class="bi bi-stack me-1"></i>{cd.nbOfDiscs} Discs
+              </span>
+            </div>
+          {/if}
+        </div>
+        <div class="card-body text-center">
+          {#if cd.genre}
+            <span class="badge bg-secondary mb-2">{cd.genre.name}</span>
+          {/if}
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <button class="btn btn-success btn-sm">
+              <i class="bi bi-play-circle me-1"></i>Play
+            </button>
+            <button class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-music-note-list me-1"></i>Tracklist
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Album Information -->
+    <div class="col-lg-8 col-md-7">
+      <div class="mb-4">
+        <h1 class="display-6 fw-bold text-primary mb-3">{cd.title}</h1>
+        
+        {#if cd.description}
+          <div class="card border-0 bg-light mb-4">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-info-circle me-2"></i>Album Description</h5>
+              <p class="card-text">{cd.description}</p>
+            </div>
+          </div>
+        {/if}
+
+        <!-- CD Details Grid -->
+        <div class="row g-3">
+          <!-- Album Details -->
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-header bg-primary text-white">
+                <h6 class="mb-0"><i class="bi bi-disc me-2"></i>Album Details</h6>
+              </div>
+              <div class="card-body">
+                {#if cd.label}
+                  <div class="mb-2">
+                    <strong>Record Label:</strong><br>
+                    <span class="text-muted">{cd.label.name}</span>
+                  </div>
+                {/if}
+                {#if cd.genre}
+                  <div class="mb-2">
+                    <strong>Genre:</strong><br>
+                    <span class="badge bg-secondary">{cd.genre.name}</span>
+                  </div>
+                {/if}
+                {#if cd.nbOfDiscs}
+                  <div class="mb-2">
+                    <strong>Number of Discs:</strong><br>
+                    <span class="text-muted">{cd.nbOfDiscs} {cd.nbOfDiscs == 1 ? 'disc' : 'discs'}</span>
+                  </div>
+                {/if}
+              </div>
+            </div>
+          </div>
+
+          <!-- Technical Information -->
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="bi bi-gear me-2"></i>Technical Info</h6>
+              </div>
+              <div class="card-body">
+                <div class="mb-2">
+                  <strong>Format:</strong><br>
+                  <span class="text-muted">Compact Disc (CD)</span>
+                </div>
+                <div class="mb-2">
+                  <strong>Audio Quality:</strong><br>
+                  <span class="text-muted">16-bit/44.1kHz</span>
+                </div>
+                <div class="mb-2">
+                  <strong>Condition:</strong><br>
+                  <span class="badge bg-success">Vintage - Good</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Musicians/Artists Section -->
+        {#if cd.musicians && !cd.musicians.empty}
+          <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-warning text-dark">
+              <h6 class="mb-0"><i class="bi bi-people-fill me-2"></i>Artists & Musicians</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                {#for musician in cd.musicians}
+                  <div class="col-md-6">
+                    <div class="d-flex align-items-center p-3 bg-light rounded">
+                      <div class="me-3">
+                        <i class="bi bi-person-circle text-primary" style="font-size: 2rem;"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-1">{musician.firstName} {musician.lastName}</h6>
+                        {#if musician.bio}
+                          <small class="text-muted">{musician.bio}</small>
+                        {/if}
+                        {#if musician.dateOfBirth}
+                          <div><small class="text-muted">Born: {musician.dateOfBirth}</small></div>
+                        {/if}
+                      </div>
+                    </div>
+                  </div>
+                {/for}
+              </div>
+            </div>
+          </div>
+        {/if}
+
+        <!-- Tracklist Placeholder -->
+        <div class="card border-0 shadow-sm mt-4">
+          <div class="card-header bg-info text-white">
+            <h6 class="mb-0"><i class="bi bi-music-note-list me-2"></i>Track Listing</h6>
+          </div>
+          <div class="card-body">
+            <div class="text-center py-3">
+              <i class="bi bi-music-note text-muted" style="font-size: 2rem;"></i>
+              <p class="text-muted mt-2">Track listing coming soon...</p>
+              <small class="text-muted">Full track details will be available in a future update</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex gap-3 mt-4">
+          <a href="/view/cds" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-2"></i>Back to CDs
+          </a>
+          <button class="btn btn-success">
+            <i class="bi bi-cart-plus me-2"></i>Add to Cart
+          </button>
+          <button class="btn btn-outline-secondary">
+            <i class="bi bi-heart me-2"></i>Add to Wishlist
+          </button>
+          <button class="btn btn-outline-info">
+            <i class="bi bi-share me-2"></i>Share Album
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Albums -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-collection me-2"></i>Related Albums</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted text-center py-3">
+            <i class="bi bi-search me-2"></i>Discover more albums by similar artists and genres coming soon...
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{/include}
