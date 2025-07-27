@@ -97,12 +97,9 @@
     </dependency>
     <!-- LangChain4j -->
     <dependency>
-      <groupId>dev.langchain4j</groupId>
-      <artifactId>langchain4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>dev.langchain4j</groupId>
-      <artifactId>langchain4j-open-ai</artifactId>
+      <groupId>io.quarkiverse.langchain4j</groupId>
+      <artifactId>quarkus-langchain4j-openai</artifactId>
+      <version>${langchain4j.version}</version>
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
