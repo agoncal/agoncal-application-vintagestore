@@ -74,8 +74,12 @@ public class LanguageConverter implements AttributeConverter<Language, String> {
         return PORTUGUESE;
       case "RU":
         return RUSSIAN;
-      case "SP":
+      case "ES":
         return SPANISH;
+      case "CZ":
+        return Language.CZECH;
+      case "JP":
+        return Language.JAPANESE;
       default:
         throw new IllegalArgumentException("Unknown" + dbData);
     }
