@@ -13,10 +13,11 @@
     <quarkus.platform.version>3.24.5</quarkus.platform.version>
     <quarkus.renarde.version>3.1.1</quarkus.renarde.version>
     <!-- LangChain4j -->
-    <langchain4j.version>1.0.0-alpha1</langchain4j.version>
+    <langchain4j.version>1.1.0</langchain4j.version>
+    <langchain4j-community.version>1.1.0-beta7</langchain4j-community.version>
     <!-- Web -->
-    <bootstrap.version>5.3.3</bootstrap.version>
-    <bootstrap-icons.version>1.11.3</bootstrap-icons.version>
+    <bootstrap.version>5.3.7</bootstrap.version>
+    <bootstrap-icons.version>1.13.1</bootstrap-icons.version>
     <!-- Plugins -->
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <surefire-plugin.version>3.3.1</surefire-plugin.version>
@@ -43,6 +44,13 @@
         <groupId>dev.langchain4j</groupId>
         <artifactId>langchain4j-bom</artifactId>
         <version>${langchain4j.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>dev.langchain4j</groupId>
+        <artifactId>langchain4j-community-bom</artifactId>
+        <version>${langchain4j-community.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -98,7 +106,7 @@
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
-      <artifactId>langchain4j-redis</artifactId>
+      <artifactId>langchain4j-community-redis</artifactId>
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
