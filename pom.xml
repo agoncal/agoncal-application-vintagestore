@@ -10,8 +10,8 @@
     <!-- Quarkus -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.17.3</quarkus.platform.version>
-    <quarkus.renarde.version>3.0.19</quarkus.renarde.version>
+    <quarkus.platform.version>3.24.5</quarkus.platform.version>
+    <quarkus.renarde.version>3.1.1</quarkus.renarde.version>
     <!-- LangChain4j -->
     <langchain4j.version>1.0.0-alpha1</langchain4j.version>
     <!-- Web -->
