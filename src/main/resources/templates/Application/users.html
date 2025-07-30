@@ -1,0 +1,197 @@
+{#include base.html }
+  {#title}Users - Vintage Store{/title}
+
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="display-6 fw-bold text-primary mb-2">
+            <i class="bi bi-people-fill me-3"></i>Users
+          </h1>
+          <p class="text-muted">Manage and view all registered users in the system</p>
+        </div>
+        <div>
+          <span class="badge bg-primary fs-6">{users.size()} Total Users</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <i class="bi bi-person-check text-success me-2" style="font-size: 2rem;"></i>
+            <h3 class="mb-0 text-success">{userCount}</h3>
+          </div>
+          <h6 class="card-title">Regular Users</h6>
+          <small class="text-muted">Standard customer accounts</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <div class="d-flex align-items-center justify-content-center mb-2">
+            <i class="bi bi-shield-check text-warning me-2" style="font-size: 2rem;"></i>
+            <h3 class="mb-0 text-warning">{adminCount}</h3>
+          </div>
+          <h6 class="card-title">Administrators</h6>
+          <small class="text-muted">Admin and management accounts</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-table me-2"></i>User Directory
+            </h5>
+            <div class="input-group" style="width: 300px;">
+              <span class="input-group-text bg-white border-end-0">
+                <i class="bi bi-search"></i>
+              </span>
+              <input type="text" class="form-control border-start-0" placeholder="Search users..." id="userSearch">
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0" id="usersTable">
+              <thead class="table-light">
+              <tr>
+                <th scope="col" class="ps-4">
+                  <i class="bi bi-person me-1"></i>User
+                </th>
+                <th scope="col">
+                  <i class="bi bi-envelope me-1"></i>Email
+                </th>
+                <th scope="col">
+                  <i class="bi bi-key me-1"></i>Login
+                </th>
+                <th scope="col" class="text-center">
+                  <i class="bi bi-shield me-1"></i>Role
+                </th>
+                <th scope="col" class="text-center">
+                  <i class="bi bi-gear me-1"></i>Actions
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              {#for user in users}
+                <tr class="user-row">
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center">
+                      <div class="me-3">
+                        {#if user.role.ordinal() == 1}
+                          <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-shield-check"></i>
+                          </div>
+                        {#else}
+                          <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-person"></i>
+                          </div>
+                        {/if}
+                      </div>
+                      <div>
+                        <h6 class="mb-0 user-name">{user.firstName} {user.lastName}</h6>
+                        <small class="text-muted">ID: {user.id}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="user-email">{user.email}</div>
+                    <small class="text-muted">
+                      {#if user.email.contains("@vintagestore.com")}
+                        <i class="bi bi-building me-1"></i>Internal
+                      {#else}
+                        <i class="bi bi-globe me-1"></i>External
+                      {/if}
+                    </small>
+                  </td>
+                  <td>
+                    <code class="user-login">{user.login}</code>
+                  </td>
+                  <td class="text-center">
+                    {#if user.role.ordinal() == 1}
+                      <span class="badge bg-warning text-dark">
+                          <i class="bi bi-shield-check me-1"></i>Admin
+                        </span>
+                    {#else}
+                      <span class="badge bg-success">
+                          <i class="bi bi-person-check me-1"></i>User
+                        </span>
+                    {/if}
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-outline-primary btn-sm me-1" title="View Details">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm me-1" title="Edit User">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    {#if user.role.ordinal() == 1}
+                      <button class="btn btn-outline-warning btn-sm" title="Admin User" disabled>
+                        <i class="bi bi-shield-lock"></i>
+                      </button>
+                    {#else}
+                      <button class="btn btn-outline-danger btn-sm" title="Delete User">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    {/if}
+                  </td>
+                </tr>
+              {/for}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer bg-light">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <i class="bi bi-info-circle me-1"></i>
+              Showing all {users.size()} users
+            </small>
+            <div>
+              <button class="btn btn-success btn-sm">
+                <i class="bi bi-person-plus me-1"></i>Add New User
+              </button>
+              <button class="btn btn-outline-primary btn-sm ms-2">
+                <i class="bi bi-download me-1"></i>Export
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Search JavaScript -->
+  <script>
+    document.getElementById('userSearch').addEventListener('input', function () {
+      const searchTerm = this.value.toLowerCase();
+      const rows = document.querySelectorAll('#usersTable .user-row');
+
+      rows.forEach(row => {
+        const name = row.querySelector('.user-name').textContent.toLowerCase();
+        const email = row.querySelector('.user-email').textContent.toLowerCase();
+        const login = row.querySelector('.user-login').textContent.toLowerCase();
+
+        if (name.includes(searchTerm) || email.includes(searchTerm) || login.includes(searchTerm)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
+{/include}

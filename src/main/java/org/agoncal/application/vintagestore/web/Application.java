@@ -8,6 +8,8 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import org.agoncal.application.vintagestore.model.Book;
 import org.agoncal.application.vintagestore.model.CD;
+import org.agoncal.application.vintagestore.model.User;
+import org.agoncal.application.vintagestore.model.UserRole;
 
 import java.util.List;
 
@@ -28,6 +30,8 @@ public class Application extends Controller {
     public static native TemplateInstance cd(CD cd);
 
     public static native TemplateInstance terms(String selectedDoc);
+
+    public static native TemplateInstance users(List<User> users, long userCount, long adminCount);
   }
 
   @Path("/")
@@ -73,5 +77,13 @@ public class Application extends Controller {
     // Default to acceptable-use-policy if no doc parameter provided
     String selectedDoc = (doc != null && !doc.isEmpty()) ? doc : "acceptable-use-policy";
     return Templates.terms(selectedDoc);
+  }
+
+  @Path("/view/users")
+  public TemplateInstance users() {
+    List<User> users = User.listAll();
+    long userCount = users.stream().filter(u -> u.role == UserRole.USER).count();
+    long adminCount = users.stream().filter(u -> u.role == UserRole.ADMIN).count();
+    return Templates.users(users, userCount, adminCount);
   }
 }

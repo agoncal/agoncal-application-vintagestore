@@ -653,3 +653,25 @@ INSERT INTO CD_MUSICIAN (cd_id, musician_id) VALUES ( 1197, 1099);
 INSERT INTO CD_MUSICIAN (cd_id, musician_id) VALUES ( 1198, 1100);
 INSERT INTO CD_MUSICIAN (cd_id, musician_id) VALUES ( 1199, 1001);
 INSERT INTO CD_MUSICIAN (cd_id, musician_id) VALUES ( 1200, 1002);
+
+-- VINTAGESTORE_USER
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1000, 'john.doe', 'password123', 'John', 'Doe', 'john.doe@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1001, 'jane.smith', 'mypassword', 'Jane', 'Smith', 'jane.smith@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1002, 'mike.wilson', 'secret123', 'Mike', 'Wilson', 'mike.wilson@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1003, 'sarah.johnson', 'password456', 'Sarah', 'Johnson', 'sarah.johnson@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1004, 'admin', 'adminpass', 'System', 'Administrator', 'admin@vintagestore.com', 1);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1005, 'david.brown', 'brownie123', 'David', 'Brown', 'david.brown@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1006, 'emily.davis', 'emily2024', 'Emily', 'Davis', 'emily.davis@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1007, 'alex.martinez', 'alexpass', 'Alex', 'Martinez', 'alex.martinez@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1008, 'lisa.garcia', 'lisa123', 'Lisa', 'Garcia', 'lisa.garcia@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1009, 'manager', 'managerpass', 'Store', 'Manager', 'manager@vintagestore.com', 1);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1010, 'chris.lee', 'chrislee', 'Chris', 'Lee', 'chris.lee@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1011, 'amanda.white', 'amanda456', 'Amanda', 'White', 'amanda.white@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1012, 'ryan.taylor', 'ryan2024', 'Ryan', 'Taylor', 'ryan.taylor@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1013, 'nicole.moore', 'nicole123', 'Nicole', 'Moore', 'nicole.moore@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1014, 'supervisor', 'supervisor123', 'Site', 'Supervisor', 'supervisor@vintagestore.com', 1);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1015, 'kevin.clark', 'kevinpass', 'Kevin', 'Clark', 'kevin.clark@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1016, 'jennifer.hall', 'jenny2024', 'Jennifer', 'Hall', 'jennifer.hall@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1017, 'brandon.king', 'brandon456', 'Brandon', 'King', 'brandon.king@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1018, 'stephanie.scott', 'steph123', 'Stephanie', 'Scott', 'stephanie.scott@email.com', 0);
+INSERT INTO VINTAGESTORE_USER (id, login, password, first_name, last_name, email, role) VALUES (1019, 'moderator', 'modpass2024', 'Content', 'Moderator', 'moderator@vintagestore.com', 1);

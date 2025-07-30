@@ -20,25 +20,54 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="/view/books">Books</a>
+            <a class="nav-link" href="/view/books">
+              <i class="bi bi-book me-1"></i>Books
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/view/cds">CDs</a>
+            <a class="nav-link" href="/view/cds">
+              <i class="bi bi-disc me-1"></i>CDs
+            </a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="termsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Terms</a>
+            <a class="nav-link dropdown-toggle" href="#" id="termsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-file-text me-1"></i>Terms
+            </a>
             <ul class="dropdown-menu" aria-labelledby="termsDropdown">
-              <li><a class="dropdown-item" href="/view/terms?doc=acceptable-use-policy">Acceptable Use Policy</a></li>
-              <li><a class="dropdown-item" href="/view/terms?doc=disclaimer">Disclaimer</a></li>
-              <li><a class="dropdown-item" href="/view/terms?doc=end-user-license-agreement">End User License Agreement</a></li>
-              <li><a class="dropdown-item" href="/view/terms?doc=privacy">Privacy</a></li>
-              <li><a class="dropdown-item" href="/view/terms?doc=terms">Terms</a></li>
+              <li><a class="dropdown-item" href="/view/terms?doc=acceptable-use-policy">
+                  <i class="bi bi-check-circle me-2"></i>Acceptable Use Policy
+                </a></li>
+              <li><a class="dropdown-item" href="/view/terms?doc=disclaimer">
+                  <i class="bi bi-exclamation-triangle me-2"></i>Disclaimer
+                </a></li>
+              <li><a class="dropdown-item" href="/view/terms?doc=end-user-license-agreement">
+                  <i class="bi bi-file-earmark-text me-2"></i>End User License Agreement
+                </a></li>
+              <li><a class="dropdown-item" href="/view/terms?doc=privacy">
+                  <i class="bi bi-shield-lock me-2"></i>Privacy
+                </a></li>
+              <li><a class="dropdown-item" href="/view/terms?doc=terms">
+                  <i class="bi bi-file-text me-2"></i>Terms
+                </a></li>
             </ul>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/q/dev-ui/extensions" target="_blank">Dev UI</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-gear me-1"></i>Admin
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+              <li><a class="dropdown-item" href="/view/users">
+                  <i class="bi bi-people me-2"></i>Users
+                </a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="/q/dev-ui/extensions" target="_blank">
+                  <i class="bi bi-tools me-2"></i>Dev UI
+                </a></li>
+            </ul>
           </li>
         </ul>
         <div class="d-flex">
@@ -66,7 +95,7 @@
     </div>
     <small class="text-white-50">Ask me about our vintage collection</small>
   </div>
-  
+
   <div class="chat-sidebar-body">
     <div id="chat-messages-sidebar" class="chat-messages">
       <div class="message assistant-message">
@@ -81,7 +110,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="chat-sidebar-footer">
     <div class="input-group">
       <input type="text" id="chat-input-sidebar" class="form-control" placeholder="Type your message..." disabled>
@@ -100,240 +129,240 @@
 <div id="chat-overlay" class="chat-overlay" onclick="toggleChatSidebar()"></div>
 
 <style>
-.chat-sidebar {
-  position: fixed;
-  top: 0;
-  right: -400px;
-  width: 400px;
-  height: 100vh;
-  background: white;
-  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-  z-index: 1050;
-  transition: right 0.3s ease-in-out;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-sidebar.open {
-  right: 0;
-}
-
-.chat-sidebar-header {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-  color: white;
-  padding: 1rem;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.chat-sidebar-body {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-messages {
-  flex: 1;
-  padding: 1rem;
-  overflow-y: auto;
-  max-height: calc(100vh - 200px);
-}
-
-.message {
-  display: flex;
-  margin-bottom: 1rem;
-  align-items: flex-start;
-}
-
-.assistant-message {
-  justify-content: flex-start;
-}
-
-.user-message {
-  justify-content: flex-end;
-}
-
-.message-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.assistant-message .message-avatar {
-  background: #007bff;
-  color: white;
-}
-
-.user-message .message-avatar {
-  background: #6c757d;
-  color: white;
-  margin-right: 0;
-  margin-left: 0.5rem;
-  order: 2;
-}
-
-.message-content {
-  max-width: 75%;
-}
-
-.message-bubble {
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 1rem;
-  padding: 0.75rem 1rem;
-  word-wrap: break-word;
-}
-
-.user-message .message-bubble {
-  background: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-.chat-sidebar-footer {
-  padding: 1rem;
-  border-top: 1px solid #dee2e6;
-  background: #f8f9fa;
-}
-
-.chat-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: 1040;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-}
-
-.chat-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-@media (max-width: 768px) {
   .chat-sidebar {
-    width: 100%;
-    right: -100%;
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1050;
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
   }
-}
+
+  .chat-sidebar.open {
+    right: 0;
+  }
+
+  .chat-sidebar-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .chat-sidebar-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+  }
+
+  .message {
+    display: flex;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+  }
+
+  .assistant-message {
+    justify-content: flex-start;
+  }
+
+  .user-message {
+    justify-content: flex-end;
+  }
+
+  .message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .assistant-message .message-avatar {
+    background: #007bff;
+    color: white;
+  }
+
+  .user-message .message-avatar {
+    background: #6c757d;
+    color: white;
+    margin-right: 0;
+    margin-left: 0.5rem;
+    order: 2;
+  }
+
+  .message-content {
+    max-width: 75%;
+  }
+
+  .message-bubble {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    word-wrap: break-word;
+  }
+
+  .user-message .message-bubble {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+
+  .chat-sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    background: #f8f9fa;
+  }
+
+  .chat-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  }
+
+  .chat-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (max-width: 768px) {
+    .chat-sidebar {
+      width: 100%;
+      right: -100%;
+    }
+  }
 </style>
 
 <script>
-let chatWebSocket;
-let isChatSidebarOpen = false;
+  let chatWebSocket;
+  let isChatSidebarOpen = false;
 
-function toggleChatSidebar() {
-  const sidebar = document.getElementById('chat-sidebar');
-  const overlay = document.getElementById('chat-overlay');
-  
-  isChatSidebarOpen = !isChatSidebarOpen;
-  
-  if (isChatSidebarOpen) {
-    sidebar.classList.add('open');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Initialize chat if not already done
-    if (!chatWebSocket) {
-      initializeChatSidebar();
-    }
-  } else {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-}
+  function toggleChatSidebar() {
+    const sidebar = document.getElementById('chat-sidebar');
+    const overlay = document.getElementById('chat-overlay');
 
-function initializeChatSidebar() {
-  const chatInput = document.getElementById('chat-input-sidebar');
-  const sendButton = document.getElementById('send-button-sidebar');
-  const connectionStatus = document.getElementById('connection-status');
-  
-  function connectChatWebSocket() {
-    try {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = protocol + '//' + window.location.host + '/chat';
-      chatWebSocket = new WebSocket(wsUrl);
-      
-      chatWebSocket.onopen = function() {
-        console.log('Chat sidebar connected');
-        chatInput.disabled = false;
-        sendButton.disabled = false;
-        connectionStatus.textContent = 'Connected';
-        connectionStatus.className = 'text-success';
-      };
-      
-      chatWebSocket.onmessage = function(event) {
-        addSidebarMessage('assistant', event.data);
-      };
-      
-      chatWebSocket.onclose = function() {
-        console.log('Chat sidebar disconnected');
-        chatInput.disabled = true;
-        sendButton.disabled = true;
-        connectionStatus.textContent = 'Disconnected';
+    isChatSidebarOpen = !isChatSidebarOpen;
+
+    if (isChatSidebarOpen) {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      // Initialize chat if not already done
+      if (!chatWebSocket) {
+        initializeChatSidebar();
+      }
+    } else {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function initializeChatSidebar() {
+    const chatInput = document.getElementById('chat-input-sidebar');
+    const sendButton = document.getElementById('send-button-sidebar');
+    const connectionStatus = document.getElementById('connection-status');
+
+    function connectChatWebSocket() {
+      try {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = protocol + '//' + window.location.host + '/chat';
+        chatWebSocket = new WebSocket(wsUrl);
+
+        chatWebSocket.onopen = function () {
+          console.log('Chat sidebar connected');
+          chatInput.disabled = false;
+          sendButton.disabled = false;
+          connectionStatus.textContent = 'Connected';
+          connectionStatus.className = 'text-success';
+        };
+
+        chatWebSocket.onmessage = function (event) {
+          addSidebarMessage('assistant', event.data);
+        };
+
+        chatWebSocket.onclose = function () {
+          console.log('Chat sidebar disconnected');
+          chatInput.disabled = true;
+          sendButton.disabled = true;
+          connectionStatus.textContent = 'Disconnected';
+          connectionStatus.className = 'text-danger';
+        };
+
+        chatWebSocket.onerror = function (error) {
+          console.error('Chat WebSocket error:', error);
+          connectionStatus.textContent = 'Connection error';
+          connectionStatus.className = 'text-danger';
+        };
+      } catch (error) {
+        console.error('Failed to connect chat:', error);
+        connectionStatus.textContent = 'Unable to connect';
         connectionStatus.className = 'text-danger';
-      };
-      
-      chatWebSocket.onerror = function(error) {
-        console.error('Chat WebSocket error:', error);
-        connectionStatus.textContent = 'Connection error';
-        connectionStatus.className = 'text-danger';
-      };
-    } catch (error) {
-      console.error('Failed to connect chat:', error);
-      connectionStatus.textContent = 'Unable to connect';
-      connectionStatus.className = 'text-danger';
+      }
     }
-  }
-  
-  function addSidebarMessage(sender, message) {
-    const messagesContainer = document.getElementById('chat-messages-sidebar');
-    const messageDiv = document.createElement('div');
-    const isUser = sender === 'user';
-    
-    messageDiv.className = 'message ' + (isUser ? 'user-message' : 'assistant-message');
-    
-    messageDiv.innerHTML = 
-      '<div class="message-avatar">' +
-      '<i class="bi bi-' + (isUser ? 'person' : 'robot') + '"></i>' +
-      '</div>' +
-      '<div class="message-content">' +
-      '<div class="message-bubble">' + message + '</div>' +
-      '</div>';
-    
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }
-  
-  function sendSidebarMessage() {
-    const message = chatInput.value.trim();
-    if (message && chatWebSocket && chatWebSocket.readyState === WebSocket.OPEN) {
-      addSidebarMessage('user', message);
-      chatWebSocket.send(message);
-      chatInput.value = '';
+
+    function addSidebarMessage(sender, message) {
+      const messagesContainer = document.getElementById('chat-messages-sidebar');
+      const messageDiv = document.createElement('div');
+      const isUser = sender === 'user';
+
+      messageDiv.className = 'message ' + (isUser ? 'user-message' : 'assistant-message');
+
+      messageDiv.innerHTML =
+        '<div class="message-avatar">' +
+        '<i class="bi bi-' + (isUser ? 'person' : 'robot') + '"></i>' +
+        '</div>' +
+        '<div class="message-content">' +
+        '<div class="message-bubble">' + message + '</div>' +
+        '</div>';
+
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-  }
-  
-  sendButton.addEventListener('click', sendSidebarMessage);
-  chatInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      sendSidebarMessage();
+
+    function sendSidebarMessage() {
+      const message = chatInput.value.trim();
+      if (message && chatWebSocket && chatWebSocket.readyState === WebSocket.OPEN) {
+        addSidebarMessage('user', message);
+        chatWebSocket.send(message);
+        chatInput.value = '';
+      }
     }
-  });
-  
-  // Connect to WebSocket
-  connectChatWebSocket();
-}
+
+    sendButton.addEventListener('click', sendSidebarMessage);
+    chatInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        sendSidebarMessage();
+      }
+    });
+
+    // Connect to WebSocket
+    connectChatWebSocket();
+  }
 </script>
 
 </body>
