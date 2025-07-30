@@ -14,9 +14,9 @@ An AI-powered e-commerce application built with **Quarkus** that demonstrates so
 ## Technology Stack
 
 - **Quarkus Renarde** - Web framework with type-safe Qute templating
-- **LangChain4j** - AI integration with OpenAI GPT-4o and RAG capabilities
+- **LangChain4j** - AI integration with Anthropic Claude Sonnet 4 and RAG capabilities
 - **Hibernate ORM with Panache** - Simplified data persistence
-- **H2 Database** - In-memory database with comprehensive test data (99 books, 101 CDs)
+- **PostgreSQL 17.5** - Production database with comprehensive test data (99 books, 101 CDs)
 - **Qdrant Vector Database** - Document embeddings storage (384-dimensional)
 - **Redis** - Chat memory persistence
 - **Bootstrap 5** - Frontend UI framework
@@ -27,11 +27,14 @@ An AI-powered e-commerce application built with **Quarkus** that demonstrates so
 
 1. **Start External Services** (required for full functionality):
 ```bash
+# Start PostgreSQL database
+docker compose -f src/main/docker/postgresql.yml up -d
+
 # Start Qdrant vector database (required for AI chat)
-docker-compose -f src/main/docker/qdrant.yml up -d
+docker compose -f src/main/docker/qdrant.yml up -d
 
 # Start Redis for chat memory persistence  
-docker-compose -f src/main/docker/redis.yml up -d
+docker compose -f src/main/docker/redis.yml up -d
 
 # Set ANTHROPIC_API_KEY API key for chat functionality
 export ANTHROPIC_API_KEY=your_api_key_here
@@ -70,7 +73,7 @@ Access the application at: **http://localhost:8080**
 ### Data Architecture
 - **Single-table inheritance** with discriminator pattern for Items (Books/CDs)
 - **Many-to-many relationships** via junction tables (Book-Author, CD-Musician)
-- **Comprehensive test data** loaded via `import.sql` (300KB+ dataset)
+- **Comprehensive test data** loaded via `vintagestore-data.sql` (300KB+ dataset) into PostgreSQL
 
 ## API Endpoints
 
@@ -132,4 +135,4 @@ java -jar target/*-runner.jar
 - [Quarkus Renarde](https://quarkiverse.github.io/quarkiverse-docs/quarkus-renarde/dev/) - Web framework with server-side rendering
 - [LangChain4j](https://docs.langchain4j.dev/) - Java library for building AI applications
 - [Qdrant](https://qdrant.tech/) - Vector similarity search engine
-- [OpenAI API](https://platform.openai.com/docs/) - GPT models and embeddings
+- [Anthropic Claude API](https://docs.anthropic.com/) - Claude Sonnet 4 model for chat functionality

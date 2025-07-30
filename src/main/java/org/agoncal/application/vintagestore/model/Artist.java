@@ -6,16 +6,13 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostUpdate;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.Period;
 
 /**
  * @author Antonio Goncalves
@@ -45,9 +42,8 @@ public class Artist extends PanacheEntity {
   public String bio;
 
   @Column(name = "date_of_birth")
-  @Temporal(TemporalType.DATE)
   @Past
-  public Date dateOfBirth;
+  public LocalDate dateOfBirth;
 
   @Transient
   public Integer age;
@@ -65,14 +61,6 @@ public class Artist extends PanacheEntity {
       return;
     }
 
-    Calendar birth = new GregorianCalendar();
-    birth.setTime(dateOfBirth);
-    Calendar now = new GregorianCalendar();
-    now.setTime(new Date());
-    int adjust = 0;
-    if (now.get(Calendar.DAY_OF_YEAR) - birth.get(Calendar.DAY_OF_YEAR) < 0) {
-      adjust = -1;
-    }
-    age = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR) + adjust;
+    age = Period.between(dateOfBirth, LocalDate.now()).getYears();
   }
 }

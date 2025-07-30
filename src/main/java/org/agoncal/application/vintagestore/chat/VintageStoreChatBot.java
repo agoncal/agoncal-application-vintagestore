@@ -4,11 +4,10 @@ import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
-import dev.langchain4j.model.openai.OpenAiChatModel;
-import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_O;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
@@ -33,7 +32,7 @@ public class VintageStoreChatBot {
 
   private static final String INDEX_NAME = "VintageStoreIndex";
   private static final String QDRANT_URL = "http://localhost:6334";
-  private static final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
+  private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
 
   private VintageStoreChatAssistant assistant;
 
@@ -72,9 +71,9 @@ public class VintageStoreChatBot {
   }
 
   static ChatModel model() {
-    ChatModel model = OpenAiChatModel.builder()
-      .apiKey(OPENAI_API_KEY)
-      .modelName(GPT_4_O)
+    ChatModel model = AnthropicChatModel.builder()
+      .apiKey(ANTHROPIC_API_KEY)
+      .modelName("claude-sonnet-4-20250514")
       .temperature(0.3)
       .timeout(ofSeconds(60))
       .logRequests(true)
