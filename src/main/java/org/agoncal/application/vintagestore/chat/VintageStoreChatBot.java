@@ -19,8 +19,7 @@ import io.qdrant.client.QdrantGrpcClient;
 import io.quarkus.websockets.next.OnOpen;
 import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 import static java.time.Duration.ofSeconds;
@@ -28,7 +27,7 @@ import static java.time.Duration.ofSeconds;
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
 
-  private static final Logger LOG = LoggerFactory.getLogger(VintageStoreChatBot.class);
+  private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
 
   private static final String INDEX_NAME = "VintageStoreIndex";
   private static final String QDRANT_URL = "http://localhost:6334";
@@ -43,7 +42,7 @@ public class VintageStoreChatBot {
     assistant = assistant(embeddingStore, model);
 
     String answer = assistant.chat("Hello, how can I help you?");
-    LOG.info(answer);
+    LOG.info("onOpen: " + answer);
 
     return answer;
   }
@@ -51,7 +50,7 @@ public class VintageStoreChatBot {
   @OnTextMessage
   public String onMessage(String message) {
     String answer = assistant.chat(message);
-    LOG.info(answer);
+    LOG.info("onMessage: " + answer);
 
     return answer;
   }
