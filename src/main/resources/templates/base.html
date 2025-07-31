@@ -133,9 +133,14 @@
       <h5 class="mb-0">
         <i class="bi bi-robot me-2"></i>AI Assistant
       </h5>
-      <button class="btn btn-sm btn-outline-light" onclick="toggleChatSidebar()" title="Hide chat">
-        <i class="bi bi-chevron-right"></i>
-      </button>
+      <div class="d-flex gap-1">
+        <button class="btn btn-sm btn-outline-light" onclick="clearChatHistory()" title="Clear chat history">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-light" onclick="toggleChatSidebar()" title="Hide chat">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
     </div>
     <small class="text-white-50">Ask me about our vintage collection</small>
   </div>
@@ -480,6 +485,27 @@
 
     // Connect to WebSocket
     connectChatWebSocket();
+  }
+
+  // Clear chat history function
+  function clearChatHistory() {
+    const messagesContainer = document.getElementById('chat-messages-sidebar');
+    if (messagesContainer) {
+      // Clear all messages
+      messagesContainer.innerHTML = '';
+      
+      // Send a clear command to the backend to reset the conversation
+      if (chatWebSocket && chatWebSocket.readyState === WebSocket.OPEN) {
+        chatWebSocket.send('CLEAR_CONVERSATION');
+      }
+      
+      // Add a welcome message to start fresh
+      setTimeout(() => {
+        addSidebarMessage('assistant', 'Hello! I\'m your vintage store assistant. How can I help you today?');
+      }, 100);
+      
+      console.log('Chat history cleared');
+    }
   }
 </script>
 
