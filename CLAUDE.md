@@ -35,6 +35,14 @@ docker compose -f src/main/docker/postgresql.yml up -d
 export ANTHROPIC_API_KEY=your_api_key_here
 ```
 
+### Logging
+All public methods across controllers and API resources have comprehensive entry logging using JBoss Logging:
+```bash
+# View application logs in development
+./mvnw compile quarkus:dev
+# Logs show method entries, user activities, authentication events, and API calls
+```
+
 ## Architecture Overview
 
 This is a **Quarkus 3.24.5** vintage store application that demonstrates AI-powered e-commerce with sophisticated chat capabilities.
@@ -66,6 +74,16 @@ Item (abstract base)
     ├── ManyToOne: Label, Genre
     ├── ManyToMany: Musicians (via CD_MUSICIAN table)
     └── Attributes: number of discs
+
+User Management:
+├── User (PanacheEntity)
+│   ├── Attributes: login, password, firstName, lastName, email
+│   ├── UserRole enum: USER, ADMIN
+│   └── Table: VINTAGESTORE_USER
+├── UserSession (@ApplicationScoped CDI bean)
+│   └── Manages authentication state and current user
+└── TemplateGlobals (static methods with @TemplateGlobal)
+    └── Provides user(), isLoggedIn(), isAdmin() to all templates
 ```
 
 ### Package Structure
@@ -77,22 +95,34 @@ Item (abstract base)
 
 ### Template Architecture
 Uses **Qute templating engine** with Renarde for type-safe templates:
-- **`base.html`** - Main layout with integrated chat sidebar and navigation
-- **Application templates** - Type-safe binding to controller methods
-- **Bootstrap 5** responsive design with custom chat interface
+- **`base.html`** - Main layout with integrated chat sidebar, enhanced navigation, and user authentication UI
+- **Application templates** - Type-safe binding to controller methods (signin.html, profile.html, users.html)
+- **Bootstrap 5** responsive design with modern navbar (dark theme, rounded buttons, user dropdown)
+- **Chat sidebar** - 700px wide with Markdown support via Marked.js, clear conversation functionality
 
 ### Database Configuration
 - **Test data via `vintagestore-data.sql`** (300KB+ comprehensive dataset)
 - **99 books** with categories, publishers, and author relationships
 - **101 CDs** with genres, labels, and musician relationships  
 - **Book-Author and CD-Musician junction tables** for many-to-many relationships
-- **16+ authors and 100+ musicians** with detailed metadata
+- **16+ authors and 100+ musicians** with detailed metadata including birth dates
+- **20 users** with authentication data (16 USER role, 4 ADMIN role) for testing signin functionality
 
 ### API Endpoints
 REST API follows predictable patterns:
 - `/books`, `/books/categories`, `/books/publishers`, `/books/authors`
 - `/cds`, `/cds/genres`, `/cds/labels`, `/cds/musicians`
 - JSON-B serialization with OpenAPI documentation
+- All API methods include comprehensive entry logging
+
+### Authentication System
+Complete user authentication implemented with:
+- **Sign-in/Sign-out** functionality with session management
+- **User profile pages** with role-based features  
+- **Admin user management** interface at `/view/users`
+- **Session-scoped UserSession** CDI bean for state management
+- **Template globals** for user state access across all templates
+- **Role-based UI** (USER vs ADMIN with different menu options)
 
 ### Development Workflow
 1. Start external services (Qdrant, Redis, PostgreSQL) using docker-compose files
@@ -118,9 +148,12 @@ REST API follows predictable patterns:
 - **Live reload** enabled in dev mode for rapid development
 - **Quarkus Dev UI** available at `/q/dev/` for debugging
 - **Language enum** uses custom JPA converter for database mapping
-- **Function tools pattern** allows AI to query inventory in real-time via `ItemsInStockTools` and `LegalDocumentTools`
+- **Function tools pattern** allows AI to query inventory in real-time via `ItemsInStockTools`, `LegalDocumentTools`, and `UserLoggedInTools`
 - **Memory management** in chat system prevents token overflow (20-message window)
 - **Document chunking** strategy optimized for legal document retrieval
 - **Artist model** uses modern `java.time.LocalDate` and `Period` API for age calculation
-- **WebSocket chat** at `/chat` endpoint provides real-time bidirectional communication
+- **WebSocket chat** at `/chat` endpoint provides real-time bidirectional communication with CLEAR_CONVERSATION command support
 - **Anthropic Claude Sonnet 4** model (`claude-sonnet-4-20250514`) with 0.3 temperature for balanced creativity
+- **Chat UI features**: Markdown rendering, 700px sidebar width, clear conversation button, enhanced typography
+- **Comprehensive logging**: All public methods across controllers and APIs log method entries and important events
+- **Authentication integration**: User state accessible in chat via UserLoggedInTools for personalized responses

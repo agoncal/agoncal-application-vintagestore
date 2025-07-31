@@ -5,11 +5,14 @@ An AI-powered e-commerce application built with **Quarkus** that demonstrates so
 ## Features
 
 - 🛍️ **E-commerce Platform**: Browse and search books and CDs with comprehensive metadata
-- 🤖 **AI Chat Assistant**: Intelligent chat bot powered by Claude Sonnet with RAG capabilities
+- 🤖 **AI Chat Assistant**: Intelligent chat bot powered by Claude Sonnet 4 with RAG capabilities
 - 📚 **Document Knowledge Base**: AI can answer questions about terms and conditions from PDF documents
 - 🔍 **Real-time Inventory Queries**: Chat bot can search and recommend products from the store inventory
-- 💾 **Persistent Chat Memory**: Conversation history stored in Redis
-- 🌐 **WebSocket Integration**: Real-time chat communication with Bootstrap 5 UI
+- 💾 **Persistent Chat Memory**: Conversation history stored in Redis with clear conversation functionality
+- 🌐 **Enhanced WebSocket Chat**: sidebar with Markdown rendering, clear history button
+- 👤 **User Authentication**: Complete signin/logout system with role-based access (USER/ADMIN)
+- 📊 **Admin Dashboard**: User management interface with statistics and role-based features
+- 🎨 **Modern UI**: Dark theme navigation with Bootstrap 5, responsive design, user dropdown
 
 ## Technology Stack
 
@@ -70,18 +73,50 @@ Access the application at: **http://localhost:8080**
 - **Memory Persistence**: Conversations remembered across sessions
 - **Function Calling**: Real-time inventory queries during chat conversations
 
+### User Authentication System
+- **Complete signin/logout** functionality with session management
+- **Role-based access control** (USER vs ADMIN roles)
+- **User profile pages** with personalized features
+- **Admin user management** interface at `/view/users`
+- **20 test users** included in dataset (16 USER, 4 ADMIN roles)
+- **Session-scoped UserSession** CDI bean for state management
+- **Template globals** for user state access across all templates
+
+### Enhanced Chat Features
+- **Markdown support** in chat messages via Marked.js library
+- **Clear conversation** functionality with refresh button
+- **Wide sidebar** for better readability
+- **User authentication integration** - chat assistant knows if user is logged in
+- **Enhanced typography** with improved font sizes and spacing
+- **CLEAR_CONVERSATION WebSocket command** for memory reset
+
 ### Data Architecture
 - **Single-table inheritance** with discriminator pattern for Items (Books/CDs)
 - **Many-to-many relationships** via junction tables (Book-Author, CD-Musician)
+- **User management tables** with authentication and role-based access
 - **Comprehensive test data** loaded via `vintagestore-data.sql` (300KB+ dataset) into PostgreSQL
+- **Author birth dates** with age calculation using modern Java time APIs
 
-## API Endpoints
+### Demo Accounts
+The application includes test user accounts for different roles:
 
-The application provides REST APIs for all entities:
-- `/books`, `/books/categories`, `/books/publishers`, `/books/authors`
-- `/cds`, `/cds/genres`, `/cds/labels`, `/cds/musicians`
+**Admin Account:**
+- Username: `admin`
+- Password: `adminpass`
+- Role: ADMIN (access to user management)
 
-OpenAPI documentation available at `/q/swagger-ui/`
+**User Account:**
+- Username: `john.doe`
+- Password: `password123`  
+- Role: USER (standard access)
+
+### Authentication Features
+- **Sign in/Sign out** functionality
+- **Role-based UI** (different menus for USER vs ADMIN)
+- **User profile pages** with account information
+- **Admin user management** interface
+- **Session management** with CDI beans
+- **Template integration** - user state available across all pages
 
 ## Testing
 
@@ -118,16 +153,26 @@ java -jar target/*-runner.jar
 ## Architecture Overview
 
 ### Package Structure
-- `org.agoncal.application.vintagestore.web` - Renarde controllers and static resources
-- `org.agoncal.application.vintagestore.api` - REST API endpoints  
-- `org.agoncal.application.vintagestore.model` - Panache entities and data model
 - `org.agoncal.application.vintagestore.chat` - WebSocket chat implementation
+- `org.agoncal.application.vintagestore.model` - Panache entities and data model
 - `org.agoncal.application.vintagestore.rag` - Document ingestion and RAG components
+- `org.agoncal.application.vintagestore.web` - Renarde controllers and static resources
 
-### Template Engine
+### Template Engine & UI
 - **Qute templating** with Renarde for type-safe templates
-- **Bootstrap 5** responsive design with integrated chat sidebar
+- **Modern Bootstrap 5** design with dark theme navigation
+- **Enhanced chat sidebar** (700px wide) with Markdown support
+- **Responsive design** with role-based UI elements
+- **User authentication templates** (signin, profile, user management)
 - **WebSocket integration** for real-time chat communication
+- **Template globals** for user state access (login status, admin rights)
+
+### Logging & Monitoring
+- **Comprehensive logging** across all controllers and API endpoints
+- **Method entry logging** for debugging and monitoring
+- **Authentication event logging** (login attempts, successes, failures)
+- **User activity tracking** via application logs
+- **JBoss Logging** integration with meaningful log messages
 
 ## Related Resources
 

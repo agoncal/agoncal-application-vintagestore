@@ -32,6 +32,7 @@ public class VintageStoreChatBot {
   private static final String INDEX_NAME = "VintageStoreIndex";
   private static final String QDRANT_URL = "http://localhost:6334";
   private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
+  private static final String WELCOME_PROMPT = "Hello, how can I help you?";
 
   private VintageStoreChatAssistant assistant;
 
@@ -40,32 +41,30 @@ public class VintageStoreChatBot {
     LOG.info("WebSocket chat connection opened");
     assistant = assistant(embeddingStore(), model(), chatMemory());
 
-    String answer = assistant.chat("Hello, how can I help you?");
+    String answer = assistant.chat(WELCOME_PROMPT);
     LOG.info("Initial greeting sent: " + answer);
 
     return answer;
   }
 
   @OnTextMessage
-  public String onMessage(String message) {
+  public String onMessage(String message) throws Exception {
     LOG.info("Received message: " + message);
+    String answer;
 
     // Handle clear conversation command
     if ("CLEAR_CONVERSATION".equals(message)) {
       LOG.info("Clearing conversation history");
-      try {
-        // Reinitialize assistant to clear memory
-        ChatMemory memory = chatMemory();
-        memory.clear();
-        assistant = assistant(embeddingStore(), model(), memory);
-      } catch (Exception e) {
-        LOG.error("Error clearing conversation", e);
-        return "Sorry, I encountered an error clearing the conversation. Please try again.";
-      }
+      // Reinitialize assistant to clear memory
+      ChatMemory memory = chatMemory();
+      memory.clear();
+      assistant = assistant(embeddingStore(), model(), memory);
+      answer = assistant.chat(WELCOME_PROMPT);
+    } else {
+      answer = assistant.chat(message);
     }
 
     // Handle regular chat messages
-    String answer = assistant.chat(message);
     LOG.info("Response sent: " + answer);
 
     return answer;
