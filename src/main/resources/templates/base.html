@@ -51,8 +51,6 @@
                 </a></li>
             </ul>
           </li>
-        </ul>
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-gear me-1"></i>Admin
@@ -70,7 +68,33 @@
             </ul>
           </li>
         </ul>
-        <div class="d-flex">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        </ul>
+        <div class="d-flex gap-2">
+          <!-- Sign In / User Dropdown -->
+          {#if user}
+            <div class="dropdown">
+              <button class="btn btn-outline-primary dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-1"></i>{user.firstName} {user.lastName}
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="/profile">
+                    <i class="bi bi-person me-2"></i>My Profile
+                  </a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="/logout">
+                    <i class="bi bi-box-arrow-right me-2"></i>Sign Out
+                  </a></li>
+              </ul>
+            </div>
+          {#else}
+            <a href="/signin" class="btn btn-outline-primary">
+              <i class="bi bi-person me-1"></i>Sign In
+            </a>
+          {/if}
+
           <button class="btn btn-outline-success" onclick="toggleChatSidebar()">
             <i class="bi bi-chat-dots me-1"></i>Chat
           </button>

@@ -1,0 +1,149 @@
+{#include base.html }
+  {#title}My Profile - Vintage Store{/title}
+
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <!-- Profile Header -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              {#if profileUser.role.ordinal() == 1}
+                <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                  <i class="bi bi-shield-check" style="font-size: 1.5rem;"></i>
+                </div>
+              {#else}
+                <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                  <i class="bi bi-person" style="font-size: 1.5rem;"></i>
+                </div>
+              {/if}
+            </div>
+            <div>
+              <h4 class="mb-1">{profileUser.firstName} {profileUser.lastName}</h4>
+              <div>
+                {#if profileUser.role.ordinal() == 1}
+                  <span class="badge bg-warning text-dark">
+                    <i class="bi bi-shield-check me-1"></i>Administrator
+                  </span>
+                {#else}
+                  <span class="badge bg-light text-dark">
+                    <i class="bi bi-person-check me-1"></i>User
+                  </span>
+                {/if}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h6 class="text-muted mb-1">Username</h6>
+              <p class="mb-3"><code>{profileUser.login}</code></p>
+            </div>
+            <div class="col-md-6">
+              <h6 class="text-muted mb-1">Email Address</h6>
+              <p class="mb-3">
+                {profileUser.email}
+                {#if profileUser.email.contains("@vintagestore.com")}
+                  <small class="text-muted ms-2">
+                    <i class="bi bi-building"></i> Internal
+                  </small>
+                {/if}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <h6 class="text-muted mb-1">User ID</h6>
+              <p class="mb-3">#{profileUser.id}</p>
+            </div>
+            <div class="col-md-6">
+              <h6 class="text-muted mb-1">Account Type</h6>
+              <p class="mb-3">
+                {#if profileUser.role.ordinal() == 1}
+                  Administrator Account
+                {#else}
+                  Standard User Account
+                {/if}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Actions -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+              <i class="bi bi-person-gear text-primary mb-3" style="font-size: 2rem;"></i>
+              <h6 class="card-title">Edit Profile</h6>
+              <p class="card-text text-muted">Update your personal information and preferences</p>
+              <button class="btn btn-primary btn-sm" disabled>
+                <i class="bi bi-pencil me-1"></i>Edit Profile
+              </button>
+              <small class="text-muted d-block mt-2">Coming Soon</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+              <i class="bi bi-shield-lock text-warning mb-3" style="font-size: 2rem;"></i>
+              <h6 class="card-title">Change Password</h6>
+              <p class="card-text text-muted">Update your account password for security</p>
+              <button class="btn btn-warning btn-sm" disabled>
+                <i class="bi bi-key me-1"></i>Change Password
+              </button>
+              <small class="text-muted d-block mt-2">Coming Soon</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Features -->
+      {#if profileUser.role.ordinal() == 1}
+        <div class="card border-0 shadow-sm mt-4">
+          <div class="card-header bg-warning text-dark">
+            <h6 class="mb-0">
+              <i class="bi bi-shield-check me-2"></i>Administrator Features
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <a href="/view/users" class="btn btn-outline-primary w-100">
+                  <i class="bi bi-people me-1"></i>Manage Users
+                </a>
+              </div>
+              <div class="col-md-4">
+                <a href="/q/dev-ui/extensions" target="_blank" class="btn btn-outline-secondary w-100">
+                  <i class="bi bi-tools me-1"></i>Dev UI
+                </a>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-outline-info w-100" disabled>
+                  <i class="bi bi-graph-up me-1"></i>Analytics
+                </button>
+              </div>
+            </div>
+            <small class="text-muted mt-2 d-block">
+              <i class="bi bi-info-circle me-1"></i>
+              You have administrator privileges to manage the system
+            </small>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Navigation Actions -->
+      <div class="d-flex justify-content-between mt-4">
+        <a href="/" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i>Back to Home
+        </a>
+        <a href="/logout" class="btn btn-outline-danger">
+          <i class="bi bi-box-arrow-right me-1"></i>Sign Out
+        </a>
+      </div>
+    </div>
+  </div>
+
+{/include}
