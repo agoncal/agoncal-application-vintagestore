@@ -46,23 +46,8 @@
             </div>
           </div>
         </div>
-        
+
         <div class="card-body d-flex flex-column p-0">
-          <!-- Chat Messages Area -->
-          <div id="chat-messages" class="flex-grow-1 p-3" style="overflow-y: auto; max-height: 450px;">
-            <div class="d-flex justify-content-start mb-3">
-              <div class="card border-0 bg-light" style="max-width: 75%;">
-                <div class="card-body p-3">
-                  <div class="d-flex align-items-center mb-2">
-                    <i class="bi bi-robot text-primary me-2"></i>
-                    <small class="text-muted">Assistant</small>
-                  </div>
-                  <p class="mb-0">Hello! I'm your vintage store assistant. I can help you find information about our books, CDs, and answer questions about our collection. What would you like to know?</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
           <!-- Chat Input Area -->
           <div class="border-top p-3">
             <div class="input-group">
@@ -126,34 +111,34 @@
       const chatMessages = document.getElementById('chat-messages');
       const chatInput = document.getElementById('chat-input');
       const sendButton = document.getElementById('send-button');
-      
+
       // WebSocket connection for real-time chat
       let websocket;
-      
+
       function connectWebSocket() {
         try {
           const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
           const wsUrl = protocol + '//' + window.location.host + '/chat';
           websocket = new WebSocket(wsUrl);
-          
+
           websocket.onopen = function() {
             console.log('Connected to chat');
             chatInput.disabled = false;
             sendButton.disabled = false;
             chatInput.placeholder = 'Type your message here...';
           };
-          
+
           websocket.onmessage = function(event) {
             addMessage('assistant', event.data);
           };
-          
+
           websocket.onclose = function() {
             console.log('Disconnected from chat');
             chatInput.disabled = true;
             sendButton.disabled = true;
             chatInput.placeholder = 'Chat unavailable - WebSocket disconnected';
           };
-          
+
           websocket.onerror = function(error) {
             console.error('WebSocket error:', error);
             addMessage('system', 'Connection error. Please refresh the page.');
@@ -163,22 +148,22 @@
           addMessage('system', 'Unable to connect to chat service.');
         }
       }
-      
+
       function addMessage(sender, message) {
         const messageDiv = document.createElement('div');
         const isUser = sender === 'user';
         const isAssistant = sender === 'assistant';
-        
+
         messageDiv.className = 'd-flex justify-content-' + (isUser ? 'end' : 'start') + ' mb-3';
-        
+
         const messageCard = document.createElement('div');
         messageCard.className = 'card border-0 ' + (isUser ? 'bg-primary text-white' : 'bg-light');
         messageCard.style.maxWidth = '75%';
-        
+
         const iconClass = isUser ? 'person' : (isAssistant ? 'robot' : 'exclamation-circle');
         const textClass = isUser ? 'text-white-50' : 'text-muted';
         const senderName = isUser ? 'You' : (isAssistant ? 'Assistant' : 'System');
-        
+
         messageCard.innerHTML = '<div class="card-body p-3">' +
           '<div class="d-flex align-items-center mb-2">' +
           '<i class="bi bi-' + iconClass + ' me-2"></i>' +
@@ -186,12 +171,12 @@
           '</div>' +
           '<p class="mb-0">' + message + '</p>' +
           '</div>';
-        
+
         messageDiv.appendChild(messageCard);
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
-      
+
       function sendMessage() {
         const message = chatInput.value.trim();
         if (message && websocket && websocket.readyState === WebSocket.OPEN) {
@@ -200,14 +185,14 @@
           chatInput.value = '';
         }
       }
-      
+
       sendButton.addEventListener('click', sendMessage);
       chatInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           sendMessage();
         }
       });
-      
+
       // Connect to WebSocket
       connectWebSocket();
     });

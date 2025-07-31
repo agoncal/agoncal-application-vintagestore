@@ -131,8 +131,8 @@
       <h5 class="mb-0">
         <i class="bi bi-robot me-2"></i>AI Assistant
       </h5>
-      <button class="btn btn-sm btn-outline-light" onclick="toggleChatSidebar()">
-        <i class="bi bi-x-lg"></i>
+      <button class="btn btn-sm btn-outline-light" onclick="toggleChatSidebar()" title="Hide chat">
+        <i class="bi bi-chevron-right"></i>
       </button>
     </div>
     <small class="text-white-50">Ask me about our vintage collection</small>
@@ -140,16 +140,6 @@
 
   <div class="chat-sidebar-body">
     <div id="chat-messages-sidebar" class="chat-messages">
-      <div class="message assistant-message">
-        <div class="message-avatar">
-          <i class="bi bi-robot"></i>
-        </div>
-        <div class="message-content">
-          <div class="message-bubble">
-            Hello! I'm your vintage store assistant. I can help you find information about our books, CDs, and answer questions about our collection. What would you like to know?
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -174,8 +164,8 @@
   .chat-sidebar {
     position: fixed;
     top: 0;
-    right: -400px;
-    width: 400px;
+    right: -700px;
+    width: 700px;
     height: 100vh;
     background: white;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
@@ -258,6 +248,8 @@
     border-radius: 1rem;
     padding: 0.75rem 1rem;
     word-wrap: break-word;
+    font-size: 1.1rem;
+    line-height: 1.5;
   }
 
   .user-message .message-bubble {
