@@ -37,20 +37,38 @@ public class VintageStoreChatBot {
 
   @OnOpen
   public String onOpen() throws Exception {
+    LOG.info("WebSocket chat connection opened");
     EmbeddingStore<TextSegment> embeddingStore = embeddingStore();
     ChatModel model = model();
     assistant = assistant(embeddingStore, model);
 
     String answer = assistant.chat("Hello, how can I help you?");
-    LOG.info("onOpen: " + answer);
+    LOG.info("Initial greeting sent: " + answer);
 
     return answer;
   }
 
   @OnTextMessage
   public String onMessage(String message) {
+    LOG.info("Received message: " + message);
+
+    // Handle clear conversation command
+    if ("CLEAR_CONVERSATION".equals(message)) {
+      LOG.info("Clearing conversation history");
+      try {
+        // Reinitialize assistant to clear memory
+        EmbeddingStore<TextSegment> embeddingStore = embeddingStore();
+        ChatModel model = model();
+        assistant = assistant(embeddingStore, model);
+      } catch (Exception e) {
+        LOG.error("Error clearing conversation", e);
+        return "Sorry, I encountered an error clearing the conversation. Please try again.";
+      }
+    }
+
+    // Handle regular chat messages
     String answer = assistant.chat(message);
-    LOG.info("onMessage: " + answer);
+    LOG.info("Response sent: " + answer);
 
     return answer;
   }
