@@ -38,9 +38,7 @@ public class VintageStoreChatBot {
   @OnOpen
   public String onOpen() throws Exception {
     LOG.info("WebSocket chat connection opened");
-    EmbeddingStore<TextSegment> embeddingStore = embeddingStore();
-    ChatModel model = model();
-    assistant = assistant(embeddingStore, model);
+    assistant = assistant(embeddingStore(), model(), chatMemory());
 
     String answer = assistant.chat("Hello, how can I help you?");
     LOG.info("Initial greeting sent: " + answer);
@@ -57,9 +55,9 @@ public class VintageStoreChatBot {
       LOG.info("Clearing conversation history");
       try {
         // Reinitialize assistant to clear memory
-        EmbeddingStore<TextSegment> embeddingStore = embeddingStore();
-        ChatModel model = model();
-        assistant = assistant(embeddingStore, model);
+        ChatMemory memory = chatMemory();
+        memory.clear();
+        assistant = assistant(embeddingStore(), model(), memory);
       } catch (Exception e) {
         LOG.error("Error clearing conversation", e);
         return "Sorry, I encountered an error clearing the conversation. Please try again.";
@@ -100,15 +98,15 @@ public class VintageStoreChatBot {
     return model;
   }
 
-  static VintageStoreChatAssistant assistant(EmbeddingStore<TextSegment> embeddingStore, ChatModel model) {
+  static VintageStoreChatAssistant assistant(EmbeddingStore<TextSegment> embeddingStore, ChatModel model, ChatMemory memory) {
     EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
     ContentRetriever contentRetriever = new EmbeddingStoreContentRetriever(embeddingStore, embeddingModel);
 
     VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
       .chatModel(model)
-      .chatMemory(chatMemory())
+      .chatMemory(memory)
       .contentRetriever(contentRetriever)
-      .tools(new LegalDocumentTools(), new ItemsInStockTools())
+      .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
       .build();
 
     return assistant;
