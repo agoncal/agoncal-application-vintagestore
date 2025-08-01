@@ -31,13 +31,13 @@ An AI-powered e-commerce application built with **Quarkus** that demonstrates so
 1. **Start External Services** (required for full functionality):
 ```bash
 # Start PostgreSQL database
-docker compose -f src/main/docker/postgresql.yml up -d
+docker compose -p vintagestore -f src/main/docker/postgresql.yml up -d
 
 # Start Qdrant vector database (required for AI chat)
-docker compose -f src/main/docker/qdrant.yml up -d
+docker compose -p vintagestore -f src/main/docker/qdrant.yml up -d
 
 # Start Redis for chat memory persistence  
-docker compose -f src/main/docker/redis.yml up -d
+docker compose -p vintagestore -f src/main/docker/redis.yml up -d
 
 # Set ANTHROPIC_API_KEY API key for chat functionality
 export ANTHROPIC_API_KEY=your_api_key_here
@@ -58,6 +58,12 @@ Start the development server with live reload:
 Access the application at: **http://localhost:8080**
 
 > **Dev UI**: Available at <http://localhost:8080/q/dev/> for debugging and monitoring.
+
+### Stop the application:
+
+```bash
+docker compose -p vintagestore down
+```
 
 ## Application Features
 

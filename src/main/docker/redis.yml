@@ -3,13 +3,17 @@
 # redis-commander
 services:
   redis:
+    container_name: redis
+    hostname: redis
     image: redis:8.0.3-alpine
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
     restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
     ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel notice
-    volumes:
-      - cache:/data
-volumes:
-  cache:
-    driver: local
+      - "8089:8081"
+
