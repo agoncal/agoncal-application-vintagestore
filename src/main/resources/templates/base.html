@@ -142,6 +142,12 @@
         <i class="bi bi-robot me-2"></i>AI Assistant
       </h5>
       <div class="d-flex gap-1">
+        <button class="btn btn-sm btn-outline-light" onclick="connectWebSocket()" title="Connect WebSocket" id="connect-button">
+          <i class="bi bi-wifi"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-light" onclick="disconnectWebSocket()" title="Disconnect WebSocket" id="disconnect-button">
+          <i class="bi bi-wifi-off"></i>
+        </button>
         <button class="btn btn-sm btn-outline-light" onclick="clearChatHistory()" title="Clear chat history">
           <i class="bi bi-arrow-clockwise"></i>
         </button>
@@ -513,6 +519,21 @@
       }, 100);
       
       console.log('Chat history cleared');
+    }
+  }
+
+  // Connect WebSocket function
+  function connectWebSocket() {
+    if (!chatWebSocket || chatWebSocket.readyState === WebSocket.CLOSED) {
+      initializeChatSidebar();
+    }
+  }
+
+  // Disconnect WebSocket function
+  function disconnectWebSocket() {
+    if (chatWebSocket && chatWebSocket.readyState === WebSocket.OPEN) {
+      chatWebSocket.close();
+      console.log('WebSocket manually disconnected');
     }
   }
 </script>

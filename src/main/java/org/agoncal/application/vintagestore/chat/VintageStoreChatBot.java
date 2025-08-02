@@ -16,6 +16,7 @@ import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.QdrantGrpcClient;
+import io.quarkus.websockets.next.OnClose;
 import io.quarkus.websockets.next.OnOpen;
 import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
@@ -68,6 +69,11 @@ public class VintageStoreChatBot {
     LOG.info("Response sent: " + answer);
 
     return answer;
+  }
+
+  @OnClose
+  public void onClose() {
+    LOG.info("WebSocket chat connection closed");
   }
 
   static EmbeddingStore<TextSegment> embeddingStore() throws Exception {
