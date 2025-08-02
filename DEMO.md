@@ -1,5 +1,45 @@
 # Demo
 
+## Show the VintageStore application
+
+* Browse CD and Books
+* Show Terms and Conditions
+* Login/Profile/Logout
+* Chat: Show the logs when disconnecting/connecting/sending a message
+
+```java
+@RegisterAiService
+@SessionScoped
+public interface VintageStoreChatAssistant {
+
+  String chat(String userMessage);
+}
+```
+
+```java
+@WebSocket(path = "/chat")
+public class VintageStoreChatBot {
+  
+  @OnOpen
+  public String onOpen() throws Exception {
+    LOG.info("WebSocket chat connection opened");
+    return "WebSocket chat connection opened";
+  }
+
+  @OnTextMessage
+  public String onMessage(String message) throws Exception {
+    LOG.info("Received message: " + message);
+    return message;
+  }
+
+  @OnClose
+  public void onClose() {
+    LOG.info("WebSocket chat connection closed");
+  }
+}
+```
+
+
 ## Initialization
 
 Remove most of the settings in the ChatAssistant and ChatBot.
