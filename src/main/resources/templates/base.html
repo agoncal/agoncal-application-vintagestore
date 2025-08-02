@@ -462,27 +462,6 @@
       }
     }
 
-    function addSidebarMessage(sender, message) {
-      const messagesContainer = document.getElementById('chat-messages-sidebar');
-      const messageDiv = document.createElement('div');
-      const isUser = sender === 'user';
-
-      messageDiv.className = 'message ' + (isUser ? 'user-message' : 'assistant-message');
-
-      // Parse Markdown for assistant messages, keep plain text for user messages
-      const processedMessage = isUser ? message : marked.parse(message);
-
-      messageDiv.innerHTML =
-        '<div class="message-avatar">' +
-        '<i class="bi bi-' + (isUser ? 'person' : 'robot') + '"></i>' +
-        '</div>' +
-        '<div class="message-content">' +
-        '<div class="message-bubble">' + processedMessage + '</div>' +
-        '</div>';
-
-      messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
 
     function sendSidebarMessage() {
       const message = chatInput.value.trim();
@@ -502,6 +481,36 @@
 
     // Connect to WebSocket
     connectChatWebSocket();
+  }
+
+  // Global function to add messages to chat
+  function addSidebarMessage(sender, message) {
+    const messagesContainer = document.getElementById('chat-messages-sidebar');
+    const messageDiv = document.createElement('div');
+    const isUser = sender === 'user';
+    const isSystem = sender === 'system';
+
+    if (isSystem) {
+      // System messages have a special minimal styling
+      messageDiv.className = 'message system-message text-center';
+      messageDiv.innerHTML = '<div class="message-content"><small>' + message + '</small></div>';
+    } else {
+      messageDiv.className = 'message ' + (isUser ? 'user-message' : 'assistant-message');
+
+      // Parse Markdown for assistant messages, keep plain text for user messages
+      const processedMessage = isUser ? message : marked.parse(message);
+
+      messageDiv.innerHTML =
+        '<div class="message-avatar">' +
+        '<i class="bi bi-' + (isUser ? 'person' : 'robot') + '"></i>' +
+        '</div>' +
+        '<div class="message-content">' +
+        '<div class="message-bubble">' + processedMessage + '</div>' +
+        '</div>';
+    }
+
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
   // Clear chat history function
@@ -529,12 +538,18 @@
   function connectWebSocket() {
     if (!chatWebSocket || chatWebSocket.readyState === WebSocket.CLOSED) {
       initializeChatSidebar();
+      // Add a small green status message
+      setTimeout(() => {
+        addSidebarMessage('system', '<span style="color: green; font-size: 0.9em;">✓ Connected to websocket</span>');
+      }, 500);
     }
   }
 
   // Disconnect WebSocket function
   function disconnectWebSocket() {
     if (chatWebSocket && chatWebSocket.readyState === WebSocket.OPEN) {
+      // Add a small red status message
+      addSidebarMessage('system', '<span style="color: red; font-size: 0.9em;">✗ Disconnected from websocket</span>');
       chatWebSocket.close();
       console.log('WebSocket manually disconnected');
     }

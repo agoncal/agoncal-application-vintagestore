@@ -2,10 +2,14 @@
 
 ## Show the VintageStore application
 
+* In `VintageStoreChatAssistant` remove the `@SystemMessage`
+* In `VintageStoreChatBot` only keep the WebSocket methods
+* Show logs
 * Browse CD and Books
 * Show Terms and Conditions
 * Login/Profile/Logout
-* Chat: Show the logs when disconnecting/connecting/sending a message
+* Chat: disconnect/connect/send a message
+* Chat: CLEAR CONVERSATION
 
 ```java
 @RegisterAiService
@@ -40,22 +44,14 @@ public class VintageStoreChatBot {
 ```
 
 
-## Initialization
+## Adding Chat Bot
 
 Remove most of the settings in the ChatAssistant and ChatBot.
 
-* In `VintageStoreChatAssistant` remove the `@SystemMessage`
-* In `VintageStoreChatBot` only keep the `model()` method 
+* In `VintageStoreChatBot` add `assistant()` and `model()` methods
+* Add the Assistant in the `@OnOpen` and `@OnTextMessage` methods
+* Restart Quarkus (press 's' in the terminal)
 * Prompt "Do you know anything about VintageStore ?"
-
-```java
-@RegisterAiService
-@SessionScoped
-public interface VintageStoreChatAssistant {
-
-  String chat(String userMessage);
-}
-```
 
 ```java
 @WebSocket(path = "/chat")
@@ -65,6 +61,7 @@ public class VintageStoreChatBot {
   
   @OnOpen
   public String onOpen() throws Exception {
+    LOG.info("WebSocket chat connection opened");
     assistant = assistant(model());
     String answer = assistant.chat(WELCOME_PROMPT);
     return answer;
@@ -72,6 +69,7 @@ public class VintageStoreChatBot {
 
   @OnTextMessage
   public String onMessage(String message) throws Exception {
+    LOG.info("Received message: " + message);
     String answer;
     answer = assistant.chat(message);
     return answer;
@@ -104,7 +102,8 @@ public class VintageStoreChatBot {
 ## System Prompt
 
 * In `VintageStoreChatAssistant` add the system prompt
-* Restart Quarkus (press 'r' in the terminal) because bot in created in onMessage
+* Show logs and check the system prompt
+* Restart Quarkus (press 's' in the terminal)
 * Prompt "Do you know anything about VintageStore ?"
 * Prompt "What's my name ?"
 * Prompt "My name is Antonio"
@@ -113,17 +112,19 @@ public class VintageStoreChatBot {
 ## Memory
 
 * In `VintageStoreChatAssistant` add the memory
-* Restart Quarkus (press 'r' in the terminal) because bot in created in onMessage
+* Restart Quarkus (press 's' in the terminal)
+* Disconnect and connect the chat because the Assistant is initialized at the `@OnOpen`
 * Prompt "What's my name ?"
 * Prompt "My name is Antonio"
 * Prompt "What's my name ?"
+* DISCONNECT AND CONNECT WEBSOCKET, MEMORY IS LOST, NOT IN PERSISTENT STORAGE
+* Prompt "My name is Antonio"
 
 ```java
   @OnOpen
   public String onOpen() throws Exception {
     assistant = assistant(model(), memory());
-    String answer = assistant.chat(WELCOME_PROMPT);
-    return answer;
+    // ...
   }
 
 
@@ -143,4 +144,30 @@ public class VintageStoreChatBot {
   
     return assistant;
   }
+```
+
+## Memory in Persistent Storage
+
+* Start Redis with `docker compose -f src/main/docker/redis.yml up -d`
+* Prompt "What's my name ?"
+* Prompt "My name is Antonio"
+* Prompt "What's my name ?"
+* DISCONNECT AND CONNECT WEBSOCKET, MEMORY IS LOST, NOT IN PERSISTENT STORAGE
+* Prompt "My name is Antonio"
+* Show the Redis Commander and copy the content to the logs.json
+
+```java
+  static ChatMemory memory() {
+  ChatMemoryStore memoryStore = RedisChatMemoryStore.builder()
+    .host("localhost")
+    .port(6379)
+    .build();
+
+  ChatMemory chatMemory = MessageWindowChatMemory.builder()
+    .maxMessages(20)
+    .chatMemoryStore(memoryStore)
+    .build();
+
+  return chatMemory;
+}
 ```
