@@ -1,11 +1,10 @@
-# To visualise the content of a Redis instance, you can use the Redis Commander tool.
-# npm install -g redis-commander
-# redis-commander
 services:
   redis:
     container_name: redis
     hostname: redis
     image: redis:8.0.3-alpine
+    ports:
+      - '6379:6379'
 
   redis-commander:
     container_name: redis-commander

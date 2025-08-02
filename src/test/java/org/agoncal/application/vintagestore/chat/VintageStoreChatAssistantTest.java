@@ -1,5 +1,6 @@
 package org.agoncal.application.vintagestore.chat;
 
+import static org.agoncal.application.vintagestore.chat.VintageStoreChatBot.memory;
 import static org.agoncal.application.vintagestore.chat.VintageStoreChatBot.embeddingStore;
 import static org.agoncal.application.vintagestore.chat.VintageStoreChatBot.model;
 import static org.agoncal.application.vintagestore.chat.VintageStoreChatBot.assistant;
@@ -11,7 +12,7 @@ class VintageStoreChatAssistantTest {
   @Test
   @Disabled
   void shouldChat() throws Exception {
-    VintageStoreChatAssistant assistant = assistant(embeddingStore(), model());
+    VintageStoreChatAssistant assistant = assistant(embeddingStore(), model(), memory());
 
     System.out.println(assistant.chat("Hello, my name is Antonio?"));
     // Hello Antonio! How can I assist you today with information about "Vintage Store"?

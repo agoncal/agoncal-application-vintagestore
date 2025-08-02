@@ -39,7 +39,7 @@ public class VintageStoreChatBot {
   @OnOpen
   public String onOpen() throws Exception {
     LOG.info("WebSocket chat connection opened");
-    assistant = assistant(embeddingStore(), model(), chatMemory());
+    assistant = assistant(embeddingStore(), model(), memory());
 
     String answer = assistant.chat(WELCOME_PROMPT);
     LOG.info("Initial greeting sent: " + answer);
@@ -56,7 +56,7 @@ public class VintageStoreChatBot {
     if ("CLEAR_CONVERSATION".equals(message)) {
       LOG.info("Clearing conversation history");
       // Reinitialize assistant to clear memory
-      ChatMemory memory = chatMemory();
+      ChatMemory memory = memory();
       memory.clear();
       assistant = assistant(embeddingStore(), model(), memory);
       answer = assistant.chat(WELCOME_PROMPT);
@@ -111,7 +111,7 @@ public class VintageStoreChatBot {
     return assistant;
   }
 
-  private static ChatMemory chatMemory() {
+  static ChatMemory memory() {
     ChatMemoryStore memoryStore = RedisChatMemoryStore.builder()
       .host("localhost")
       .port(6379)
