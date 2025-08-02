@@ -142,21 +142,14 @@
         <i class="bi bi-robot me-2"></i>AI Assistant
       </h5>
       <div class="d-flex gap-1">
-        <button class="btn btn-sm btn-outline-light" onclick="connectWebSocket()" title="Connect WebSocket" id="connect-button">
-          <i class="bi bi-wifi"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-light" onclick="disconnectWebSocket()" title="Disconnect WebSocket" id="disconnect-button">
-          <i class="bi bi-wifi-off"></i>
-        </button>
         <button class="btn btn-sm btn-outline-light" onclick="clearChatHistory()" title="Clear chat history">
           <i class="bi bi-arrow-clockwise"></i>
         </button>
         <button class="btn btn-sm btn-outline-light" onclick="toggleChatSidebar()" title="Hide chat">
           <i class="bi bi-chevron-right"></i>
         </button>
-      </div>
+      </div>commit and
     </div>
-    <small class="text-white-50">Ask me about our vintage collection</small>
   </div>
 
   <div class="chat-sidebar-body">
@@ -171,9 +164,19 @@
         <i class="bi bi-send"></i>
       </button>
     </div>
-    <small class="text-muted mt-1 d-block">
-      <i class="bi bi-info-circle me-1"></i>
-      <span id="connection-status">Connecting...</span>
+    <small class="text-muted mt-1 d-block d-flex justify-content-between align-items-center">
+      <div>
+        <i class="bi bi-info-circle me-1"></i>
+        <span id="connection-status">Connecting...</span>
+      </div>
+      <div class="d-flex gap-1">
+        <button class="btn btn-sm btn-outline-light" onclick="connectWebSocket()" title="Connect WebSocket (Debug)" id="connect-button">
+          <i class="bi bi-wifi text-success"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-light" onclick="disconnectWebSocket()" title="Disconnect WebSocket (Debug)" id="disconnect-button">
+          <i class="bi bi-wifi-off text-danger"></i>
+        </button>
+      </div>
     </small>
   </div>
 </div>
@@ -274,7 +277,7 @@
   }
 
   /* Markdown styling within chat messages */
-  .message-bubble h1, .message-bubble h2, .message-bubble h3, 
+  .message-bubble h1, .message-bubble h2, .message-bubble h3,
   .message-bubble h4, .message-bubble h5, .message-bubble h6 {
     margin: 0.5rem 0;
     font-weight: bold;
@@ -507,17 +510,17 @@
     if (messagesContainer) {
       // Clear all messages
       messagesContainer.innerHTML = '';
-      
+
       // Send a clear command to the backend to reset the conversation
       if (chatWebSocket && chatWebSocket.readyState === WebSocket.OPEN) {
         chatWebSocket.send('CLEAR_CONVERSATION');
       }
-      
+
       // Add a welcome message to start fresh
       setTimeout(() => {
         addSidebarMessage('assistant', 'Hello! I\'m your vintage store assistant. How can I help you today?');
       }, 100);
-      
+
       console.log('Chat history cleared');
     }
   }
