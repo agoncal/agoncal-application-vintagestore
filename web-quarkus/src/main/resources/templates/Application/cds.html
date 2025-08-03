@@ -1,0 +1,263 @@
+{#include base.html }
+  {#title}Vintage Music Collection{/title}
+
+  <!-- Breadcrumbs -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/" class="text-decoration-none">
+            <i class="bi bi-house me-1"></i>Home
+          </a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="bi bi-disc me-1"></i>CDs
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-3 mb-md-0">
+          <h1 class="display-5 fw-bold text-primary mb-2">
+            <i class="bi bi-disc me-3"></i>Vintage CDs
+          </h1>
+          <p class="lead text-muted mb-0">Explore classic albums and timeless music from legendary artists</p>
+        </div>
+        <div class="d-flex align-items-center">
+          <span class="badge bg-primary fs-6 me-3">
+            <i class="bi bi-music-note-list me-1"></i>{cds.size()} Albums
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-8">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" placeholder="Search CDs by title, artist, or description..." id="cdSearch">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="genreFilter">
+                <option value="">All Genres</option>
+                <option value="punk rock">Punk Rock</option>
+                <option value="alternative rock">Alternative Rock</option>
+                <option value="blues">Blues</option>
+                <option value="classical">Classical</option>
+                <option value="classic rock">Classic Rock</option>
+                <option value="country">Country</option>
+                <option value="folk music">Folk Music</option>
+                <option value="jazz">Jazz</option>
+                <option value="pop">Pop</option>
+                <option value="soul">Soul & R&B</option>
+                <option value="reggae">Reggae</option>
+                <option value="rock">Rock</option>
+                <option value="psychedelic rock">Psychedelic Rock</option>
+                <option value="electronic">Electronic</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CDs Grid -->
+  <div class="row g-4" id="cdsGrid">
+    {#for cd in cds}
+      <div class="col-lg-4 col-md-6 cd-item" data-genre="{cd.genre.name.orEmpty}" data-title="{cd.title}">
+        <div class="card h-100 border-0 shadow-sm cd-card">
+          <div class="row g-0 h-100">
+            <div class="col-4">
+              <div class="position-relative h-100">
+                {#if cd.smallImageURL}
+                  <img src="{cd.smallImageURL}" class="img-fluid rounded-start h-100 object-fit-cover" alt="{cd.title}">
+                {#else}
+                  <div class="d-flex align-items-center justify-content-center h-100 bg-light rounded-start">
+                    <i class="bi bi-disc text-muted" style="font-size: 3rem;"></i>
+                  </div>
+                {/if}
+                <div class="position-absolute top-0 end-0 m-2">
+                  <span class="badge bg-primary">{cd.id}</span>
+                </div>
+                {#if cd.nbOfDiscs && cd.nbOfDiscs > 1}
+                  <div class="position-absolute bottom-0 start-0 m-2">
+                    <span class="badge bg-warning text-dark">
+                      <i class="bi bi-stack me-1"></i>{cd.nbOfDiscs} Discs
+                    </span>
+                  </div>
+                {/if}
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="card-body d-flex flex-column h-100 p-3">
+                <div class="flex-grow-1">
+                  <h5 class="card-title mb-2 text-truncate" title="{cd.title}">{cd.title}</h5>
+                  
+                  {#if cd.genre}
+                    <span class="badge bg-secondary mb-2">{cd.genre.name}</span>
+                  {/if}
+                  
+                  {#if cd.description}
+                    <p class="card-text text-muted small mb-2" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                      {cd.description}
+                    </p>
+                  {/if}
+                  
+                  <div class="small text-muted">
+                    {#if cd.label}
+                      <div><strong>Label:</strong> {cd.label.name}</div>
+                    {/if}
+                    {#if cd.musicians && !cd.musicians.empty}
+                      <div class="mb-1"><strong>Artists:</strong></div>
+                      <div class="d-flex flex-wrap gap-1 mb-2">
+                        {#for musician in cd.musicians}
+                          <span class="badge bg-light text-dark border">{musician.firstName} {musician.lastName}</span>
+                        {/for}
+                      </div>
+                    {/if}
+                    {#if cd.nbOfDiscs}
+                      <div><strong>Discs:</strong> {cd.nbOfDiscs}</div>
+                    {/if}
+                  </div>
+                </div>
+                
+                <div class="mt-auto pt-2">
+                  <div class="d-flex gap-2">
+                    <a href="/view/cd/{cd.id}" class="btn btn-outline-primary btn-sm flex-grow-1">
+                      <i class="bi bi-eye me-1"></i>View Details
+                    </a>
+                    <button class="btn btn-outline-success btn-sm">
+                      <i class="bi bi-play-circle"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/for}
+  </div>
+
+  <!-- Empty State -->
+  {#if cds.empty}
+    <div class="row">
+      <div class="col-12 text-center py-5">
+        <div class="mb-4">
+          <i class="bi bi-disc text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h3 class="text-muted">No CDs Found</h3>
+        <p class="text-muted">Our vintage music collection is currently being updated. Please check back soon!</p>
+        <a href="/" class="btn btn-primary">
+          <i class="bi bi-house me-1"></i>Return Home
+        </a>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Music Stats -->
+  {#if !cds.empty}
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <div class="card-body text-center py-4">
+            <h4 class="mb-3"><i class="bi bi-music-note me-2"></i>Music Collection Stats</h4>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <i class="bi bi-collection display-6"></i>
+                  <h5 class="mt-2">{cds.size()}</h5>
+                  <small>Total Albums</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <i class="bi bi-people display-6"></i>
+                  <h5 class="mt-2">50+</h5>
+                  <small>Artists</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <i class="bi bi-tag display-6"></i>
+                  <h5 class="mt-2">10+</h5>
+                  <small>Genres</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <i class="bi bi-calendar display-6"></i>
+                  <h5 class="mt-2">1960s-2000s</h5>
+                  <small>Era Range</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Search Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('cdSearch');
+      const genreFilter = document.getElementById('genreFilter');
+      const cdItems = document.querySelectorAll('.cd-item');
+
+      function filterCDs() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedGenre = genreFilter.value.toLowerCase();
+
+        cdItems.forEach(item => {
+          const title = item.dataset.title.toLowerCase();
+          const genre = item.dataset.genre ? item.dataset.genre.toLowerCase() : '';
+          
+          const matchesSearch = title.includes(searchTerm);
+          const matchesGenre = !selectedGenre || genre.includes(selectedGenre);
+          
+          if (matchesSearch && matchesGenre) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterCDs);
+      genreFilter.addEventListener('change', filterCDs);
+    });
+  </script>
+
+  <style>
+    .cd-card {
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    
+    .cd-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+    
+    .object-fit-cover {
+      object-fit: cover;
+    }
+    
+    .bg-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+  </style>
+
+{/include}

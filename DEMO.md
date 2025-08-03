@@ -2,8 +2,6 @@
 
 ## Show the VintageStore application
 
-* In `VintageStoreChatAssistant` remove the `@SystemMessage`
-* In `VintageStoreChatBot` only keep the WebSocket methods
 * Show logs
 * Browse CD and Books
 * Show Terms and Conditions

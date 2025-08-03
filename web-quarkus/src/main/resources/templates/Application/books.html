@@ -1,0 +1,201 @@
+{#include base.html }
+  {#title}Vintage Books Collection{/title}
+
+  <!-- Breadcrumbs -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/" class="text-decoration-none">
+            <i class="bi bi-house me-1"></i>Home
+          </a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="bi bi-book me-1"></i>Books
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-3 mb-md-0">
+          <h1 class="display-5 fw-bold text-primary mb-2">
+            <i class="bi bi-book me-3"></i>Vintage Books
+          </h1>
+          <p class="lead text-muted mb-0">Discover rare and classic literature from our curated collection</p>
+        </div>
+        <div class="d-flex align-items-center">
+          <span class="badge bg-primary fs-6 me-3">
+            <i class="bi bi-collection me-1"></i>{books.size()} Books
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-8">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" placeholder="Search books by title, author, or description..." id="bookSearch">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="categoryFilter">
+                <option value="">All Categories</option>
+                <option value="classic romance">Classic Romance</option>
+                <option value="arts">Arts & Photography</option>
+                <option value="biographies">Biographies & Memoirs</option>
+                <option value="business">Business & Economics</option>
+                <option value="comics">Comics & Graphic Novels</option>
+                <option value="computers">Computers & Technology</option>
+                <option value="cookbooks">Cookbooks & Culinary Arts</option>
+                <option value="literature">Literature & Fiction</option>
+                <option value="mystery">Mystery & Crime</option>
+                <option value="science fiction">Science Fiction & Fantasy</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Books Grid -->
+  <div class="row g-4" id="booksGrid">
+    {#for book in books}
+      <div class="col-lg-4 col-md-6 book-item" data-category="{book.category.name.orEmpty}" data-title="{book.title}">
+        <div class="card h-100 border-0 shadow-sm book-card">
+          <div class="row g-0 h-100">
+            <div class="col-4">
+              <div class="position-relative h-100">
+                {#if book.smallImageURL}
+                  <img src="{book.smallImageURL}" class="img-fluid rounded-start h-100 object-fit-cover" alt="{book.title}">
+                {#else}
+                  <div class="d-flex align-items-center justify-content-center h-100 bg-light rounded-start">
+                    <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+                  </div>
+                {/if}
+                <div class="position-absolute top-0 end-0 m-2">
+                  <span class="badge bg-primary">{book.id}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="card-body d-flex flex-column h-100 p-3">
+                <div class="flex-grow-1">
+                  <h5 class="card-title mb-2 text-truncate" title="{book.title}">{book.title}</h5>
+                  
+                  {#if book.category}
+                    <span class="badge bg-secondary mb-2">{book.category.name}</span>
+                  {/if}
+                  
+                  {#if book.description}
+                    <p class="card-text text-muted small mb-2" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                      {book.description}
+                    </p>
+                  {/if}
+                  
+                  <div class="small text-muted">
+                    {#if book.isbn}
+                      <div><strong>ISBN:</strong> {book.isbn}</div>
+                    {/if}
+                    {#if book.publicationDate}
+                      <div><strong>Published:</strong> {book.publicationDate}</div>
+                    {/if}
+                    {#if book.nbOfPage}
+                      <div><strong>Pages:</strong> {book.nbOfPage}</div>
+                    {/if}
+                    {#if book.language}
+                      <div><strong>Language:</strong> {book.language}</div>
+                    {/if}
+                    {#if book.publisher}
+                      <div><strong>Publisher:</strong> {book.publisher.name}</div>
+                    {/if}
+                  </div>
+                </div>
+                
+                <div class="mt-auto pt-2">
+                  <a href="/view/book/{book.id}" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="bi bi-eye me-1"></i>View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/for}
+  </div>
+
+  <!-- Empty State -->
+  {#if books.empty}
+    <div class="row">
+      <div class="col-12 text-center py-5">
+        <div class="mb-4">
+          <i class="bi bi-book text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h3 class="text-muted">No Books Found</h3>
+        <p class="text-muted">Our vintage book collection is currently being updated. Please check back soon!</p>
+        <a href="/" class="btn btn-primary">
+          <i class="bi bi-house me-1"></i>Return Home
+        </a>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Search Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('bookSearch');
+      const categoryFilter = document.getElementById('categoryFilter');
+      const bookItems = document.querySelectorAll('.book-item');
+
+      function filterBooks() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value.toLowerCase();
+
+        bookItems.forEach(item => {
+          const title = item.dataset.title.toLowerCase();
+          const category = item.dataset.category ? item.dataset.category.toLowerCase() : '';
+          
+          const matchesSearch = title.includes(searchTerm);
+          const matchesCategory = !selectedCategory || category.includes(selectedCategory);
+          
+          if (matchesSearch && matchesCategory) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }
+
+      searchInput.addEventListener('input', filterBooks);
+      categoryFilter.addEventListener('change', filterBooks);
+    });
+  </script>
+
+  <style>
+    .book-card {
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    
+    .book-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+    
+    .object-fit-cover {
+      object-fit: cover;
+    }
+  </style>
+
+{/include}
