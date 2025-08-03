@@ -20,11 +20,12 @@ import io.quarkus.websockets.next.OnClose;
 import io.quarkus.websockets.next.OnOpen;
 import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
+import io.quarkus.websockets.next.WebSocketConnection;
+import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
 import java.net.URI;
 import static java.time.Duration.ofSeconds;
-import java.util.UUID;
 
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
@@ -35,20 +36,22 @@ public class VintageStoreChatBot {
   private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
 
-  private final String SESSION_ID = UUID.randomUUID().toString();
   private VintageStoreChatAssistant assistant;
   private QdrantClient qdrantClient;
 
+  @Inject
+  WebSocketConnection connection;
+
   @OnOpen
   public String onOpen() throws Exception {
-    LOG.info("WebSocket chat connection opened");
+    LOG.info("WebSocket chat connection opened with ID: " + connection.id());
     assistant = assistant();
     return WELCOME_PROMPT;
   }
 
   @OnTextMessage
   public String onMessage(String message) throws Exception {
-    LOG.info("Received message: " + message);
+    LOG.info("Received message: " + message + " from connection ID: " + connection.id());
 
     if ("CLEAR_CONVERSATION".equals(message)) {
       // Handle clear conversation command
@@ -56,7 +59,7 @@ public class VintageStoreChatBot {
       return WELCOME_PROMPT;
     } else {
       // Handle regular chat messages
-      String answer = assistant.chat(message);
+      String answer = assistant.chat(connection.id(), message);
       LOG.debug("Response sent: " + answer);
       return answer;
     }
@@ -64,7 +67,7 @@ public class VintageStoreChatBot {
 
   @OnClose
   public void onClose() {
-    LOG.info("WebSocket chat connection closed");
+    LOG.info("WebSocket chat connection closed with ID: " + connection.id());
     qdrantClient.close();
   }
 
@@ -101,7 +104,7 @@ public class VintageStoreChatBot {
       .build();
 
     ChatMemoryProvider chatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
-      .id(SESSION_ID)
+      .id(connection.id())
       .maxMessages(20)
       .chatMemoryStore(memoryStore)
       .build();
@@ -110,7 +113,7 @@ public class VintageStoreChatBot {
       .chatModel(model)
       .chatMemoryProvider(chatMemoryProvider)
       .contentRetriever(contentRetriever)
-      .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
+      .tools(new LegalDocumentTools(), new ItemsInStockTools())
       .build();
 
     return assistant;
