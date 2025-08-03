@@ -1,12 +1,10 @@
 package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
-import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
@@ -24,18 +22,21 @@ import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
-import java.net.URI;
 import static java.time.Duration.ofSeconds;
 
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
-  private static final String INDEX_NAME = "VintageStoreIndex";
-  private static final String QDRANT_URL = "http://localhost:6334";
+  // Constants for Qdrant configuration
+  private static final String QDRANT_COLLECTION = "VintageStoreIndex";
+  private static final String QDRANT_HOST = "localhost";
+  private static final int QDRANT_PORT = 6334;
+  // Anthropic API key from environment variable
   private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
 
+  // The chat assistant instance
   private VintageStoreChatAssistant assistant;
   private QdrantClient qdrantClient;
 
@@ -68,27 +69,14 @@ public class VintageStoreChatBot {
   @OnClose
   public void onClose() {
     LOG.info("WebSocket chat connection closed with ID: " + connection.id());
-    qdrantClient.close();
+    if (qdrantClient != null) {
+      LOG.info("Closing Qdrant client connection");
+      qdrantClient.close();
+    }
   }
 
-  EmbeddingStore<TextSegment> embeddingStore() throws Exception {
-    String qdrantHostname = new URI(QDRANT_URL).getHost();
-    int qdrantPort = new URI(QDRANT_URL).getPort();
-    QdrantGrpcClient.Builder grpcClientBuilder = QdrantGrpcClient.newBuilder(qdrantHostname, qdrantPort, false);
-    qdrantClient = new QdrantClient(grpcClientBuilder.build());
-
-    EmbeddingStore embeddingStore = QdrantEmbeddingStore.builder()
-      .client(qdrantClient)
-      .collectionName(INDEX_NAME)
-      .build();
-
-    return embeddingStore;
-  }
-
-  VintageStoreChatAssistant assistant() throws Exception {
-    EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
-    ContentRetriever contentRetriever = new EmbeddingStoreContentRetriever(embeddingStore(), embeddingModel);
-
+  private VintageStoreChatAssistant assistant() throws Exception {
+    // Initialize the chat model
     ChatModel model = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
       .modelName("claude-sonnet-4-20250514")
@@ -98,6 +86,7 @@ public class VintageStoreChatBot {
       .logResponses(true)
       .build();
 
+    // Initialize the chat memory store and provider
     ChatMemoryStore memoryStore = RedisChatMemoryStore.builder()
       .host("localhost")
       .port(6379)
@@ -109,6 +98,18 @@ public class VintageStoreChatBot {
       .chatMemoryStore(memoryStore)
       .build();
 
+    // Initialize the embedding model and Qdrant client
+    qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false)
+      .build());
+
+    EmbeddingStore embeddingStore = QdrantEmbeddingStore.builder()
+      .client(qdrantClient)
+      .collectionName(QDRANT_COLLECTION)
+      .build();
+
+    ContentRetriever contentRetriever = new EmbeddingStoreContentRetriever(embeddingStore, new AllMiniLmL6V2EmbeddingModel());
+
+    // Create the VintageStoreChatAssistant with all components
     VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
       .chatModel(model)
       .chatMemoryProvider(chatMemoryProvider)

@@ -10,11 +10,10 @@
 * Chat: CLEAR CONVERSATION
 
 ```java
-@RegisterAiService
 @SessionScoped
 public interface VintageStoreChatAssistant {
 
-  String chat(String userMessage);
+  String chat(@UserMessage String userMessage);
 }
 ```
 
