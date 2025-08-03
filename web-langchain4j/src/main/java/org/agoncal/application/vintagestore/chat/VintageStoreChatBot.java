@@ -39,28 +39,30 @@ public class VintageStoreChatBot {
   // The chat assistant instance
   private VintageStoreChatAssistant assistant;
   private QdrantClient qdrantClient;
+  private ChatMemoryStore redisChatMemoryStore;
 
   @Inject
-  WebSocketConnection connection;
+  WebSocketConnection webSocketConnection;
 
   @OnOpen
   public String onOpen() throws Exception {
-    LOG.info("WebSocket chat connection opened with ID: " + connection.id());
+    LOG.info("WebSocket chat connection opened with ID: " + webSocketConnection.id());
     assistant = assistant();
     return WELCOME_PROMPT;
   }
 
   @OnTextMessage
   public String onMessage(String message) throws Exception {
-    LOG.info("Received message: " + message + " from connection ID: " + connection.id());
+    LOG.info("Received message: " + message + " from connection ID: " + webSocketConnection.id());
 
     if ("CLEAR_CONVERSATION".equals(message)) {
       // Handle clear conversation command
       LOG.info("Clearing conversation history");
+      redisChatMemoryStore.deleteMessages(webSocketConnection.id());
       return WELCOME_PROMPT;
     } else {
       // Handle regular chat messages
-      String answer = assistant.chat(connection.id(), message);
+      String answer = assistant.chat(webSocketConnection.id(), message);
       LOG.debug("Response sent: " + answer);
       return answer;
     }
@@ -68,7 +70,8 @@ public class VintageStoreChatBot {
 
   @OnClose
   public void onClose() {
-    LOG.info("WebSocket chat connection closed with ID: " + connection.id());
+    LOG.info("WebSocket chat connection closed with ID: " + webSocketConnection.id());
+    redisChatMemoryStore.deleteMessages(webSocketConnection.id());
     if (qdrantClient != null) {
       LOG.info("Closing Qdrant client connection");
       qdrantClient.close();
@@ -77,7 +80,7 @@ public class VintageStoreChatBot {
 
   private VintageStoreChatAssistant assistant() throws Exception {
     // Initialize the chat model
-    ChatModel model = AnthropicChatModel.builder()
+    ChatModel anthropicClaudeSonnetModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
       .modelName("claude-sonnet-4-20250514")
       .temperature(0.3)
@@ -87,33 +90,33 @@ public class VintageStoreChatBot {
       .build();
 
     // Initialize the chat memory store and provider
-    ChatMemoryStore memoryStore = RedisChatMemoryStore.builder()
+    redisChatMemoryStore = RedisChatMemoryStore.builder()
       .host("localhost")
       .port(6379)
       .build();
 
-    ChatMemoryProvider chatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
-      .id(connection.id())
+    ChatMemoryProvider redisChatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
+      .id(webSocketConnection.id())
       .maxMessages(20)
-      .chatMemoryStore(memoryStore)
+      .chatMemoryStore(redisChatMemoryStore)
       .build();
 
     // Initialize the embedding model and Qdrant client
     qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false)
       .build());
 
-    EmbeddingStore embeddingStore = QdrantEmbeddingStore.builder()
+    EmbeddingStore qdrantEmbeddingStore = QdrantEmbeddingStore.builder()
       .client(qdrantClient)
       .collectionName(QDRANT_COLLECTION)
       .build();
 
-    ContentRetriever contentRetriever = new EmbeddingStoreContentRetriever(embeddingStore, new AllMiniLmL6V2EmbeddingModel());
+    ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, new AllMiniLmL6V2EmbeddingModel());
 
     // Create the VintageStoreChatAssistant with all components
     VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
-      .chatModel(model)
-      .chatMemoryProvider(chatMemoryProvider)
-      .contentRetriever(contentRetriever)
+      .chatModel(anthropicClaudeSonnetModel)
+      .chatMemoryProvider(redisChatMemoryProvider)
+      .contentRetriever(qdrantContentRetriever)
       .tools(new LegalDocumentTools(), new ItemsInStockTools())
       .build();
 

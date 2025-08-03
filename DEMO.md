@@ -2,10 +2,10 @@
 
 ## Show the VintageStore application
 
-* Show logs
 * Browse CD and Books
 * Show Terms and Conditions
 * Login/Profile/Logout
+* Show logs
 * Chat: disconnect/connect/send a message
 * Chat: CLEAR CONVERSATION
 
