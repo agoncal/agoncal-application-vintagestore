@@ -34,6 +34,7 @@ import static java.time.Duration.ofSeconds;
 public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
+
   // Constants for Qdrant configuration
   private static final String QDRANT_COLLECTION = "VintageStore";
   private static final String QDRANT_HOST = "localhost";
@@ -44,6 +45,7 @@ public class VintageStoreChatBot {
   // Prompts
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
   private static final String MODERATION_PROMPT = "I don't know why you are frustrated, but I will redirect you to a human assistant who can help you better. Please wait a moment...";
+
   @Inject
   MessageTemplateLocator messageTemplateLocator;
 

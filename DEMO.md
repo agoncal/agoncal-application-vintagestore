@@ -8,12 +8,6 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 * Start Qdrant and remove the collection `VintageStore` if it exists
 * In Intellij IDEA uncheck `optimize imports on the fly`
 * In `VintageStoreChatAssistant` just leave the following code:
-* Browse CD and Books
-* Show Terms and Conditions
-* Login/Profile/Logout
-* Show logs
-* Chat: disconnect/connect/send a message
-* Chat: CLEAR CONVERSATION
 
 ```java
 @SessionScoped
@@ -30,20 +24,23 @@ public interface VintageStoreChatAssistant {
 public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
+
   // Constants for Qdrant configuration
   private static final String QDRANT_COLLECTION = "VintageStore";
   private static final String QDRANT_HOST = "localhost";
   private static final int QDRANT_PORT = 6334;
   // Anthropic API key from environment variable
   private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
+  private static final String MISTRAL_AI_API_KEY = System.getenv("MISTRAL_AI_API_KEY");
+  // Prompts
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
+  private static final String MODERATION_PROMPT = "I don't know why you are frustrated, but I will redirect you to a human assistant who can help you better. Please wait a moment...";
 
   
   @OnOpen
   public String onOpen() throws Exception {
     LOG.info("WebSocket chat connection opened");
     return WELCOME_PROMPT;
-    return "WebSocket chat connection opened";
   }
 
   @OnTextMessage
@@ -59,11 +56,8 @@ public class VintageStoreChatBot {
 }
 ```
 
-
 ## Show the VintageStore application
-## Adding Chat Bot
 
-* Start PostgreSQL / Start Quarkus
 * Browse CD and Books
 * Show Terms and Conditions
 * Login/Profile/Logout
@@ -72,7 +66,6 @@ public class VintageStoreChatBot {
 * Chat: CLEAR CONVERSATION
 * Show the code `VintageStoreChatAssistant` and `VintageStoreChatBot`
 * => I want to add a chat bot to the VintageStore application
-  Remove most of the settings in the ChatAssistant and ChatBot.
 
 ## Add an LLM to the Chat Bot
 
