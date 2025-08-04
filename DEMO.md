@@ -5,7 +5,7 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 ## Prepare the demo
 
 * Make sure both keys are set (`ANTHROPIC_API_KEY` and `MISTRAL_AI_API_KEY`) and that there is enough credit on the accounts
-* Start Qdrant and remove the collection `VintageStoreIndex` if it exists
+* Start Qdrant and remove the collection `VintageStore` if it exists
 * In Intellij IDEA uncheck `optimize imports on the fly`
 * In `VintageStoreChatAssistant` just leave the following code:
 * Browse CD and Books
@@ -31,7 +31,7 @@ public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
   // Constants for Qdrant configuration
-  private static final String QDRANT_COLLECTION = "VintageStoreIndex";
+  private static final String QDRANT_COLLECTION = "VintageStore";
   private static final String QDRANT_HOST = "localhost";
   private static final int QDRANT_PORT = 6334;
   // Anthropic API key from environment variable
@@ -231,7 +231,7 @@ public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
   // Constants for Qdrant configuration
-  private static final String QDRANT_COLLECTION = "VintageStoreIndex";
+  private static final String QDRANT_COLLECTION = "VintageStore";
   private static final String QDRANT_HOST = "localhost";
   private static final int QDRANT_PORT = 6334;
   // Anthropic API key from environment variable

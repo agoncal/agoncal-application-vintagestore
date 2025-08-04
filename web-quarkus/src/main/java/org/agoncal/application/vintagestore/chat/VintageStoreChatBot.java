@@ -11,7 +11,7 @@ import org.jboss.logging.Logger;
 public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
-  //  private static final String INDEX_NAME = "VintageStoreIndex";
+  //  private static final String INDEX_NAME = "VintageStore";
 //  private static final String QDRANT_URL = "http://localhost:6334";
 //  private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";

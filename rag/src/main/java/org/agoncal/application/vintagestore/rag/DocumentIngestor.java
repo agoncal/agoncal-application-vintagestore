@@ -30,7 +30,7 @@ public class DocumentIngestor {
 
   private static final Logger LOG = LoggerFactory.getLogger(DocumentIngestor.class);
 
-  private static final String INDEX_NAME = "VintageStoreIndex";
+  private static final String QDRANT_COLLECTION = "VintageStore";
   private static final String QDRANT_URL = "http://localhost:6334";
 
   private static final EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
@@ -51,7 +51,7 @@ public class DocumentIngestor {
     QdrantGrpcClient.Builder grpcClientBuilder = QdrantGrpcClient.newBuilder(qdrantHostname, qdrantPort, false);
     QdrantClient qdrantClient = new QdrantClient(grpcClientBuilder.build());
     try {
-      qdrantClient.createCollectionAsync(INDEX_NAME,
+      qdrantClient.createCollectionAsync(QDRANT_COLLECTION,
         Collections.VectorParams.newBuilder()
           .setSize(384)
           .setDistance(Collections.Distance.Cosine)
@@ -62,7 +62,7 @@ public class DocumentIngestor {
     }
     return QdrantEmbeddingStore.builder()
       .client(qdrantClient)
-      .collectionName(INDEX_NAME)
+      .collectionName(QDRANT_COLLECTION)
       .build();
   }
 

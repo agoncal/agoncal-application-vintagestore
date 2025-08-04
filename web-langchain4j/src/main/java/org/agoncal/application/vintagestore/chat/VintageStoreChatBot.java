@@ -35,7 +35,7 @@ public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
   // Constants for Qdrant configuration
-  private static final String QDRANT_COLLECTION = "VintageStoreIndex";
+  private static final String QDRANT_COLLECTION = "VintageStore";
   private static final String QDRANT_HOST = "localhost";
   private static final int QDRANT_PORT = 6334;
   // Anthropic API key from environment variable
