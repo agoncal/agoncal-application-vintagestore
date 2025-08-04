@@ -30,7 +30,7 @@
     <!-- Plugins -->
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
     <surefire-plugin.version>3.5.3</surefire-plugin.version>
-    <exec-plugin.version>3.5.0</exec-plugin.version>
+    <exec-plugin.version>3.5.1</exec-plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
     <skipITs>true</skipITs>
     <!-- Project -->
