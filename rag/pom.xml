@@ -15,7 +15,7 @@
   <properties>
     <!-- Plugins -->
     <compiler-plugin.version>3.13.0</compiler-plugin.version>
-    <exec-plugin.version>3.5.0</exec-plugin.version>
+    <exec-plugin.version>3.5.1</exec-plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
     <!-- Project -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
