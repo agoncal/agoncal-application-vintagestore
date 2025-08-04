@@ -36,49 +36,28 @@ public class VintageStoreChatBot {
   private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
 
-  // The chat assistant instance
   private VintageStoreChatAssistant assistant;
-  private QdrantClient qdrantClient;
-  private ChatMemoryStore redisChatMemoryStore;
-
-  @Inject
-  WebSocketConnection webSocketConnection;
 
   @OnOpen
   public String onOpen() throws Exception {
-    LOG.info("WebSocket chat connection opened with ID: " + webSocketConnection.id());
+    LOG.info("WebSocket chat connection opened");
     assistant = assistant();
     return WELCOME_PROMPT;
   }
 
   @OnTextMessage
   public String onMessage(String message) throws Exception {
-    LOG.info("Received message: " + message + " from connection ID: " + webSocketConnection.id());
-
-    if ("CLEAR_CONVERSATION".equals(message)) {
-      // Handle clear conversation command
-      LOG.info("Clearing conversation history");
-      redisChatMemoryStore.deleteMessages(webSocketConnection.id());
-      return WELCOME_PROMPT;
-    } else {
-      // Handle regular chat messages
-      String answer = assistant.chat(webSocketConnection.id(), message);
-      LOG.debug("Response sent: " + answer);
-      return answer;
-    }
+    LOG.info("Received message: " + message);
+    String answer = assistant.chat(message);
+    return answer;
   }
 
   @OnClose
   public void onClose() {
-    LOG.info("WebSocket chat connection closed with ID: " + webSocketConnection.id());
-    redisChatMemoryStore.deleteMessages(webSocketConnection.id());
-    if (qdrantClient != null) {
-      LOG.info("Closing Qdrant client connection");
-      qdrantClient.close();
-    }
+    LOG.info("WebSocket chat connection closed");
   }
 
-  private VintageStoreChatAssistant assistant() throws Exception {
+  private VintageStoreChatAssistant assistant() {
     // Initialize the chat model
     ChatModel anthropicClaudeSonnetModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
@@ -89,35 +68,9 @@ public class VintageStoreChatBot {
       .logResponses(true)
       .build();
 
-    // Initialize the chat memory store and provider
-    redisChatMemoryStore = RedisChatMemoryStore.builder()
-      .host("localhost")
-      .port(6379)
-      .build();
-
-    ChatMemoryProvider redisChatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
-      .id(webSocketConnection.id())
-      .maxMessages(20)
-      .chatMemoryStore(redisChatMemoryStore)
-      .build();
-
-    // Initialize the embedding model and Qdrant client
-    qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false)
-      .build());
-
-    EmbeddingStore qdrantEmbeddingStore = QdrantEmbeddingStore.builder()
-      .client(qdrantClient)
-      .collectionName(QDRANT_COLLECTION)
-      .build();
-
-    ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, new AllMiniLmL6V2EmbeddingModel());
-
-    // Create the VintageStoreChatAssistant with all components
+    // Create the VintageStoreChatAssistant
     VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
       .chatModel(anthropicClaudeSonnetModel)
-      .chatMemoryProvider(redisChatMemoryProvider)
-      .contentRetriever(qdrantContentRetriever)
-      .tools(new LegalDocumentTools(), new ItemsInStockTools())
       .build();
 
     return assistant;
