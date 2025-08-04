@@ -7,17 +7,17 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 * Make sure both keys are set (`ANTHROPIC_API_KEY` and `MISTRAL_AI_API_KEY`) and that there is enough credit on the accounts
 * Start Qdrant and remove the collection `VintageStore` if it exists
 * In Intellij IDEA uncheck `optimize imports on the fly`
-* In `VintageStoreChatAssistant` just leave the following code:
+* In `VintageStoreAssistant` just leave the following code:
 
 ```java
 @SessionScoped
-public interface VintageStoreChatAssistant {
+public interface VintageStoreAssistant {
 
   String chat(@UserMessage String userMessage);
 }
 ```
 
-* In `VintageStoreChatAssistant` just leave the following code:
+* In `VintageStoreAssistant` just leave the following code:
 
 ```java
 @WebSocket(path = "/chat")
@@ -64,12 +64,12 @@ public class VintageStoreChatBot {
 * Show logs
 * Chat: disconnect/connect/send a message
 * Chat: CLEAR CONVERSATION
-* Show the code `VintageStoreChatAssistant` and `VintageStoreChatBot`
+* Show the code `VintageStoreAssistant` and `VintageStoreChatBot`
 * => I want to add a chat bot to the VintageStore application
 
 ## Add an LLM to the Chat Bot
 
-* In `VintageStoreChatBot` add the `VintageStoreChatAssistant` and the `assistant()` method
+* In `VintageStoreChatBot` add the `VintageStoreAssistant` and the `assistant()` method
 * Add `assistant()` in the `@OnOpen` method
 * In `VintageStoreChatBot` add `assistant()` and `model()` methods
 * Add the Assistant in the `@OnOpen` and `@OnTextMessage` methods
@@ -83,7 +83,7 @@ public class VintageStoreChatBot {
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
 
-  private VintageStoreChatAssistant assistant;
+  private VintageStoreAssistant assistant;
 
   
   @OnOpen
@@ -105,11 +105,11 @@ public class VintageStoreChatBot {
     return answer;
   }
 
-  private VintageStoreChatAssistant assistant() {
+  private VintageStoreAssistant assistant() {
     // Initialize the chat model
     ChatModel anthropicClaudeSonnetModel = AnthropicChatModel.builder()
-  static VintageStoreChatAssistant assistant(ChatModel model) {
-    VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
+  static VintageStoreAssistant assistant(ChatModel model) {
+    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(model)
       .build();
 
@@ -126,8 +126,8 @@ public class VintageStoreChatBot {
       .logResponses(true)
       .build();
 
-    // Create the VintageStoreChatAssistant
-    VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
+    // Create the VintageStoreAssistant
+    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicClaudeSonnetModel)
       .build();
 
@@ -142,9 +142,9 @@ public class VintageStoreChatBot {
 ## Add a System Prompt
 ## System Prompt
 
-* In `VintageStoreChatAssistant` add the system message
+* In `VintageStoreAssistant` add the system message
 * Read the system message
-* In `VintageStoreChatAssistant` add the system prompt
+* In `VintageStoreAssistant` add the system prompt
 * Show logs and check the system prompt
 * Restart Quarkus (press 's' in the terminal)
 * Prompt "Do you know anything about VintageStore ?"
@@ -156,7 +156,7 @@ public class VintageStoreChatBot {
 
 ## Memory
 
-* In `VintageStoreChatAssistant` add the memory
+* In `VintageStoreAssistant` add the memory
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat because the Assistant is initialized at the `@OnOpen`
 * Prompt "What's my name ?"
@@ -181,8 +181,8 @@ public class VintageStoreChatBot {
     return chatMemory;
   }
 
-  static VintageStoreChatAssistant assistant(ChatModel model, ChatMemory memory) {
-    VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
+  static VintageStoreAssistant assistant(ChatModel model, ChatMemory memory) {
+    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(model)
       .chatMemory(memory)
       .build();
@@ -232,7 +232,7 @@ public class VintageStoreChatBot {
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
 
   // The chat assistant instance
-  private VintageStoreChatAssistant assistant;
+  private VintageStoreAssistant assistant;
   private QdrantClient qdrantClient;
   private ChatMemoryStore redisChatMemoryStore;
 
@@ -273,7 +273,7 @@ public class VintageStoreChatBot {
     }
   }
 
-  private VintageStoreChatAssistant assistant() throws Exception {
+  private VintageStoreAssistant assistant() throws Exception {
     // Initialize the chat model
     ChatModel anthropicClaudeSonnetModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
@@ -307,8 +307,8 @@ public class VintageStoreChatBot {
 
     ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, new AllMiniLmL6V2EmbeddingModel());
 
-    // Create the VintageStoreChatAssistant with all components
-    VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
+    // Create the VintageStoreAssistant with all components
+    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicClaudeSonnetModel)
       .chatMemoryProvider(redisChatMemoryProvider)
       .contentRetriever(qdrantContentRetriever)

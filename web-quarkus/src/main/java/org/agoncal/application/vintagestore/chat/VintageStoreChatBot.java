@@ -18,7 +18,7 @@ public class VintageStoreChatBot {
 
 //  private String SESSION_ID;
   @Inject
-  VintageStoreChatAssistant assistant;
+VintageStoreAssistant assistant;
 
   @OnOpen
   public String onOpen() throws Exception {
@@ -65,7 +65,7 @@ public class VintageStoreChatBot {
 //    return embeddingStore;
 //  }
 
-//  VintageStoreChatAssistant assistant() throws Exception {
+//  VintageStoreAssistant assistant() throws Exception {
 //    EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
 //    ContentRetriever contentRetriever = new EmbeddingStoreContentRetriever(embeddingStore(), embeddingModel);
 //
@@ -87,7 +87,7 @@ public class VintageStoreChatBot {
 ////      .chatMemoryStore(memoryStore)
 //      .build();
 //
-//    VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
+//    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
 //      .chatModel(model)
 //      .chatMemoryProvider(chatMemoryProvider)
 //      .contentRetriever(contentRetriever)

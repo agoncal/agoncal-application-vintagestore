@@ -59,7 +59,7 @@ import jakarta.enterprise.context.SessionScoped;
   - If a customer seems frustrated, acknowledge their concern and offer solutions
   - For complex issues, guide customers to appropriate human support channels
   """)
-public interface VintageStoreChatAssistant {
+public interface VintageStoreAssistant {
 
   @ToolBox({LegalDocumentTools.class, ItemsInStockTools.class, UserLoggedInTools.class})
   String chat(@UserMessage String userMessage);
