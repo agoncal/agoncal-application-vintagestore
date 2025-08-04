@@ -50,7 +50,7 @@ public class VintageStoreChatBot {
   MessageTemplateLocator messageTemplateLocator;
 
   // The chat assistant instance
-  private VintageStoreChatAssistant assistant;
+  private VintageStoreAssistant assistant;
   private QdrantClient qdrantClient;
   private ChatMemoryStore redisChatMemoryStore;
 
@@ -97,7 +97,7 @@ public class VintageStoreChatBot {
     }
   }
 
-  private VintageStoreChatAssistant assistant() throws Exception {
+  private VintageStoreAssistant assistant() throws Exception {
     // Initialize the chat model
     ChatModel anthropicChatModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
@@ -139,8 +139,8 @@ public class VintageStoreChatBot {
 
     ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, new AllMiniLmL6V2EmbeddingModel());
 
-    // Create the VintageStoreChatAssistant with all components
-    VintageStoreChatAssistant assistant = AiServices.builder(VintageStoreChatAssistant.class)
+    // Create the VintageStoreAssistant with all components
+    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicChatModel)
       .moderationModel(mistralModerationModel)
       .chatMemoryProvider(redisChatMemoryProvider)

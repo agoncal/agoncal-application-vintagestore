@@ -6,7 +6,7 @@ import dev.langchain4j.service.UserMessage;
 import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
-public interface VintageStoreChatAssistant {
+public interface VintageStoreAssistant {
 
   @SystemMessage("""
     You are the official customer service chatbot for **Vintage Store**. Your primary role is to assist customers with inquiries related to our products, services, policies, and shopping experience.
