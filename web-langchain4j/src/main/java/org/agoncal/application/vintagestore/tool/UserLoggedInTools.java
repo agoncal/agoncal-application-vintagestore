@@ -15,7 +15,7 @@ public class UserLoggedInTools {
   @Inject
   UserSession userSession;
 
-  @Tool("Retrieve the logged-in user's information")
+  @Tool(name = "get_current_user_info", value = "Retrieves the currently logged-in user's profile information including name, email, and role. Use when personalizing responses or when customers ask about their account details.")
   User loggedInUserInformation() {
     LOG.info("Retrieving logged-in user information");
 
