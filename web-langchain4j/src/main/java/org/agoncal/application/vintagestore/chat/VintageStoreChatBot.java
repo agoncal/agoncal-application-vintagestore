@@ -27,6 +27,7 @@ import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.inject.Inject;
 import org.agoncal.application.vintagestore.tool.ItemsInStockTools;
 import org.agoncal.application.vintagestore.tool.LegalDocumentTools;
+import org.agoncal.application.vintagestore.tool.UserLoggedInTools;
 import org.jboss.logging.Logger;
 
 import static java.time.Duration.ofSeconds;
@@ -137,7 +138,7 @@ public class VintageStoreChatBot {
       .moderationModel(mistralModerationModel)
       .chatMemoryProvider(redisChatMemoryProvider)
       .contentRetriever(qdrantContentRetriever)
-      .tools(new LegalDocumentTools(), new ItemsInStockTools())
+      .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
       .build();
 
     return assistant;

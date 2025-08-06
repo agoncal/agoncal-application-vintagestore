@@ -10,16 +10,16 @@ import org.jboss.logging.Logger;
 @ApplicationScoped
 public class UserLoggedInTools {
 
-  private static final Logger LOG = Logger.getLogger(ItemsInStockTools.class);
+  private static final Logger LOG = Logger.getLogger(UserLoggedInTools.class);
 
   @Inject
   UserSession userSession;
 
   @Tool(name = "get_current_user_info", value = "Retrieves the currently logged-in user's profile information including name, email, and role. Use when personalizing responses or when customers ask about their account details.")
   User loggedInUserInformation() {
-    LOG.info("Retrieving logged-in user information");
+    LOG.info("loggedInUserInformation()");
 
-    if (!userSession.isLoggedIn()) {
+    if (userSession == null || !userSession.isLoggedIn()) {
       LOG.warn("No user is currently logged in");
       return null;
     }
