@@ -1,5 +1,6 @@
 package org.agoncal.application.vintagestore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -47,6 +48,7 @@ public class Book extends Item {
   @ManyToOne
   public Category category;
 
+  @JsonIgnore
   @OneToMany
   @JoinTable(
     name = "book_author",

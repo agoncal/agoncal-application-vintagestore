@@ -46,4 +46,16 @@ public class User extends PanacheEntity {
   public String email;
 
   public UserRole role;
+
+  @Override
+  public String toString() {
+    return "User{" +
+      "login='" + login + '\'' +
+      ", firstName='" + firstName + '\'' +
+      ", lastName='" + lastName + '\'' +
+      ", email='" + email + '\'' +
+      ", role=" + role +
+      ", id=" + id +
+      '}';
+  }
 }

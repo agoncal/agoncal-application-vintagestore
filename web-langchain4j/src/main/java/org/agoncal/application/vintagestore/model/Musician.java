@@ -1,6 +1,6 @@
 package org.agoncal.application.vintagestore.model;
 
-import jakarta.json.bind.annotation.JsonbTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -24,7 +24,7 @@ public class Musician extends Artist {
   @Column(name = "preferred_instrument")
   public String preferredInstrument;
 
+  @JsonIgnore
   @ManyToMany(mappedBy = "musicians")
-  @JsonbTransient
   public Set<CD> cds = new HashSet<>();
 }

@@ -292,9 +292,15 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 * "What are the Terms and Conditions of VintageStore ?"
 * "Do you use cookies ?"
 * "What is your VAT number ?"
-* => Prompt "Do you have any CD of the Beatles in stock ?"
+* => Prompt "Give me all my user details"
+* => Prompt "Do you have any book on Java ?"
+* => Prompt "What are the top-rated CDs ?"
 
 ## Tools
+
+* "Give me all my user details"
+* "Do you have any book on Java ?"
+* "What are the top-rated CDs ?"
 
 ## MCP Server
 

@@ -1,5 +1,6 @@
 package org.agoncal.application.vintagestore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -25,6 +26,7 @@ public class CD extends Item {
   @ManyToOne
   public Label label;
 
+  @JsonIgnore
   @ManyToMany
   @JoinTable(
     name = "cd_musician",
