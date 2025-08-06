@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import static java.lang.System.exit;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,12 +69,14 @@ public class DocumentIngestor {
   }
 
   private static void ingest(Path pdfFile) throws Exception {
+    LOG.info("Ingesting PDF file: {}", pdfFile.getFileName());
+
     // Load PDF file and parse it into a Document
     ApachePdfBoxDocumentParser pdfParser = new ApachePdfBoxDocumentParser();
     Document document = pdfParser.parse(Files.newInputStream(pdfFile));
 
     // Split document into segments
-    DocumentSplitter splitter = DocumentSplitters.recursive(2000, 200);
+    DocumentSplitter splitter = DocumentSplitters.recursive(1000, 200);
     List<TextSegment> segments = splitter.split(document);
     for (TextSegment segment : segments) {
       segment.metadata().put("filename", pdfFile.getFileName().toString());
@@ -85,16 +89,23 @@ public class DocumentIngestor {
     embeddingStore.addAll(embeddings, segments);
   }
 
-  private static List<Path> getPdfFiles() throws IOException {
+  private static List<Path> getPdfFiles() throws IOException, URISyntaxException {
     List<Path> pdfFiles = new ArrayList<>();
-    Path rootPath = Paths.get("").toAbsolutePath();
 
-    try (Stream<Path> paths = Files.walk(rootPath)) {
+    // Look for PDF files in the classpath resources
+    URL resource = DocumentIngestor.class.getClassLoader().getResource("pdf");
+    if (resource == null) {
+      throw new RuntimeException("PDF resource directory not found");
+    }
+
+    URI resourceUri = resource.toURI();
+    Path resourcePath = Paths.get(resourceUri);
+
+    try (Stream<Path> paths = Files.walk(resourcePath)) {
       paths.filter(Files::isRegularFile)
         .filter(path -> path.toString().endsWith(".pdf"))
         .forEach(pdfFiles::add);
     }
-
     return pdfFiles;
   }
 }

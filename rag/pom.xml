@@ -44,6 +44,12 @@
       <artifactId>langchain4j-document-parser-apache-pdfbox</artifactId>
       <version>${langchain4j-community.version}</version>
     </dependency>
+    <!-- Other -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>2.0.17</version>
+    </dependency>
   </dependencies>
 
   <build>

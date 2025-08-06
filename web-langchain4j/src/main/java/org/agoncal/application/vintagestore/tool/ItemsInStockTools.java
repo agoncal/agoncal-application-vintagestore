@@ -4,7 +4,6 @@ import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.service.V;
 import io.quarkus.arc.Arc;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.UserTransaction;
 import org.agoncal.application.vintagestore.model.Item;
 import org.jboss.logging.Logger;
