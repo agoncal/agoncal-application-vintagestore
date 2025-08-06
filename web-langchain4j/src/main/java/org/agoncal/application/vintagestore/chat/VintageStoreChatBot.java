@@ -1,6 +1,7 @@
 package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
+import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
@@ -19,7 +20,6 @@ import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.QdrantGrpcClient;
-import io.quarkus.qute.i18n.MessageTemplateLocator;
 import io.quarkus.websockets.next.OnClose;
 import io.quarkus.websockets.next.OnOpen;
 import io.quarkus.websockets.next.OnTextMessage;
@@ -46,13 +46,9 @@ public class VintageStoreChatBot {
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
   private static final String MODERATION_PROMPT = "I don't know why you are frustrated, but I will redirect you to a human assistant who can help you better. Please wait a moment...";
 
-  @Inject
-  MessageTemplateLocator messageTemplateLocator;
-
-  // The chat assistant instance
   private VintageStoreAssistant assistant;
-  private QdrantClient qdrantClient;
   private ChatMemoryStore redisChatMemoryStore;
+  private QdrantClient qdrantClient;
 
   @Inject
   WebSocketConnection webSocketConnection;
@@ -60,7 +56,7 @@ public class VintageStoreChatBot {
   @OnOpen
   public String onOpen() throws Exception {
     LOG.info("WebSocket chat connection opened with ID: " + webSocketConnection.id());
-    assistant = assistant();
+    assistant = initializeVintageStoreAssistant();
     return WELCOME_PROMPT;
   }
 
@@ -69,27 +65,22 @@ public class VintageStoreChatBot {
     LOG.info("Received message: " + message + " from connection ID: " + webSocketConnection.id());
 
     if ("CLEAR_CONVERSATION".equals(message)) {
-      // Handle clear conversation command
       LOG.info("Clearing conversation history");
       redisChatMemoryStore.deleteMessages(webSocketConnection.id());
       return WELCOME_PROMPT;
+    }
 
-    } else {
-
-      try {
-        // Handle regular chat messages
-        return assistant.chat(webSocketConnection.id(), message);
-      } catch (ModerationException e) {
-        // Handle harmful content
-        LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + e.moderation());
-        return MODERATION_PROMPT;
-      }
+    try {
+      return assistant.chat(webSocketConnection.id(), message);
+    } catch (ModerationException e) {
+      LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + e.moderation());
+      return MODERATION_PROMPT;
     }
   }
 
   @OnClose
   public void onClose() {
-    LOG.info("WebSocket chat connection closed with ID: " + webSocketConnection.id());
+    LOG.info("WebSocket chat connection closed for ID: " + webSocketConnection.id());
     redisChatMemoryStore.deleteMessages(webSocketConnection.id());
     if (qdrantClient != null) {
       LOG.info("Closing Qdrant client connection");
@@ -97,7 +88,7 @@ public class VintageStoreChatBot {
     }
   }
 
-  private VintageStoreAssistant assistant() throws Exception {
+  private VintageStoreAssistant initializeVintageStoreAssistant() {
     // Initialize the chat model
     ChatModel anthropicChatModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
@@ -108,7 +99,15 @@ public class VintageStoreChatBot {
       .logResponses(true)
       .build();
 
-    // Initialize the chat memory store and provider
+    // Initialize the moderation model
+    ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
+      .apiKey(MISTRAL_AI_API_KEY)
+      .modelName(MISTRAL_MODERATION_LATEST.toString())
+      .logRequests(true)
+      .logResponses(true)
+      .build();
+
+    // Initialize the memory
     redisChatMemoryStore = RedisChatMemoryStore.builder()
       .host("localhost")
       .port(6379)
@@ -120,15 +119,7 @@ public class VintageStoreChatBot {
       .chatMemoryStore(redisChatMemoryStore)
       .build();
 
-    // Initialize the chat model
-    ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
-      .apiKey(MISTRAL_AI_API_KEY)
-      .modelName(MISTRAL_MODERATION_LATEST.toString())
-      .logRequests(true)
-      .logResponses(true)
-      .build();
-
-    // Initialize the embedding model and Qdrant client
+    // Initialize the embedding model and embedding store
     qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false)
       .build());
 

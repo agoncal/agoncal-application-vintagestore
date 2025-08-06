@@ -6,8 +6,10 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 
 * Make sure both keys are set (`ANTHROPIC_API_KEY` and `MISTRAL_AI_API_KEY`) and that there is enough credit on the accounts
 * Start Qdrant and remove the collection `VintageStore` if it exists
+* Start Redis and remove all the keys. Remove also the default
 * In Intellij IDEA uncheck `optimize imports on the fly`
 * In `VintageStoreAssistant` just leave the following code:
+* Open several terminals in the IDE `quarkus`, `postgresql`, `redis`, `qdrant`, `rag`
 
 ```java
 @SessionScoped
@@ -46,6 +48,12 @@ public class VintageStoreChatBot {
   @OnTextMessage
   public String onMessage(String message) throws Exception {
     LOG.info("Received message: " + message);
+
+    if ("CLEAR_CONVERSATION".equals(message)) {
+      LOG.info("Clearing conversation history");
+      return WELCOME_PROMPT;
+    }
+
     return message;
   }
 
@@ -58,26 +66,35 @@ public class VintageStoreChatBot {
 
 ## Show the VintageStore application
 
+* Start PostgreSQL database (`docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up`) and Quarkus (`mvn quarkus:dev`)
 * Browse CD and Books
 * Show Terms and Conditions
 * Login/Profile/Logout
 * Show logs
-* Chat: disconnect/connect/send a message
-* Chat: CLEAR CONVERSATION
+* Chat: send a few messages
+* Chat: CLEAR CONVERSATION / disconnect / connect
 * Show the code `VintageStoreAssistant` and `VintageStoreChatBot`
 * => I want to add a chat bot to the VintageStore application
 
 ## Add an LLM to the Chat Bot
 
-* In `VintageStoreChatBot` add the `VintageStoreAssistant` and the `assistant()` method
-* Add `assistant()` in the `@OnOpen` method
-* In `VintageStoreChatBot` add `assistant()` and `model()` methods
-* Add the Assistant in the `@OnOpen` and `@OnTextMessage` methods
+* Create a new class `VintageStoreAssistant`
+* In `VintageStoreChatBot` add `private VintageStoreAssistant assistant;`
+* Add `initializeVintageStoreAssistant()` in the `@OnOpen` method
+* Add `return assistant.chat(message);` to the `@OnTextMessage` method
 * Restart Quarkus (press 's' in the terminal)
 * Prompt "Hi", "What is the capital of France ?", "Write a short poem about the programming language Java"
-* Show logs and check the LLM calls
-  => Prompt "Do you know anything about VintageStore ?"
-* Prompt "Do you know anything about VintageStore ?"
+* Show logs and check the LLM calls (look for `"content"` in the logs) 
+* This is totally useleess for VintageStore, so we will add a system prompt
+* => Prompt "Do you know anything about VintageStore ?"
+
+```java
+@SessionScoped
+public interface VintageStoreAssistant {
+
+  String chat(String userMessage);
+}
+```
 
 ```java
 @WebSocket(path = "/chat")
@@ -85,151 +102,220 @@ public class VintageStoreChatBot {
 
   private VintageStoreAssistant assistant;
 
-  
   @OnOpen
   public String onOpen() throws Exception {
     LOG.info("WebSocket chat connection opened");
-    assistant = assistant();
+    assistant = initializeVintageStoreAssistant();
     return WELCOME_PROMPT;
-    assistant = assistant(model());
-    String answer = assistant.chat(WELCOME_PROMPT);
-    return answer;
   }
 
   @OnTextMessage
   public String onMessage(String message) throws Exception {
     LOG.info("Received message: " + message);
-    String answer = assistant.chat(message);
-    String answer;
-    answer = assistant.chat(message);
-    return answer;
+    return assistant.chat(message);
   }
 
-  private VintageStoreAssistant assistant() {
+  private VintageStoreAssistant initializeVintageStoreAssistant() {
     // Initialize the chat model
-    ChatModel anthropicClaudeSonnetModel = AnthropicChatModel.builder()
-  static VintageStoreAssistant assistant(ChatModel model) {
-    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
-      .chatModel(model)
-      .build();
-
-    return assistant;
-  }
-
-  static ChatModel model() {
-    ChatModel model = AnthropicChatModel.builder()
+    ChatModel anthropicChatModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
-      .modelName("claude-sonnet-4-20250514")
+      .modelName(CLAUDE_SONNET_4_20250514.toString())
       .temperature(0.3)
       .timeout(ofSeconds(60))
       .logRequests(true)
       .logResponses(true)
       .build();
 
-    // Create the VintageStoreAssistant
+    // Create the VintageStoreAssistant with all components
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
-      .chatModel(anthropicClaudeSonnetModel)
+      .chatModel(anthropicChatModel)
       .build();
 
     return assistant;
-    return model;
   }
-}
-
 }  
 ```
 
 ## Add a System Prompt
-## System Prompt
 
-* In `VintageStoreAssistant` add the system message
+* In `VintageStoreAssistant` add the system message (careful with `@MemoryId String sessionId, @UserMessage`)
 * Read the system message
-* In `VintageStoreAssistant` add the system prompt
-* Show logs and check the system prompt
 * Restart Quarkus (press 's' in the terminal)
+* In Intellij IDEA Quarkus terminal clear the logs with `CMD + K`
+* Disconnect and connect the chat websocket
 * Prompt "Do you know anything about VintageStore ?"
-* Show logs and check the system prompt
+* "What is the capital of France ?"
+* Show logs and check the system prompt (look for `"system"``)
+* Prompt "I HATE YOU AND YOUR WEBSITE"
+
+## Moderation
+
+* In `VintageStoreChatBot` add the moderation model
+* Add `.moderationModel(mistralModerationModel)`
+* In Intellij IDEA surround the `assistant.chat` call with a try/catch block of `ModerationException`. `LOG.warn` and `return MODERATION_PROMPT`;
+* Show the text of the `MODERATION_PROMPT`
+* Add `@Moderate` in `VintageStoreAssistant`
+* Restart Quarkus (press 's' in the terminal)
+* In Intellij IDEA Quarkus terminal clear the logs with `CMD + K`
+* Disconnect and connect the chat websocket
+* Prompt "I HATE YOU AND YOUR WEBSITE"
+* Show the logs and look for `hate_and_discrimination`
 * => LLM has no memory
 * Prompt "What's my name ?"
 * Prompt "My name is Antonio"
 * Prompt "What's my name ?"
 
-## Memory
+```java
+@SessionScoped
+public interface VintageStoreAssistant {
 
-* In `VintageStoreAssistant` add the memory
-* Restart Quarkus (press 's' in the terminal)
-* Disconnect and connect the chat because the Assistant is initialized at the `@OnOpen`
-* Prompt "What's my name ?"
-* Prompt "My name is Antonio"
-* Prompt "What's my name ?"
-* DISCONNECT AND CONNECT WEBSOCKET, MEMORY IS LOST, NOT IN PERSISTENT STORAGE
-* Prompt "My name is Antonio"
+  @Moderate
+  String chat(String userMessage);
+}
+```
 
 ```java
-  @OnOpen
-  public String onOpen() throws Exception {
-    assistant = assistant(model(), memory());
-    // ...
-  }
+    // Initialize the moderation model
+    ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
+      .apiKey(MISTRAL_AI_API_KEY)
+      .modelName(MISTRAL_MODERATION_LATEST.toString())
+      .logRequests(true)
+      .logResponses(true)
+      .build();
 
+    // Create the VintageStoreAssistant with all components
+    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+      .chatModel(anthropicChatModel)
+      .moderationModel(mistralModerationModel)
+      .build();
+```
 
-  static ChatMemory memory() {
+## Memory
+
+* REMOVE MODERATION BECAUSE IT WILL CLASH WITH MEMORY `//@Moderate`
+* In `VintageStoreAssistant` add the memory
+* Restart Quarkus (press 's' in the terminal)
+* Disconnect and connect the chat websocket
+* Prompt "What's my name ?"
+* Prompt "My name is Antonio"
+* Prompt "What's my name ?"
+* Show the logs and check the memory (look for `"What's my name ?"` in the logs)
+* DISCONNECT AND CONNECT WEBSOCKET, MEMORY IS LOST
+* Prompt "What's my name ?"
+* => Context is lost because memory is not persistent
+
+```java
+    // Initialize the memory
     ChatMemory chatMemory = MessageWindowChatMemory.builder()
       .maxMessages(20)
       .build();
 
-    return chatMemory;
-  }
-
-  static VintageStoreAssistant assistant(ChatModel model, ChatMemory memory) {
+    // Create the VintageStoreAssistant with all components
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
-      .chatModel(model)
-      .chatMemory(memory)
+      .chatModel(anthropicChatModel)
+      .moderationModel(mistralModerationModel)
+      .chatMemory(chatMemory)
       .build();
-  
-    return assistant;
-  }
 ```
 
 ## Memory in Persistent Storage
 
-* Start Redis with `docker compose -f src/main/docker/redis.yml up -d`
+* Start Redis with `docker compose -p vintagestore -f infrastructure/docker/redis.yml up`
+* Show the Redis Commander 
+* Add `private ChatMemoryStore redisChatMemoryStore;`
+* Replace `ChatMemory` by `redisChatMemoryStore` and `ChatMemoryProvider`
+* Restart Quarkus (press 's' in the terminal)
+* Disconnect and connect the chat websocket
+* Prompt "What is the capital of France ?"
 * Prompt "What's my name ?"
 * Prompt "My name is Antonio"
 * Prompt "What's my name ?"
-* DISCONNECT AND CONNECT WEBSOCKET, MEMORY IS LOST, NOT IN PERSISTENT STORAGE
-* Prompt "My name is Antonio"
+* Disconnect and connect the chat websocket
+* Prompt "What's my name ?"
 * Show the Redis Commander and copy the content to the logs.json
+* Now CLEAT THE CONVERSATION in the chat
+* Implement `redisChatMemoryStore.deleteMessages("default");` in the `@OnTextMessage` method
 
 ```java
-  static ChatMemory memory() {
-  ChatMemoryStore memoryStore = RedisChatMemoryStore.builder()
+// Initialize the memory
+redisChatMemoryStore = RedisChatMemoryStore.builder()
     .host("localhost")
     .port(6379)
     .build();
 
-  ChatMemory chatMemory = MessageWindowChatMemory.builder()
+ChatMemoryProvider redisChatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
     .maxMessages(20)
-    .chatMemoryStore(memoryStore)
+    .chatMemoryStore(redisChatMemoryStore)
     .build();
 
-  return chatMemory;
-}
+// Create the VintageStoreAssistant with all components
+VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+  .chatModel(anthropicChatModel)
+  .moderationModel(mistralModerationModel)
+  .chatMemoryProvider(redisChatMemoryProvider)
+  .build();
 ```
 
+## Multiple User
+
+* In Chrome
+  * Prompt "My name is Antonio"
+  * Prompt "What's my name ?"
+* In Firefox
+  * Prompt "What's my name ?"
+  * Prompt "No, my name is Maria"
+* Show the discussion in Redis
+* Add `@Inject WebSocketConnection webSocketConnection;`
+* Add memory id `String chat(@MemoryId String sessionId, @UserMessage String userMessage);`
+* Add connection id to logs `LOG.info("WebSocket chat connection opened with ID: " + webSocketConnection.id());`
+* Add connection id to chat `return assistant.chat(webSocketConnection.id(), message);`
+* Add connection id to remove `redisChatMemoryStore.deleteMessages(webSocketConnection.id());` in `@OnClose` and `@OnTextMessage`
+* Add connection id to ChatMemoryProvider `.id(webSocketConnection.id())`
+* Restart Quarkus (press 's' in the terminal)
+* Show the discussion in Redis
+* => Prompt "What are the Terms and Conditions of VintageStore ?"
+
+## RAG
+
+* Show the PDFs in the web application and show that T&C are there
+* Start Qdrant with `docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up`
+* Show Qdrant dashboard with no collection
+* Show code in `DocumentIngestor`
+* `cd rag` and execute `mvn compile exec:java`
+* Show Qdrant dashboard with `VintageStore` collection and show the text segments
+* Add `private QdrantClient qdrantClient;`
+* Add the code for the `EmbeddingStore`
+* Add `.contentRetriever(qdrantContentRetriever)`
+* In the `@OnClose` add `if (qdrantClient != null) { LOG.info("Closing Qdrant client connection"); qdrantClient.close(); }`
+* Restart Quarkus (press 's' in the terminal)
+* Disconnect and connect the chat websocket
+* "What are the Terms and Conditions of VintageStore ?"
+* "Do you use cookies ?"
+* "What is your VAT number ?"
+* => Prompt "Do you have any CD of the Beatles in stock ?"
+
+## Tools
+
+## MCP Server
+
+# Final code
 
 ```java
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
+
   // Constants for Qdrant configuration
   private static final String QDRANT_COLLECTION = "VintageStore";
   private static final String QDRANT_HOST = "localhost";
   private static final int QDRANT_PORT = 6334;
   // Anthropic API key from environment variable
   private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
+  private static final String MISTRAL_AI_API_KEY = System.getenv("MISTRAL_AI_API_KEY");
+  // Prompts
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
+  private static final String MODERATION_PROMPT = "I don't know why you are frustrated, but I will redirect you to a human assistant who can help you better. Please wait a moment...";
 
   // The chat assistant instance
   private VintageStoreAssistant assistant;
@@ -255,11 +341,17 @@ public class VintageStoreChatBot {
       LOG.info("Clearing conversation history");
       redisChatMemoryStore.deleteMessages(webSocketConnection.id());
       return WELCOME_PROMPT;
+
     } else {
-      // Handle regular chat messages
-      String answer = assistant.chat(webSocketConnection.id(), message);
-      LOG.debug("Response sent: " + answer);
-      return answer;
+
+      try {
+        // Handle regular chat messages
+        return assistant.chat(webSocketConnection.id(), message);
+      } catch (ModerationException e) {
+        // Handle harmful content
+        LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + e.moderation());
+        return MODERATION_PROMPT;
+      }
     }
   }
 
@@ -275,16 +367,16 @@ public class VintageStoreChatBot {
 
   private VintageStoreAssistant assistant() throws Exception {
     // Initialize the chat model
-    ChatModel anthropicClaudeSonnetModel = AnthropicChatModel.builder()
+    ChatModel anthropicChatModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
-      .modelName("claude-sonnet-4-20250514")
+      .modelName(CLAUDE_SONNET_4_20250514.toString())
       .temperature(0.3)
       .timeout(ofSeconds(60))
       .logRequests(true)
       .logResponses(true)
       .build();
 
-    // Initialize the chat memory store and provider
+    // Initialize the memory
     redisChatMemoryStore = RedisChatMemoryStore.builder()
       .host("localhost")
       .port(6379)
@@ -296,7 +388,15 @@ public class VintageStoreChatBot {
       .chatMemoryStore(redisChatMemoryStore)
       .build();
 
-    // Initialize the embedding model and Qdrant client
+    // Initialize the moderation model
+    ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
+      .apiKey(MISTRAL_AI_API_KEY)
+      .modelName(MISTRAL_MODERATION_LATEST.toString())
+      .logRequests(true)
+      .logResponses(true)
+      .build();
+
+    // Initialize the embedding model and embedding store
     qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false)
       .build());
 
@@ -309,7 +409,8 @@ public class VintageStoreChatBot {
 
     // Create the VintageStoreAssistant with all components
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
-      .chatModel(anthropicClaudeSonnetModel)
+      .chatModel(anthropicChatModel)
+      .moderationModel(mistralModerationModel)
       .chatMemoryProvider(redisChatMemoryProvider)
       .contentRetriever(qdrantContentRetriever)
       .tools(new LegalDocumentTools(), new ItemsInStockTools())
