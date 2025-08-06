@@ -1,13 +1,12 @@
 package org.agoncal.application.vintagestore.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -21,18 +20,8 @@ import jakarta.validation.constraints.Size;
 @Entity
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.CHAR)
 @DiscriminatorValue("I")
-@NamedQueries({
-  @NamedQuery(name = Item.FIND_TOP_RATED, query = "SELECT i FROM Item i WHERE i.id in :ids"),
-  @NamedQuery(name = Item.SEARCH, query = "SELECT i FROM Item i WHERE UPPER(i.title) LIKE :keyword OR UPPER(i.description) LIKE :keyword ORDER BY i.title")
-})
 public class Item extends PanacheEntity {
 
-  // ======================================
-  // =             Constants              =
-  // ======================================
-
-  public static final String FIND_TOP_RATED = "Item.findTopRated";
-  public static final String SEARCH = "Item.search";
 
   // ======================================
   // =             Attributes             =
@@ -60,6 +49,14 @@ public class Item extends PanacheEntity {
   public String mediumImageURL;
 
   public static long findLikeTitle(String title) {
-    return count("UPPER(title) like ?1", "%" + title.toUpperCase() + "%");
+    return count("UPPER(title) like ?1", "%" + title.trim().toUpperCase() + "%");
+  }
+
+  public static List<Item> findTopRated() {
+    return list("rank = ?1", 5);
+  }
+
+  public static List<Item> search(String keyword) {
+    return list("UPPER(title) like ?1 OR UPPER(description) like ?1 ORDER BY title", "%" + keyword.trim().toUpperCase() + "%");
   }
 }
