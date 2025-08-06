@@ -1,17 +1,16 @@
-package org.agoncal.application.vintagestore.chat;
+package org.agoncal.application.vintagestore.tool;
 
 import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.agoncal.application.vintagestore.model.User;
 import org.agoncal.application.vintagestore.web.UserSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class UserLoggedInTools {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UserLoggedInTools.class);
+  private static final Logger LOG = Logger.getLogger(ItemsInStockTools.class);
 
   @Inject
   UserSession userSession;
@@ -26,7 +25,7 @@ public class UserLoggedInTools {
     }
 
     User user = userSession.getCurrentUser();
-    LOG.info("Logged-in user: {}", user);
+    LOG.info("Logged-in user: " + user);
     return user;
   }
 }

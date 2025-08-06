@@ -1,7 +1,6 @@
 package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
-import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
@@ -26,6 +25,8 @@ import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
 import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.inject.Inject;
+import org.agoncal.application.vintagestore.tool.ItemsInStockTools;
+import org.agoncal.application.vintagestore.tool.LegalDocumentTools;
 import org.jboss.logging.Logger;
 
 import static java.time.Duration.ofSeconds;

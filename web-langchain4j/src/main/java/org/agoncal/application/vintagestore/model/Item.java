@@ -24,7 +24,6 @@ import jakarta.validation.constraints.Size;
 @NamedQueries({
   @NamedQuery(name = Item.FIND_TOP_RATED, query = "SELECT i FROM Item i WHERE i.id in :ids"),
   @NamedQuery(name = Item.SEARCH, query = "SELECT i FROM Item i WHERE UPPER(i.title) LIKE :keyword OR UPPER(i.description) LIKE :keyword ORDER BY i.title")
-
 })
 public class Item extends PanacheEntity {
 

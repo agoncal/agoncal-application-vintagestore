@@ -1,4 +1,4 @@
-package org.agoncal.application.vintagestore.chat;
+package org.agoncal.application.vintagestore.tool;
 
 import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;

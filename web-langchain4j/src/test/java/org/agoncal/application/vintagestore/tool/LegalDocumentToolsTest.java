@@ -1,4 +1,4 @@
-package org.agoncal.application.vintagestore.chat;
+package org.agoncal.application.vintagestore.tool;
 
 import io.quarkus.test.junit.QuarkusTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
