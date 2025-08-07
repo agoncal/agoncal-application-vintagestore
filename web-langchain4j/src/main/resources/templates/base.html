@@ -141,7 +141,33 @@
       <h5 class="mb-0">
         <i class="bi bi-robot me-2"></i>AI Assistant
       </h5>
+      
+      <!-- Search Bar (inline with buttons) -->
+      <div id="search-bar" class="search-bar-inline" style="display: none;">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" id="search-input" class="form-control form-control-sm" placeholder="Search conversation...">
+          <button class="btn btn-outline-secondary btn-sm" onclick="navigateSearchResults(-1)" title="Previous result">
+            <i class="bi bi-chevron-up"></i>
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" onclick="navigateSearchResults(1)" title="Next result">
+            <i class="bi bi-chevron-down"></i>
+          </button>
+          <span class="input-group-text search-counter" id="search-counter" style="display: none;">
+            <small>0/0</small>
+          </span>
+          <button class="btn btn-outline-secondary btn-sm" onclick="clearSearch()" title="Clear search">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </div>
+      
       <div class="d-flex gap-1">
+        <button class="btn btn-sm btn-outline-light" onclick="toggleSearchMode()" title="Search conversation" id="search-toggle-btn">
+          <i class="bi bi-search"></i>
+        </button>
         <button class="btn btn-sm btn-outline-light" onclick="clearChatHistory()" title="Clear chat history">
           <i class="bi bi-arrow-clockwise"></i>
         </button>
@@ -391,6 +417,82 @@
     visibility: visible;
   }
 
+  .search-bar-inline {
+    flex: 1;
+    max-width: 300px;
+    margin: 0 1rem;
+  }
+
+  .search-bar-inline .input-group-text {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #6c757d;
+  }
+
+  .search-bar-inline .form-control {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #495057;
+  }
+
+  .search-bar-inline .form-control:focus {
+    background: white;
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+  }
+
+  .search-bar-inline .btn-outline-secondary {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #6c757d;
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .search-bar-inline .btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .search-counter {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: #6c757d !important;
+    min-width: 50px;
+  }
+
+  .search-bar-inline .btn-outline-secondary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .search-highlight {
+    background-color: #fff3cd !important;
+    border: 1px solid #ffeaa7 !important;
+    animation: highlightPulse 0.5s ease-in-out;
+  }
+
+  @keyframes highlightPulse {
+    0% { background-color: #fff3cd; }
+    50% { background-color: #ffeb3b; }
+    100% { background-color: #fff3cd; }
+  }
+
+  .search-match {
+    background-color: #ffeb3b;
+    color: #000;
+    font-weight: bold;
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.25rem;
+  }
+
+  .search-active .message {
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+
+  .search-active .message.search-result {
+    opacity: 1;
+  }
+
   @media (max-width: 768px) {
     .chat-sidebar {
       width: 100%;
@@ -404,6 +506,8 @@
   let isChatSidebarOpen = false;
   let messageHistory = [];
   let historyIndex = -1;
+  let isSearchMode = false;
+  let searchResults = [];
 
   function toggleChatSidebar() {
     const sidebar = document.getElementById('chat-sidebar');
@@ -582,6 +686,173 @@
       addSidebarMessage('system', '<span style="color: red; font-size: 0.9em;">✗ Disconnected from websocket</span>');
       chatWebSocket.close();
       console.log('WebSocket manually disconnected');
+    }
+  }
+
+  // Search functionality
+  function toggleSearchMode() {
+    const searchBar = document.getElementById('search-bar');
+    const searchInput = document.getElementById('search-input');
+    const searchToggleBtn = document.getElementById('search-toggle-btn');
+    const messagesContainer = document.getElementById('chat-messages-sidebar');
+
+    isSearchMode = !isSearchMode;
+
+    if (isSearchMode) {
+      // Show search bar
+      searchBar.style.display = 'block';
+      searchInput.focus();
+      searchToggleBtn.innerHTML = '<i class="bi bi-x"></i>';
+      searchToggleBtn.title = 'Exit search';
+      
+      // Add search event listener
+      searchInput.addEventListener('input', performSearch);
+      searchInput.addEventListener('keydown', handleSearchKeydown);
+    } else {
+      // Hide search bar and clear search
+      searchBar.style.display = 'none';
+      searchToggleBtn.innerHTML = '<i class="bi bi-search"></i>';
+      searchToggleBtn.title = 'Search conversation';
+      clearSearch();
+    }
+  }
+
+  function performSearch() {
+    const searchTerm = document.getElementById('search-input').value.trim();
+    const messagesContainer = document.getElementById('chat-messages-sidebar');
+    const messages = messagesContainer.querySelectorAll('.message:not(.system-message)');
+
+    // Clear previous search results
+    clearSearchResults();
+
+    if (searchTerm.length === 0) {
+      messagesContainer.classList.remove('search-active');
+      updateSearchCounter(0, 0);
+      return;
+    }
+
+    messagesContainer.classList.add('search-active');
+    searchResults = [];
+
+    messages.forEach((message, index) => {
+      const messageText = message.textContent.toLowerCase();
+      const searchLower = searchTerm.toLowerCase();
+
+      if (messageText.includes(searchLower)) {
+        message.classList.add('search-result');
+        searchResults.push(message);
+        
+        // Highlight the search term in the message
+        highlightSearchTerm(message, searchTerm);
+      }
+    });
+
+    // Update search counter and navigate to first result
+    updateSearchCounter(searchResults.length > 0 ? 1 : 0, searchResults.length);
+    currentSearchResultIndex = searchResults.length > 0 ? 0 : -1;
+
+    // Scroll to first result if any
+    if (searchResults.length > 0) {
+      searchResults[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      searchResults[0].classList.add('search-highlight');
+    }
+  }
+
+  function highlightSearchTerm(messageElement, searchTerm) {
+    const messageBubble = messageElement.querySelector('.message-bubble');
+    if (!messageBubble) return;
+
+    const originalHTML = messageBubble.getAttribute('data-original-html') || messageBubble.innerHTML;
+    messageBubble.setAttribute('data-original-html', originalHTML);
+
+    const regex = new RegExp(`(${'${'}escapeRegExp(searchTerm)})`, 'gi');
+    const highlightedHTML = originalHTML.replace(regex, '<span class="search-match">$1</span>');
+    messageBubble.innerHTML = highlightedHTML;
+  }
+
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function clearSearchResults() {
+    const messagesContainer = document.getElementById('chat-messages-sidebar');
+    const messages = messagesContainer.querySelectorAll('.message');
+
+    messages.forEach(message => {
+      message.classList.remove('search-result', 'search-highlight');
+      const messageBubble = message.querySelector('.message-bubble');
+      if (messageBubble && messageBubble.getAttribute('data-original-html')) {
+        messageBubble.innerHTML = messageBubble.getAttribute('data-original-html');
+        messageBubble.removeAttribute('data-original-html');
+      }
+    });
+
+    searchResults = [];
+  }
+
+  function clearSearch() {
+    const searchInput = document.getElementById('search-input');
+    const messagesContainer = document.getElementById('chat-messages-sidebar');
+
+    searchInput.value = '';
+    messagesContainer.classList.remove('search-active');
+    clearSearchResults();
+    updateSearchCounter(0, 0);
+    currentSearchResultIndex = -1;
+  }
+
+  function handleSearchKeydown(e) {
+    if (e.key === 'Escape') {
+      toggleSearchMode();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      // Navigate through search results
+      navigateSearchResults(e.shiftKey ? -1 : 1);
+    }
+  }
+
+  let currentSearchResultIndex = -1;
+
+  function navigateSearchResults(direction) {
+    if (searchResults.length === 0) return;
+
+    // Remove previous highlight
+    if (currentSearchResultIndex >= 0) {
+      searchResults[currentSearchResultIndex].classList.remove('search-highlight');
+    }
+
+    // Calculate new index
+    currentSearchResultIndex += direction;
+    
+    if (currentSearchResultIndex >= searchResults.length) {
+      currentSearchResultIndex = 0;
+    } else if (currentSearchResultIndex < 0) {
+      currentSearchResultIndex = searchResults.length - 1;
+    }
+
+    // Update counter
+    updateSearchCounter(currentSearchResultIndex + 1, searchResults.length);
+
+    // Highlight and scroll to new result
+    const currentResult = searchResults[currentSearchResultIndex];
+    currentResult.classList.add('search-highlight');
+    currentResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function updateSearchCounter(current, total) {
+    const counter = document.getElementById('search-counter');
+    const prevBtn = document.querySelector('[onclick="navigateSearchResults(-1)"]');
+    const nextBtn = document.querySelector('[onclick="navigateSearchResults(1)"]');
+    
+    if (total === 0) {
+      counter.style.display = 'none';
+      if (prevBtn) prevBtn.disabled = true;
+      if (nextBtn) nextBtn.disabled = true;
+    } else {
+      counter.style.display = 'block';
+      counter.innerHTML = '<small>' + current + '/' + total + '</small>';
+      if (prevBtn) prevBtn.disabled = false;
+      if (nextBtn) nextBtn.disabled = false;
     }
   }
 </script>
