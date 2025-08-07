@@ -256,7 +256,7 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
   .build();
 ```
 
-## Multiple User
+## Multiple User Chat History
 
 * In Chrome
   * Prompt "My name is Antonio"
@@ -301,8 +301,6 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 * "Give me all my user details"
 * "Do you have any book on Java ?"
 * "What are the top-rated CDs ?"
-
-## MCP Server
 
 # Final code
 
