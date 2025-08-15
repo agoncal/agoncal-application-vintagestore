@@ -146,7 +146,7 @@ public class VintageStoreChatBot {
 * Disconnect and connect the chat websocket
 * Prompt "Do you know anything about VintageStore ?"
 * "What is the capital of France ?"
-* Show logs and check the system prompt (look for `"system"``)
+* Show logs and check the system prompt (look for `"system"`) and look for `The current date is`
 * Prompt "I HATE YOU AND YOUR WEBSITE"
 
 ## Moderation (lc-moderate)
