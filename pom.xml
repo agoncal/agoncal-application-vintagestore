@@ -10,6 +10,7 @@
 
   <modules>
     <module>infrastructure</module>
+    <module>mcp-currency</module>
     <module>rag</module>
     <module>web-langchain4j</module>
     <module>web-quarkus</module>
