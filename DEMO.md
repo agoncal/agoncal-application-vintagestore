@@ -303,6 +303,8 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 * "Do you have any book on Java ?"
 * "What are the top-rated CDs ?"
 
+## MCP
+
 ## Guardrails
 
 * User inputs is too long
