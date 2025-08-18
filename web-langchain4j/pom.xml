@@ -73,6 +73,10 @@
       <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>
     </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-mcp</artifactId>
+    </dependency>
     <!-- Quarkus -->
     <dependency>
       <groupId>io.quarkus</groupId>

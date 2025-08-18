@@ -1,6 +1,11 @@
 package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
+import dev.langchain4j.mcp.McpToolProvider;
+import dev.langchain4j.mcp.client.DefaultMcpClient;
+import dev.langchain4j.mcp.client.McpClient;
+import dev.langchain4j.mcp.client.transport.McpTransport;
+import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
@@ -32,6 +37,7 @@ import org.agoncal.application.vintagestore.tool.UserLoggedInTools;
 import org.jboss.logging.Logger;
 
 import static java.time.Duration.ofSeconds;
+import java.util.List;
 
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
@@ -133,6 +139,21 @@ public class VintageStoreChatBot {
 
     ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, new AllMiniLmL6V2EmbeddingModel());
 
+    // MCP Currency
+    McpTransport transport = new StdioMcpTransport.Builder()
+      .command(List.of("/usr/bin/java", "-jar", "/Users/agoncal/Documents/Code/AGoncal/agoncal-application-vintagestore/mcp-currency/target/mcp-currency-1.0.0-SNAPSHOT-runner.jar"))
+      .logEvents(true) // only if you want to see the traffic in the log
+      .build();
+
+    McpClient mcpClient = new DefaultMcpClient.Builder()
+      .key("VintageStoreMCPClient")
+      .transport(transport)
+      .build();
+
+    McpToolProvider toolProvider = McpToolProvider.builder()
+      .mcpClients(mcpClient)
+      .build();
+
     // Create the VintageStoreAssistant with all components
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicChatModel)
@@ -140,6 +161,7 @@ public class VintageStoreChatBot {
       .chatMemoryProvider(redisChatMemoryProvider)
       .contentRetriever(qdrantContentRetriever)
       .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
+      .toolProvider(toolProvider)
       .build();
 
     return assistant;
