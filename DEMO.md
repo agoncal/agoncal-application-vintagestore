@@ -317,7 +317,7 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 .toolProvider(toolProvider)
 ```
 
-## Token consumption
+## Token consumption (lc-token)
 
 * Replace method signature `Result<String> chat(@MemoryId String sessionId, @UserMessage String userMessage);`
 * Change logging level to WARN in `application.properties`:
@@ -325,14 +325,26 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 quarkus.log.category."dev.langchain4j".level=WARN
 quarkus.log.category."org.agoncal.application.vintagestore".level=WARN
 ```
-* Log tokens in red in WARN level:
-```java
-try {
-  Result<String> response = assistant.chat(webSocketConnection.id(), message);
-  LOG.warn("\u001B[31mTokens: Input (" + response.tokenUsage().inputTokenCount()+"), Output (" + response.tokenUsage().outputTokenCount() + "), Total (" + response.tokenUsage().totalTokenCount() + ")\u001B[0m");
-  return response.content();
-} catch (ModerationException e) {
-```
+* Replace `assistant.chat` with `lc-token`. Log tokens in red in WARN level:
+* Sign-in as `john.doe`
+* CLEAN REDIS CONVERSATIONS
+* COMMENT `redisChatMemoryStore.deleteMessages` in `OnClose` so we can see the conversation before the error
+* "Hi"
+* "What are my profile details?"
+* "What are the top rated CDs ?"
+* "Any books on Java?"
+* "Give me the prices in Euros"
+* Show the `rate_limit_error`
+* Copy/paste the Redis conversation in the `logs.json` file
+* Show the JSon:
+  * The system prompt at the top `You are the official customer service`
+  * `Answer using the following information` comes from LangChain4j itself `DefaultContentInjector`
+  * The RAG in `Hi` with `We encourage you to review this privacy notice`
+  * Show the tool invocation `get_current_user_info` after `What are my profile details?`
+  * Show tool `get_top_rated_items`
+  * Show tool `search_catalog` after `Any books on Java?`
+  * And the end before the limit is reached `Give me the prices in Euros`
+* DONT USE CHAT TO SEARCH CATALOG
 
 ## Monitoring
 
@@ -341,7 +353,6 @@ try {
 * User inputs is too long
 
 # Final code
-
 
 ```java
   @SystemMessage("""
@@ -718,6 +729,12 @@ lc-tools - LangChain4j Demo - Adds tools
 
 ```java
 .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
+```
+
+lc-token - LangChain4j Demo - Logging Tokens
+
+```java
+LOG.warn("\u001B[31mTokens: Input (" + response.tokenUsage().inputTokenCount()+"), Output (" + response.tokenUsage().outputTokenCount() + "), Total (" + response.tokenUsage().totalTokenCount
 ```
 
 lc-mcp - LangChain4j Demo - Adds MCP Client

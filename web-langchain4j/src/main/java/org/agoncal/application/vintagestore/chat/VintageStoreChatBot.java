@@ -20,6 +20,7 @@ import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.ModerationException;
+import dev.langchain4j.service.Result;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
@@ -80,7 +81,9 @@ public class VintageStoreChatBot {
     }
 
     try {
-      return assistant.chat(webSocketConnection.id(), message);
+      Result<String> response = assistant.chat(webSocketConnection.id(), message);
+      LOG.warn("\u001B[31mTokens: Input (" + response.tokenUsage().inputTokenCount() + "), Output (" + response.tokenUsage().outputTokenCount() + "), Total (" + response.tokenUsage().totalTokenCount() + ")\u001B[0m");
+      return response.content();
     } catch (ModerationException e) {
       LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + e.moderation());
       return MODERATION_PROMPT;

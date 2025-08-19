@@ -2,6 +2,7 @@ package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.Moderate;
+import dev.langchain4j.service.Result;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import jakarta.enterprise.context.SessionScoped;
@@ -63,5 +64,5 @@ public interface VintageStoreAssistant {
     - For complex issues, guide customers to appropriate human support channels
     """)
   @Moderate
-  String chat(@MemoryId String sessionId, @UserMessage String userMessage);
+  Result<String> chat(@MemoryId String sessionId, @UserMessage String userMessage);
 }
