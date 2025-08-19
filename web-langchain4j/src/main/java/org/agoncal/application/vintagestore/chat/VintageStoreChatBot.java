@@ -142,7 +142,7 @@ public class VintageStoreChatBot {
     // MCP Currency
     McpTransport transport = new StdioMcpTransport.Builder()
       .command(List.of("/usr/bin/java", "-jar", "/Users/agoncal/Documents/Code/AGoncal/agoncal-application-vintagestore/mcp-currency/target/mcp-currency-1.0.0-SNAPSHOT-runner.jar"))
-      .logEvents(true) // only if you want to see the traffic in the log
+      .logEvents(true)
       .build();
 
     McpClient mcpClient = new DefaultMcpClient.Builder()
