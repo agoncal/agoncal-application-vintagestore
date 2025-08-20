@@ -20,7 +20,7 @@ A modular AI-powered e-commerce application demonstrating sophisticated chat cap
 - **LangChain4j** - AI integration with Anthropic Claude Sonnet 4 and RAG capabilities
 - **Hibernate ORM with Panache** - Simplified data persistence
 - **PostgreSQL 17.5** - Production database with comprehensive test data (99 books, 101 CDs)
-- **Qdrant Vector Database** - Document embeddings storage (384-dimensional)
+- **Qdrant Vector Database** - Document embeddings storage (1024-dimensional)
 - **Redis** - Chat memory persistence
 - **Bootstrap 5** - Frontend UI framework
 
@@ -117,7 +117,7 @@ The **RAG (Retrieval Augmented Generation)** module provides the knowledge base 
 2. **DocumentIngestor** - Processes documents through:
    - **Text extraction** from PDF files
    - **Text chunking** with overlapping segments for context preservation
-   - **Embedding generation** using AllMiniLM-L6-V2 model (384 dimensions)
+   - **Embedding generation** using AllMiniLM-L6-V2 model (1024 dimensions)
    - **Vector storage** in Qdrant database with metadata
 
 3. **Query Processing** - During chat interactions:
@@ -139,7 +139,7 @@ curl http://localhost:6333/collections/documents/points/count
 ```
 
 ### RAG Configuration
-- **Vector dimensions**: 384 (AllMiniLM-L6-V2 model)
+- **Vector dimensions**: 1024 (Cohere model)
 - **Chunk size**: Optimized for legal document structure
 - **Overlap strategy**: Preserves context across document sections
 - **Metadata storage**: Document source, chunk position, and content type
@@ -273,7 +273,7 @@ Contains all external service configurations:
 ### 📁 **rag/**
 Standalone module for **document ingestion and RAG system**:
 - **DocumentIngestor.java** - Processes PDF documents into vector embeddings
-- **AllMiniLM-L6-V2 model** for embedding generation (384-dimensional vectors)
+- **Cohere model** for embedding generation (1024-dimensional vectors)
 - **Qdrant integration** for storing and querying document embeddings
 - **Terms and conditions PDFs** processed for knowledge base
 

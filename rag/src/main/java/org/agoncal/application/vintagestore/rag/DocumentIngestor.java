@@ -7,7 +7,6 @@ import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
 import io.qdrant.client.QdrantClient;
@@ -15,6 +14,7 @@ import io.qdrant.client.QdrantGrpcClient;
 import io.qdrant.client.grpc.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import dev.langchain4j.model.cohere.CohereEmbeddingModel;
 
 import java.io.IOException;
 import static java.lang.System.exit;
@@ -32,14 +32,22 @@ public class DocumentIngestor {
 
   private static final Logger LOG = LoggerFactory.getLogger(DocumentIngestor.class);
 
+  // AI-Model API keys from environment variable
+  private static final String COHERE_API_KEY = System.getenv("COHERE_API_KEY");
+  private static final String COHERE_EMBED_ENGLISH = "embed-english-v3.0"; // or embed-english-light-v3.0
+  // Constants for Qdrant configuration
   private static final String QDRANT_COLLECTION = "VintageStore";
-  private static final String QDRANT_URL = "http://localhost:6334";
+  private static final String QDRANT_HOST = "localhost";
+  private static final int QDRANT_PORT = 6334;
 
-  private static final EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+  private static final boolean IS_LOGGING_ENABLED = true;
+
+  private static EmbeddingModel embeddingModel;
   private static EmbeddingStore<TextSegment> embeddingStore;
 
   public static void main(String[] args) throws Exception {
     embeddingStore = embeddingStore();
+    embeddingModel = embeddingModel();
     List<Path> pdfFiles = getPdfFiles();
     for (Path path : pdfFiles) {
       ingest(path);
@@ -48,14 +56,11 @@ public class DocumentIngestor {
   }
 
   private static EmbeddingStore<TextSegment> embeddingStore() throws Exception {
-    String qdrantHostname = new URI(QDRANT_URL).getHost();
-    int qdrantPort = new URI(QDRANT_URL).getPort();
-    QdrantGrpcClient.Builder grpcClientBuilder = QdrantGrpcClient.newBuilder(qdrantHostname, qdrantPort, false);
-    QdrantClient qdrantClient = new QdrantClient(grpcClientBuilder.build());
+    QdrantClient qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false).build());
     try {
       qdrantClient.createCollectionAsync(QDRANT_COLLECTION,
         Collections.VectorParams.newBuilder()
-          .setSize(384)
+          .setSize(1024)
           .setDistance(Collections.Distance.Cosine)
           .build()
       ).get();
@@ -66,6 +71,18 @@ public class DocumentIngestor {
       .client(qdrantClient)
       .collectionName(QDRANT_COLLECTION)
       .build();
+  }
+
+  private static EmbeddingModel embeddingModel() {
+    EmbeddingModel cohereEmbeddingModel = CohereEmbeddingModel.builder()
+      .apiKey(COHERE_API_KEY)
+      .modelName(COHERE_EMBED_ENGLISH)
+      .inputType("search_document")
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+    return cohereEmbeddingModel;
   }
 
   private static void ingest(Path pdfFile) throws Exception {
