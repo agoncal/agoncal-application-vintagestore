@@ -44,7 +44,7 @@ public class SummarizingTokenWindowChatMemory implements ChatMemory {
   public void add(ChatMessage message) {
     List<ChatMessage> messages = messages();
     if (message instanceof SystemMessage) {
-      Optional<SystemMessage> maybeSystemMessage = findSystemMessage(messages);
+      Optional<SystemMessage> maybeSystemMessage = SystemMessage.findFirst(messages);
       if (maybeSystemMessage.isPresent()) {
         if (maybeSystemMessage.get().equals(message)) {
           return; // do not add the same system message
@@ -89,7 +89,7 @@ public class SummarizingTokenWindowChatMemory implements ChatMemory {
     // 3) Insert the summary as a single message.
 
     // If there is a system message, remove it so we only summarise the conversation. The System message will be added back as is
-    Optional<SystemMessage> maybeSystem = findSystemMessage(messages);
+    Optional<SystemMessage> maybeSystem = SystemMessage.findFirst(messages);
     maybeSystem.ifPresent(messages::remove);
 
     // Now we can work with the non-system messages
@@ -108,13 +108,6 @@ public class SummarizingTokenWindowChatMemory implements ChatMemory {
 
     // Re-add system message if we had one
     maybeSystem.ifPresent(messages::addFirst);
-  }
-
-  private static Optional<SystemMessage> findSystemMessage(List<ChatMessage> messages) {
-    return messages.stream()
-      .filter(message -> message instanceof SystemMessage)
-      .map(message -> (SystemMessage) message)
-      .findAny();
   }
 
   public static Builder builder() {
