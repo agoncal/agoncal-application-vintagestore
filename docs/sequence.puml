@@ -1,0 +1,113 @@
+@startuml
+!theme plain
+title VintageStore AI Chat System - Sequence Diagram
+
+actor User
+participant "WebSocket\n/chat" as WS
+participant "VintageStoreChatBot" as ChatBot
+participant "VintageStoreAssistant\n(AiServices)" as Assistant
+control "Anthropic Claude\n(Chat Model)" as Anthropic
+control "Mistral AI\n(Moderation)" as Mistral
+control "Cohere\n(Embeddings)" as Cohere
+control "OpenAI GPT-4\n(Summarization)" as OpenAI
+database "Redis\n(Chat Memory)" as Redis
+database "Qdrant\n(Embedding Store)" as Qdrant
+database "PostgreSQL\n(Inventory DB)" as PostgreSQL
+participant "MCP Currency\n(Java Process)" as MCP
+
+== Chat ==
+User -> WS: Send message
+activate WS
+WS -> ChatBot: @OnTextMessage(message)
+activate ChatBot
+
+alt CLEAR_CONVERSATION
+    ChatBot -> Redis: deleteMessages(connectionId)
+    activate Redis
+    Redis --> ChatBot: History cleared
+    deactivate Redis
+    ChatBot --> WS: "Hello, how can I help you?"
+else Chat
+    ChatBot -> Assistant: chat(connectionId, message)
+    activate Assistant
+
+    Assistant -> Mistral: Moderate message
+    activate Mistral
+    Mistral --> Assistant: Moderation result
+    deactivate Mistral
+
+    alt Message flagged
+        Assistant --> ChatBot: ModerationException
+        ChatBot --> WS: "I'll redirect you to a human..."
+    else Message OK
+        Assistant -> Redis: Retrieve chat history
+        activate Redis
+        Redis --> Assistant: Previous messages
+        deactivate Redis
+
+        Assistant -> Cohere: Generate embeddings for query
+        activate Cohere
+        Cohere --> Assistant: Query embeddings
+        deactivate Cohere
+
+        Assistant -> Qdrant: Search similar documents\n(RAG retrieval)
+        activate Qdrant
+        Qdrant --> Assistant: Relevant document chunks
+        deactivate Qdrant
+
+        Assistant -> PostgreSQL: Execute tools if needed\n(ItemsInStockTools,\nLegalDocumentTools,\nUserLoggedInTools)
+        activate PostgreSQL
+        PostgreSQL --> Assistant: Database results
+        deactivate PostgreSQL
+
+        Assistant -> MCP: Call currency conversion\nif needed
+        activate MCP
+        MCP --> Assistant: Currency data
+        deactivate MCP
+
+        Assistant -> Anthropic: Generate response with:\n- Chat history\n- RAG context\n- Tool results\n- User message
+        activate Anthropic
+        Anthropic --> Assistant: AI response + token usage
+        deactivate Anthropic
+
+        alt Memory limit exceeded
+            Assistant -> OpenAI: Summarize old messages
+            activate OpenAI
+            OpenAI --> Assistant: Summary
+            deactivate OpenAI
+        end
+
+        Assistant -> Redis: Store new messages\n(user + assistant)
+        activate Redis
+        Redis --> Assistant: Messages stored
+        deactivate Redis
+
+        Assistant --> ChatBot: Result(response, tokenUsage)
+    end
+    deactivate Assistant
+
+    ChatBot -> ChatBot: logInvocation(duration, tokens)
+    ChatBot --> WS: AI response
+end
+deactivate ChatBot
+
+WS --> User: Display response
+deactivate WS
+
+== Connection Close ==
+User -> WS: Disconnect
+activate WS
+WS -> ChatBot: @OnClose()
+activate ChatBot
+ChatBot -> Redis: deleteMessages(connectionId)
+activate Redis
+Redis --> ChatBot: Messages deleted
+deactivate Redis
+ChatBot -> Qdrant: Close client connection
+activate Qdrant
+Qdrant --> ChatBot: Connection closed
+deactivate Qdrant
+deactivate ChatBot
+deactivate WS
+
+@enduml
