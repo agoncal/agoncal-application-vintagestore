@@ -1,0 +1,44 @@
+@startuml
+!theme plain
+title VintageStore AI Chat System - Sequence Diagram
+
+actor User
+box "Local" #LightGreen
+participant "WebSocket\n/chat" as WS
+participant "VintageStore\nChatBot" as ChatBot
+participant "VintageStore\nAssistant" as Assistant
+end box
+box "Docker" #LightBlue
+database "PostgreSQL\n(VintageStore DB)" as PostgreSQL
+end box
+
+== Chat ==
+User -[#blue]> WS: Send message
+activate WS
+WS -[#blue]> ChatBot: @OnTextMessage(message)
+activate ChatBot
+
+alt CLEAR_CONVERSATION
+    ChatBot --> WS: "Hello, how can I help you?"
+else Chat
+    ChatBot -[#blue]> Assistant: chat(message)
+    activate Assistant
+
+        Assistant -[#blue]-> ChatBot: response
+
+    deactivate Assistant
+
+    ChatBot -[#blue]-> WS: AI response
+end
+deactivate ChatBot
+
+WS -[#blue]-> User: Display response
+deactivate WS
+
+== Connection Close ==
+User -> WS: Disconnect
+activate WS
+WS -> ChatBot: @OnClose()
+deactivate WS
+
+@enduml

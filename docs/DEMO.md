@@ -2,7 +2,7 @@
 
 This is the demo for the LangChain4j VintageStore application, showcasing how to add a chat bot with an LLM (Large Language Model), with memory, RAG, tools, etc.
 
-## Prepare the demo
+## 00 - Prepare the demo
 
 * Make sure both keys are set (`ANTHROPIC_API_KEY` and `MISTRAL_AI_API_KEY`) and that there is enough credit on the accounts
 * Start Qdrant and remove the collection `VintageStore` if it exists http://localhost:6333/dashboard
@@ -66,7 +66,7 @@ public class VintageStoreChatBot {
 }
 ```
 
-## Show the VintageStore application
+## 01 - Show the VintageStore application
 
 * Start PostgreSQL database (`docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up`) and Quarkus (`mvn quarkus:dev`)
 * Browse CD and Books
@@ -78,7 +78,7 @@ public class VintageStoreChatBot {
 * Show the code `VintageStoreAssistant` and `VintageStoreChatBot`
 * => I want to add a chat bot to the VintageStore application
 
-## Add an LLM to the Chat Bot (lc-llm)
+## 10 - Add an LLM to the Chat Bot (lc-llm)
 
 * In `VintageStoreChatBot` add `private VintageStoreAssistant assistant;`
 * Add `initializeVintageStoreAssistant()` in the `@OnOpen` method
@@ -137,7 +137,7 @@ public class VintageStoreChatBot {
 }  
 ```
 
-## Add a System Prompt  (lc-prompt)
+## 11 - Add a System Prompt  (lc-prompt)
 
 * In `VintageStoreAssistant` add the system message (careful with `@MemoryId String sessionId, @UserMessage`)
 * Read the system message
@@ -149,7 +149,7 @@ public class VintageStoreChatBot {
 * Show logs and check the system prompt (look for `"system"`) and look for `The current date is`
 * Prompt "I HATE YOU AND YOUR WEBSITE"
 
-## Moderation (lc-moderate)
+## 12 - Moderation (lc-moderate)
 
 * In `VintageStoreChatBot` add the moderation model
 * Add `.moderationModel(mistralModerationModel)`
@@ -191,7 +191,7 @@ public interface VintageStoreAssistant {
       .build();
 ```
 
-## Memory (lc-memory)
+## 20 - Memory (lc-memory)
 
 * REMOVE MODERATION BECAUSE IT WILL CLASH WITH MEMORY `//@Moderate`
 * In `VintageStoreAssistant` add the memory
@@ -219,7 +219,7 @@ public interface VintageStoreAssistant {
       .build();
 ```
 
-## Memory in Persistent Storage (lc-redis)
+## 21 - Memory in Persistent Storage (lc-redis)
 
 * Start Redis with `docker compose -p vintagestore -f infrastructure/docker/redis.yml up`
 * Show the Redis Commander http://localhost:8089
@@ -257,7 +257,7 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
   .build();
 ```
 
-## Multiple User Chat History
+## 22 - Multiple User Chat History
 
 * In Chrome
   * Prompt "My name is Antonio"
@@ -276,7 +276,7 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 * Show the discussion in Redis
 * => Prompt "What are the Terms and Conditions of VintageStore ?"
 
-## RAG (lc-rag)
+## 30 - RAG (lc-rag)
 
 * Show the PDFs in the web application and show that T&C are there
 * Start Qdrant with `docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up`
@@ -297,7 +297,7 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 * => Prompt "Do you have any book on Java ?"
 * => Prompt "What are the top-rated CDs ?"
 
-## Tools (lc-tools)
+## 40 - Tools (lc-tools)
 
 * "Give me all my user details"
 * "Do you have any book on Java ?"
@@ -305,7 +305,7 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 * => Prompt "What are the currencies I can pay with ?"
 * => Prompt "You use dollars. But how much is the book in Euros ?"
 
-## MCP (lc-mcp)
+## 41 - MCP (lc-mcp)
 
 * Show the code of the MCPServerCurrency
 * Add the MCP client in `VintageStoreChatBot` and then add it to the bot
@@ -317,7 +317,7 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 .toolProvider(toolProvider)
 ```
 
-## Token consumption (lc-token)
+## 50 - Token consumption (lc-token)
 
 * Replace method signature `Result<String> chat(@MemoryId String sessionId, @UserMessage String userMessage);`
 * Change logging level to WARN in `application.properties`:
@@ -347,7 +347,7 @@ quarkus.log.category."org.agoncal.application.vintagestore".level=WARN
   * And the end before the limit is reached `Give me the prices in Euros`
 * DONT USE CHAT TO SEARCH CATALOG
 
-## Summarizing conversation ()
+## 51 - Summarizing conversation ()
 
 * In `VintageStoreChatBot` add the summarizer `SummarizingTokenWindowChatMemory`
 * "Hi"

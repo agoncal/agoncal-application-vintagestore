@@ -1,0 +1,80 @@
+@startuml
+!theme plain
+title VintageStore AI Chat System - Sequence Diagram
+
+actor User
+box "Local" #LightGreen
+participant "WebSocket\n/chat" as WS
+participant "VintageStore\nChatBot" as ChatBot
+participant "VintageStore\nAssistant" as Assistant
+participant "Tools\n(ItemsInStock,\nLegalDocument,\nUserLoggedIn)" as Tools
+end box
+box "Anthropic" #LightPink
+entity "Claude Sonnet\n(Chat)" as Anthropic
+end box
+box "Mistral AI" #LightPink
+entity "Mistral\nModeration" as Mistral
+end box
+box "Cohere" #LightPink
+entity "Embed\nEnglish" as Cohere
+end box
+box "Docker" #LightBlue
+database "Redis\n(Chat Memory)" as Redis
+database "Qdrant\n(Embedding Store)" as Qdrant
+database "PostgreSQL\n(VintageStore DB)" as PostgreSQL
+control "MCP Currency" as MCP
+end box
+
+== Chat ==
+User -[#blue]> WS: Send message
+activate WS
+WS -[#blue]> ChatBot: @OnTextMessage(message)
+activate ChatBot
+
+alt CLEAR_CONVERSATION
+    ChatBot -> Redis: deleteMessages(connectionId): History cleared
+    ChatBot --> WS: "Hello, how can I help you?"
+else Chat
+    ChatBot -[#blue]> Assistant: chat(connectionId, message)
+    activate Assistant
+    Assistant -> Redis: Retrieve chat history
+    Assistant -> Cohere: Generate embeddings for query
+    Assistant -> Qdrant: Search similar documents (RAG retrieval)
+    Assistant -> Tools: Execute tools\n(if needed)
+    Tools -> PostgreSQL
+    Assistant -> MCP: Call currency conversion (if needed)
+    Assistant -> Mistral: Moderate message
+
+    alt Message flagged
+        Assistant -[#red]-> ChatBot: ModerationException
+        ChatBot -[#red]-> WS: "I redirect you to a human..."
+    else Message OK
+
+        Assistant -[#blue]> Anthropic: Generate response with:\n- Chat history\n- RAG context\n- Tool results\n- MCP results\n- User message
+        activate Anthropic
+        Anthropic -[#blue]-> Assistant: AI response
+        deactivate Anthropic
+
+        Assistant -> Redis: Store new messages
+        Assistant -[#blue]-> ChatBot: response
+    end
+    deactivate Assistant
+
+    ChatBot -[#blue]-> WS: AI response
+end
+deactivate ChatBot
+
+WS -[#blue]-> User: Display response
+deactivate WS
+
+== Connection Close ==
+User -> WS: Disconnect
+activate WS
+WS -> ChatBot: @OnClose()
+activate ChatBot
+ChatBot -> Redis: deleteMessages(connectionId)
+ChatBot -> Qdrant: Close client connection
+deactivate ChatBot
+deactivate WS
+
+@enduml
