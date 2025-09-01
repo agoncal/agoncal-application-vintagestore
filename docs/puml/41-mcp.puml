@@ -1,6 +1,6 @@
 @startuml
 !theme plain
-title VintageStore AI Chat System - Sequence Diagram
+title Using MCP to Access External APIs
 
 actor User
 box "Local" #LightGreen

@@ -1,6 +1,6 @@
 @startuml
 !theme plain
-title VintageStore AI Chat System - Sequence Diagram
+title Starting with a Basic Chat Bot
 
 actor User
 box "Local" #LightGreen

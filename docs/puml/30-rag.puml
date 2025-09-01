@@ -1,6 +1,6 @@
 @startuml
 !theme plain
-title VintageStore AI Chat System - Sequence Diagram
+title RAG – Retrieving Documents
 
 actor User
 box "Local" #LightGreen
