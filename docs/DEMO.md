@@ -17,9 +17,8 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 * Start Qdrant and remove the collection `VintageStore` if it exists http://localhost:6333/dashboard
 * Start Redis and remove all the keys. Remove also the default http://localhost:8089
 * In Intellij IDEA uncheck `optimize imports on the fly`
-* Open several terminals in the IDE `quarkus`, `rag`
-* Stop all the running Docker containers
-* Open 2 Browsers: one for Chrome and one for Firefox
+* Open several terminals in the IDE `web`, `rag`, `mcp`
+* Open 2 different Browsers (eg. Edge and Firefox)
 * In `VintageStoreAssistant` just leave the following code:
 
 ```java
@@ -382,32 +381,37 @@ quarkus.log.category."org.agoncal.application.vintagestore".level=WARN
 # Final code
 
 ```java
+@SessionScoped
+public interface VintageStoreAssistant {
+
   @SystemMessage("""
     You are the official customer service chatbot for **Vintage Store**. Your primary role is to assist customers with inquiries related to our products, services, policies, and shopping experience.
-
+    
+    The current date is {{current_date}}
+    
     ## What is Vintage Store?
-
+    
     Vintage Store is a specialized e-commerce platform dedicated to vintage and collectible items, particularly focusing on:
-
+    
     **Product Categories:**
     - **Books**: A curated collection of vintage and rare books across various categories, publishers, and authors
     - **CDs**: Vintage music albums from different genres, labels, and musicians
-
+    
     **Key Features:**
     - **AI-Powered Shopping Experience**: Advanced chat assistance for personalized product recommendations and customer support
     - **Comprehensive Catalog**: Detailed product information including metadata like publication dates, ISBN numbers, artist details, and more
     - **User Authentication**: Secure sign-in system with user profiles and role-based access
     - **Expert Curation**: Each item is carefully selected for its vintage appeal and collectible value
-
+    
     **Our Mission**: To connect vintage enthusiasts with authentic, high-quality collectible books and music albums while providing an exceptional digital shopping experience enhanced by AI technology.
-
+    
     ## Communication Style
     - **Always respond in Markdown format**
     - Keep responses **short, concise and directly relevant** to the customer's question
     - Maintain a **polite, friendly, and professional tone**
     - Use clear, customer-friendly language (avoid jargon)
     - Address customers respectfully but be concise
-
+    
     ## Knowledge Scope
     You have comprehensive knowledge of:
     - Current inventory and product details
@@ -415,18 +419,18 @@ quarkus.log.category."org.agoncal.application.vintagestore".level=WARN
     - Shipping, returns, and exchange procedures
     - Store hours, locations, and contact information
     - Pricing and promotional offers
-
+    
     ## Response Protocol
-
+    
     **For Vintage Store-related questions:**
     - Provide accurate, helpful information directly
     - If you don't know a specific answer, respond with: *"I don't have that information available right now. Please contact our customer service team at [contact@vintagestore.com] or check our website for the most up-to-date details."*
     - Offer relevant alternatives or next steps when possible
-
+    
     **For non-Vintage Store questions:**
     - Briefly acknowledge the question and provide a helpful response if appropriate
     - Include this disclaimer: *"Please note: I'm Vintage Store's customer service bot and specialize in questions about our products and services. For detailed information outside of Vintage Store topics, I recommend consulting other specialized resources."*
-
+    
     ## Additional Instructions
     - Always prioritize customer satisfaction and helpfulness
     - When discussing policies, be clear about terms while remaining customer-friendly
@@ -434,7 +438,8 @@ quarkus.log.category."org.agoncal.application.vintagestore".level=WARN
     - For complex issues, guide customers to appropriate human support channels
     """)
   @Moderate
-  String chat(@MemoryId String sessionId, @UserMessage String userMessage);
+  Result<String> chat(@MemoryId String sessionId, @UserMessage String userMessage);
+}
 ```
 
 ```java
@@ -445,22 +450,22 @@ import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
-import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport;
-import dev.langchain4j.memory.ChatMemory;
+import dev.langchain4j.mcp.client.transport.http.StreamableHttpMcpTransport;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
-import static dev.langchain4j.model.anthropic.AnthropicChatModelName.CLAUDE_SONNET_4_20250514;
 import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
-import static dev.langchain4j.model.mistralai.MistralAiChatModelName.MISTRAL_MODERATION_LATEST;
+import dev.langchain4j.model.cohere.CohereEmbeddingModel;
+import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.mistralai.MistralAiModerationModel;
 import dev.langchain4j.model.moderation.ModerationModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
+import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.ModerationException;
-import dev.langchain4j.store.embedding.EmbeddingStore;
+import dev.langchain4j.service.Result;
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import io.qdrant.client.QdrantClient;
@@ -471,29 +476,44 @@ import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
 import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.inject.Inject;
+import org.agoncal.application.vintagestore.summarize.OpenAISummarizer;
+import org.agoncal.application.vintagestore.summarize.SummarizingTokenWindowChatMemory;
 import org.agoncal.application.vintagestore.tool.ItemsInStockTools;
 import org.agoncal.application.vintagestore.tool.LegalDocumentTools;
 import org.agoncal.application.vintagestore.tool.UserLoggedInTools;
 import org.jboss.logging.Logger;
 
+import static dev.langchain4j.model.anthropic.AnthropicChatModelName.CLAUDE_SONNET_4_20250514;
+import static dev.langchain4j.model.mistralai.MistralAiChatModelName.MISTRAL_MODERATION_LATEST;
+import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_1_MINI;
 import static java.time.Duration.ofSeconds;
-import java.util.List;
 
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
 
+  // AI-Model API keys from environment variable
+  private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
+  private static final String MISTRAL_AI_API_KEY = System.getenv("MISTRAL_AI_API_KEY");
+  private static final String COHERE_API_KEY = System.getenv("COHERE_API_KEY");
+  private static final String COHERE_EMBED_ENGLISH = "embed-english-v3.0"; // or embed-english-light-v3.0
+  private static final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
   // Constants for Qdrant configuration
   private static final String QDRANT_COLLECTION = "VintageStore";
   private static final String QDRANT_HOST = "localhost";
   private static final int QDRANT_PORT = 6334;
-  // Anthropic API key from environment variable
-  private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
-  private static final String MISTRAL_AI_API_KEY = System.getenv("MISTRAL_AI_API_KEY");
   // Prompts
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
   private static final String MODERATION_PROMPT = "I don't know why you are frustrated, but I will redirect you to a human assistant who can help you better. Please wait a moment...";
+  // Other constants
+  private static final int MAX_TOKENS = 32_000;
+  private static final int TOKEN_LIMIT = 1_000;
+  private static final String RED = "\u001B[31m";
+  private static final String ORANGE = "\u001B[33m";
+  private static final String GREEN = "\u001B[32m";
+  private static final String RESET = "\u001B[0m";
+  private static final boolean IS_LOGGING_ENABLED = true;
 
   private VintageStoreAssistant assistant;
   private ChatMemoryStore redisChatMemoryStore;
@@ -520,7 +540,10 @@ public class VintageStoreChatBot {
     }
 
     try {
-      return assistant.chat(webSocketConnection.id(), message);
+      long startTime = System.currentTimeMillis();
+      Result<String> response = assistant.chat(webSocketConnection.id(), message);
+      logInvocation(startTime, response.tokenUsage());
+      return response.content();
     } catch (ModerationException e) {
       LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + e.moderation());
       return MODERATION_PROMPT;
@@ -537,23 +560,58 @@ public class VintageStoreChatBot {
     }
   }
 
+  private void logInvocation(long startTime, TokenUsage tokenUsage) {
+    long duration = System.currentTimeMillis() - startTime;
+    String message = "Chat response duration (" + duration + " ms)";
+
+    if (tokenUsage != null) {
+      message += " - Tokens: Input (" + tokenUsage.inputTokenCount() + "), Output (" + tokenUsage.outputTokenCount() + "), Total (" + tokenUsage.totalTokenCount() + ")";
+    }
+
+    if (duration < 2000) {
+      LOG.info(GREEN + message + RESET);
+    } else if (duration <= 5000) {
+      LOG.warn(ORANGE + message + RESET);
+    } else {
+      LOG.error(RED + message + RESET);
+    }
+  }
+
   private VintageStoreAssistant initializeVintageStoreAssistant() {
+
     // Initialize the chat model
     ChatModel anthropicChatModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
       .modelName(CLAUDE_SONNET_4_20250514.toString())
       .temperature(0.3)
       .timeout(ofSeconds(60))
-      .logRequests(true)
-      .logResponses(true)
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
       .build();
 
     // Initialize the moderation model
     ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
       .apiKey(MISTRAL_AI_API_KEY)
       .modelName(MISTRAL_MODERATION_LATEST.toString())
-      .logRequests(true)
-      .logResponses(true)
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+    // Initialize the embedding model
+    EmbeddingModel cohereEmbeddingModel = CohereEmbeddingModel.builder()
+      .apiKey(COHERE_API_KEY)
+      .modelName(COHERE_EMBED_ENGLISH)
+      .inputType("search_document")
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+    // Initialize the summary model
+    ChatModel openAiSummarizationModel = OpenAiChatModel.builder()
+      .apiKey(OPENAI_API_KEY)
+      .modelName(GPT_4_1_MINI)
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
       .build();
 
     // Initialize the memory
@@ -562,27 +620,28 @@ public class VintageStoreChatBot {
       .port(6379)
       .build();
 
-    ChatMemoryProvider redisChatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
+    ChatMemoryProvider redisChatMemoryProvider = memoryId -> SummarizingTokenWindowChatMemory.builder()
       .id(webSocketConnection.id())
-      .maxMessages(20)
+      .maxTokens(MAX_TOKENS, new OpenAiTokenCountEstimator(GPT_4_1_MINI))
+      .summarizer(new OpenAISummarizer((OpenAiChatModel) openAiSummarizationModel, TOKEN_LIMIT))
       .chatMemoryStore(redisChatMemoryStore)
       .build();
 
     // Initialize the embedding model and embedding store
-    qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false)
-      .build());
+    qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false).build());
 
-    EmbeddingStore qdrantEmbeddingStore = QdrantEmbeddingStore.builder()
+    QdrantEmbeddingStore qdrantEmbeddingStore = QdrantEmbeddingStore.builder()
       .client(qdrantClient)
       .collectionName(QDRANT_COLLECTION)
       .build();
 
-    ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, new AllMiniLmL6V2EmbeddingModel());
+    ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, cohereEmbeddingModel);
 
     // MCP Currency
-    McpTransport transport = new StdioMcpTransport.Builder()
-      .command(List.of("/usr/bin/java", "-jar", "/Users/agoncal/Documents/Code/AGoncal/agoncal-application-vintagestore/mcp-currency/target/mcp-currency-1.0.0-SNAPSHOT-runner.jar"))
-      .logEvents(true)
+    McpTransport transport = new StreamableHttpMcpTransport.Builder()
+      .url("http://localhost:8780/mcp")
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
       .build();
 
     McpClient mcpClient = new DefaultMcpClient.Builder()
