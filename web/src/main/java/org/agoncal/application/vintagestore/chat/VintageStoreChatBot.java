@@ -5,18 +5,15 @@ import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
-import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport;
+import dev.langchain4j.mcp.client.transport.http.StreamableHttpMcpTransport;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
-import static dev.langchain4j.model.anthropic.AnthropicChatModelName.CLAUDE_SONNET_4_20250514;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.cohere.CohereEmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import static dev.langchain4j.model.mistralai.MistralAiChatModelName.MISTRAL_MODERATION_LATEST;
 import dev.langchain4j.model.mistralai.MistralAiModerationModel;
 import dev.langchain4j.model.moderation.ModerationModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
-import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_1_MINI;
 import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
@@ -41,8 +38,10 @@ import org.agoncal.application.vintagestore.tool.LegalDocumentTools;
 import org.agoncal.application.vintagestore.tool.UserLoggedInTools;
 import org.jboss.logging.Logger;
 
+import static dev.langchain4j.model.anthropic.AnthropicChatModelName.CLAUDE_SONNET_4_20250514;
+import static dev.langchain4j.model.mistralai.MistralAiChatModelName.MISTRAL_MODERATION_LATEST;
+import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_1_MINI;
 import static java.time.Duration.ofSeconds;
-import java.util.List;
 
 @WebSocket(path = "/chat")
 public class VintageStoreChatBot {
@@ -194,9 +193,10 @@ public class VintageStoreChatBot {
     ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, cohereEmbeddingModel);
 
     // MCP Currency
-    McpTransport transport = new StdioMcpTransport.Builder()
-      .command(List.of("/usr/bin/java", "-jar", "/Users/agoncal/Documents/Code/AGoncal/agoncal-application-vintagestore/mcp-currency/target/mcp-currency-1.0.0-SNAPSHOT-runner.jar"))
-      .logEvents(true)
+    McpTransport transport = new StreamableHttpMcpTransport.Builder()
+      .url("http://localhost:8780/mcp")
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
       .build();
 
     McpClient mcpClient = new DefaultMcpClient.Builder()

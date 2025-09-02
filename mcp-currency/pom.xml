@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.agoncal.application.vintagestore</groupId>
@@ -14,7 +13,7 @@
 
   <properties>
     <!-- MCP Server -->
-    <mcp.server.version>1.4.1</mcp.server.version>
+    <mcp.server.version>1.5.0</mcp.server.version>
     <!-- Project -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -36,7 +35,7 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkiverse.mcp</groupId>
-      <artifactId>quarkus-mcp-server-stdio</artifactId>
+      <artifactId>quarkus-mcp-server-sse</artifactId>
       <version>${mcp.server.version}</version>
     </dependency>
     <dependency>
@@ -45,7 +44,17 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-container-image-docker</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkiverse.mcp</groupId>
+      <artifactId>quarkus-mcp-server-test</artifactId>
+      <version>${mcp.server.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

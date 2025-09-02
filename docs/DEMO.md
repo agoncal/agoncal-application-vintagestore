@@ -4,14 +4,23 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 
 ## 00 - Prepare the demo
 
-* Make sure both keys are set (`ANTHROPIC_API_KEY` and `MISTRAL_AI_API_KEY`) and that there is enough credit on the accounts
+* Make sure both keys are set and that there is enough credit on the accounts
+  * `ANTHROPIC_API_KEY`: https://console.anthropic.com/settings/keys
+  * `MISTRAL_AI_API_KEY`: https://admin.mistral.ai/organization/api-keys
+  * `COHERE_API_KEY`: https://dashboard.cohere.com/api-keys
+  * `OPENAI_API_KEY`: https://platform.openai.com/api-keys
+* Make sure all Docker Compose are working
+  * PostgreSQL: `docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up -d`
+  * Qdrant: `docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d`
+  * Redis: `docker compose -p vintagestore -f infrastructure/docker/redis.yml up -d`
+  * MCP Currency: `docker compose -p vintagestore -f infrastructure/docker/mcp-currency.yml up -d`
 * Start Qdrant and remove the collection `VintageStore` if it exists http://localhost:6333/dashboard
 * Start Redis and remove all the keys. Remove also the default http://localhost:8089
 * In Intellij IDEA uncheck `optimize imports on the fly`
-* In `VintageStoreAssistant` just leave the following code:
-* Open several terminals in the IDE `quarkus`, `postgresql`, `redis`, `qdrant`, `rag`
+* Open several terminals in the IDE `quarkus`, `rag`
 * Stop all the running Docker containers
 * Open 2 Browsers: one for Chrome and one for Firefox
+* In `VintageStoreAssistant` just leave the following code:
 
 ```java
 @SessionScoped
@@ -315,6 +324,13 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 
 ```java
 .toolProvider(toolProvider)
+```
+
+Docker commands in case:
+
+```shell
+docker run --interactive --tty --name mcp-currency vintagestore/mcp-currency:latest
+docker compose -p vintagestore -f infrastructure/docker/mcp-currency.yml up
 ```
 
 ## 50 - Token consumption (lc-token)
