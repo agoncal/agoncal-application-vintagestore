@@ -96,3 +96,4 @@ If you have any further questions or comments about this Policy, you may contact
 - **Phone:** 1-800-VINTAGE (1-800-846-8243)
 - **Mail:** VintageStore Legal Department, 123 Nostalgic Lane, Retro City, CA 90210
 - **Online Contact Form:** Available at www.vintagestore.com/contact
+- **VAT Number:** US-1234-567-890

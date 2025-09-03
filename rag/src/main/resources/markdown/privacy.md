@@ -252,6 +252,7 @@ If you have questions or comments about this notice, you may contact us by post 
 **Email:** privacy@vintagestore.com  
 **Phone:** 1-800-VINTAGE (1-800-846-8243)  
 **Online:** Contact form available at www.vintagestore.com/contact
+**VAT Number:** US-1234-567-890
 
 ## 13. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?
 

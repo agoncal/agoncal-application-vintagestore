@@ -6,7 +6,9 @@ import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
 import dev.langchain4j.mcp.client.transport.http.StreamableHttpMcpTransport;
+import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.cohere.CohereEmbeddingModel;
@@ -41,6 +43,7 @@ import org.jboss.logging.Logger;
 import static dev.langchain4j.model.anthropic.AnthropicChatModelName.CLAUDE_SONNET_4_20250514;
 import static dev.langchain4j.model.mistralai.MistralAiChatModelName.MISTRAL_MODERATION_LATEST;
 import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_1_MINI;
+
 import static java.time.Duration.ofSeconds;
 
 @WebSocket(path = "/chat")
@@ -79,14 +82,14 @@ public class VintageStoreChatBot {
 
   @OnOpen
   public String onOpen() throws Exception {
-    LOG.info("WebSocket chat connection opened with ID: " + webSocketConnection.id());
+    LOG.info("WebSocket chat connection opened with session id " + webSocketConnection.id());
     assistant = initializeVintageStoreAssistant();
     return WELCOME_PROMPT;
   }
 
   @OnTextMessage
   public String onMessage(String message) throws Exception {
-    LOG.info("Received message: " + message + " from connection ID: " + webSocketConnection.id());
+    LOG.info("Received message: " + message + " with session id " + webSocketConnection.id());
 
     if ("CLEAR_CONVERSATION".equals(message)) {
       LOG.info("Clearing conversation history");
@@ -107,7 +110,7 @@ public class VintageStoreChatBot {
 
   @OnClose
   public void onClose() {
-    LOG.info("WebSocket chat connection closed for ID: " + webSocketConnection.id());
+    LOG.info("WebSocket chat connection closed with session id " + webSocketConnection.id());
     redisChatMemoryStore.deleteMessages(webSocketConnection.id());
     if (qdrantClient != null) {
       LOG.info("Closing Qdrant client connection");
@@ -123,9 +126,9 @@ public class VintageStoreChatBot {
       message += " - Tokens: Input (" + tokenUsage.inputTokenCount() + "), Output (" + tokenUsage.outputTokenCount() + "), Total (" + tokenUsage.totalTokenCount() + ")";
     }
 
-    if (duration < 2000) {
+    if (duration < 6_000) {
       LOG.info(GREEN + message + RESET);
-    } else if (duration <= 5000) {
+    } else if (duration <= 10_000) {
       LOG.warn(ORANGE + message + RESET);
     } else {
       LOG.error(RED + message + RESET);
@@ -204,7 +207,7 @@ public class VintageStoreChatBot {
       .transport(transport)
       .build();
 
-    McpToolProvider toolProvider = McpToolProvider.builder()
+    McpToolProvider mcpToolProvider = McpToolProvider.builder()
       .mcpClients(mcpClient)
       .build();
 
@@ -215,7 +218,7 @@ public class VintageStoreChatBot {
       .chatMemoryProvider(redisChatMemoryProvider)
       .contentRetriever(qdrantContentRetriever)
       .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
-      .toolProvider(toolProvider)
+      .toolProvider(mcpToolProvider)
       .build();
 
     return assistant;
