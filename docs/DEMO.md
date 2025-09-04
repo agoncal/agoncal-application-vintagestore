@@ -82,13 +82,12 @@ public void onClose() {
 
 ## 10 - Add an LLM to the Chat Bot (lc-llm)
 
-* In `VintageStoreChatBot` add `assistant = initializeVintageStoreAssistant()` in the `@OnOpen` method
-* Execute live template `lc-llm`
+* In `VintageStoreChatBot`  execute live template `lc-llm`
+* Add `assistant = initializeVintageStoreAssistant();` in the `@OnOpen` method
 * Add `String response = assistant.chat(message);` to the `@OnTextMessage` method
 * Restart Quarkus (press 's' in the terminal)
 * 🧠 "Hi"
 * 🧠 "What is the capital of France ?"
-* 🧠 "Write a short poem about the programming language Java"
 * Show logs and check the LLM calls (look for `"content"` in the logs)
 * This is totally useless for VintageStore, so we will add a system prompt
 * 🧠 "Do you know anything about VintageStore ?"

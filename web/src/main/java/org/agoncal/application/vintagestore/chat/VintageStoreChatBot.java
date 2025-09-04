@@ -77,30 +77,45 @@ public class VintageStoreChatBot {
   private ChatMemoryStore redisChatMemoryStore;
   private QdrantClient qdrantClient;
 
+  @Inject
+  WebSocketConnection webSocketConnection;
+
   @OnOpen
   public String onOpen() throws Exception {
-    LOG.info("WebSocket chat connection opened");
+    LOG.info("WebSocket chat connection opened with session id " + webSocketConnection.id());
+    assistant = initializeVintageStoreAssistant();
     return WELCOME_PROMPT;
   }
 
   @OnTextMessage
   public String onMessage(String message) throws Exception {
-    LOG.info("Received message: " + message);
+    LOG.info("Received message: " + message + " with session id " + webSocketConnection.id());
 
     if ("CLEAR_CONVERSATION".equals(message)) {
       LOG.info("Clearing conversation history");
+      redisChatMemoryStore.deleteMessages(webSocketConnection.id());
       return WELCOME_PROMPT;
     }
 
-    long startTime = System.currentTimeMillis();
-    String response = message;
-    logInvocation(startTime, null);
-    return response;
+    try {
+      long startTime = System.currentTimeMillis();
+      Result<String> response = assistant.chat(webSocketConnection.id(), message);
+      logInvocation(startTime, response.tokenUsage());
+      return response.content();
+    } catch (ModerationException e) {
+      LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + e.moderation());
+      return MODERATION_PROMPT;
+    }
   }
 
   @OnClose
   public void onClose() {
-    LOG.info("WebSocket chat connection closed");
+    LOG.info("WebSocket chat connection closed with session id " + webSocketConnection.id());
+    redisChatMemoryStore.deleteMessages(webSocketConnection.id());
+    if (qdrantClient != null) {
+      LOG.info("Closing Qdrant client connection");
+      qdrantClient.close();
+    }
   }
 
   private void logInvocation(long startTime, TokenUsage tokenUsage) {
@@ -120,4 +135,92 @@ public class VintageStoreChatBot {
     }
   }
 
+  private VintageStoreAssistant initializeVintageStoreAssistant() {
+
+    // Initialize the chat model
+    ChatModel anthropicChatModel = AnthropicChatModel.builder()
+      .apiKey(ANTHROPIC_API_KEY)
+      .modelName(CLAUDE_SONNET_4_20250514.toString())
+      .temperature(0.3)
+      .timeout(ofSeconds(60))
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+    // Initialize the moderation model
+    ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
+      .apiKey(MISTRAL_AI_API_KEY)
+      .modelName(MISTRAL_MODERATION_LATEST.toString())
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+    // Initialize the embedding model
+    EmbeddingModel cohereEmbeddingModel = CohereEmbeddingModel.builder()
+      .apiKey(COHERE_API_KEY)
+      .modelName(COHERE_EMBED_ENGLISH)
+      .inputType("search_document")
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+    // Initialize the summary model
+    ChatModel openAiSummarizationModel = OpenAiChatModel.builder()
+      .apiKey(OPENAI_API_KEY)
+      .modelName(GPT_4_1_MINI)
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+    // Initialize the memory
+    redisChatMemoryStore = RedisChatMemoryStore.builder()
+      .host("localhost")
+      .port(6379)
+      .build();
+
+    ChatMemoryProvider redisChatMemoryProvider = memoryId -> SummarizingTokenWindowChatMemory.builder()
+      .id(webSocketConnection.id())
+      .maxTokens(MAX_TOKENS, new OpenAiTokenCountEstimator(GPT_4_1_MINI))
+      .summarizer(new OpenAISummarizer((OpenAiChatModel) openAiSummarizationModel, TOKEN_LIMIT))
+      .chatMemoryStore(redisChatMemoryStore)
+      .build();
+
+    // Initialize the embedding model and embedding store
+    qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false).build());
+
+    QdrantEmbeddingStore qdrantEmbeddingStore = QdrantEmbeddingStore.builder()
+      .client(qdrantClient)
+      .collectionName(QDRANT_COLLECTION)
+      .build();
+
+    ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, cohereEmbeddingModel);
+
+    // MCP Currency
+    McpTransport transport = new StreamableHttpMcpTransport.Builder()
+      .url("http://localhost:8780/mcp")
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+    McpClient mcpClient = new DefaultMcpClient.Builder()
+      .key("VintageStoreMCPClient")
+      .transport(transport)
+      .build();
+
+    McpToolProvider mcpToolProvider = McpToolProvider.builder()
+      .mcpClients(mcpClient)
+      .build();
+
+    // Create the VintageStoreAssistant with all components
+    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+      .chatModel(anthropicChatModel)
+      .moderationModel(mistralModerationModel)
+      .chatMemoryProvider(redisChatMemoryProvider)
+      .contentRetriever(qdrantContentRetriever)
+      .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
+      .toolProvider(mcpToolProvider)
+      .build();
+
+    return assistant;
+  }
 }
