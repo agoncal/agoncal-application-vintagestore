@@ -89,6 +89,10 @@
                   <i class="bi bi-server me-2 text-danger"></i>Redis Console
                   <i class="bi bi-box-arrow-up-right ms-1 small text-muted"></i>
                 </a></li>
+              <li><a class="dropdown-item py-2" href="http://localhost:8780/q/dev-ui/quarkus-mcp-server-sse/tools/" target="_blank">
+                  <i class="bi bi-currency-exchange me-2 text-warning"></i>MCP Currency
+                  <i class="bi bi-box-arrow-up-right ms-1 small text-muted"></i>
+                </a></li>
             </ul>
           </li>
         </ul>
@@ -141,7 +145,7 @@
       <h5 class="mb-0">
         <i class="bi bi-robot me-2"></i>AI Assistant
       </h5>
-      
+
       <!-- Search Bar (inline with buttons) -->
       <div id="search-bar" class="search-bar-inline" style="display: none;">
         <div class="input-group input-group-sm">
@@ -163,7 +167,7 @@
           </button>
         </div>
       </div>
-      
+
       <div class="d-flex gap-1">
         <button class="btn btn-sm btn-outline-light" onclick="toggleSearchMode()" title="Search conversation" id="search-toggle-btn">
           <i class="bi bi-search"></i>
@@ -704,7 +708,7 @@
       searchInput.focus();
       searchToggleBtn.innerHTML = '<i class="bi bi-x"></i>';
       searchToggleBtn.title = 'Exit search';
-      
+
       // Add search event listener
       searchInput.addEventListener('input', performSearch);
       searchInput.addEventListener('keydown', handleSearchKeydown);
@@ -741,7 +745,7 @@
       if (messageText.includes(searchLower)) {
         message.classList.add('search-result');
         searchResults.push(message);
-        
+
         // Highlight the search term in the message
         highlightSearchTerm(message, searchTerm);
       }
@@ -823,7 +827,7 @@
 
     // Calculate new index
     currentSearchResultIndex += direction;
-    
+
     if (currentSearchResultIndex >= searchResults.length) {
       currentSearchResultIndex = 0;
     } else if (currentSearchResultIndex < 0) {
@@ -843,7 +847,7 @@
     const counter = document.getElementById('search-counter');
     const prevBtn = document.querySelector('[onclick="navigateSearchResults(-1)"]');
     const nextBtn = document.querySelector('[onclick="navigateSearchResults(1)"]');
-    
+
     if (total === 0) {
       counter.style.display = 'none';
       if (prevBtn) prevBtn.disabled = true;
