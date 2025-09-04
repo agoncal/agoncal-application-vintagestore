@@ -28,7 +28,7 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 @SessionScoped
 public interface VintageStoreAssistant {
 
-  String chat(String userMessage);
+  String chat(@UserMessage String userMessage);
 }
 ```
 
@@ -38,7 +38,6 @@ public interface VintageStoreAssistant {
   * Change the code of the WebSocket to the following:
 
 ```java
-
 @OnOpen
 public String onOpen() throws Exception {
   LOG.info("WebSocket chat connection opened");
@@ -75,8 +74,9 @@ public void onClose() {
 * Show Terms and Conditions
 * Login/Profile/Logout
 * Show logs
-* Chat: send a few messages
-* Chat: CLEAR CONVERSATION / disconnect / connect
+* 🧠 "Hi"
+* 🧠 "Echo"
+* CLEAR CONVERSATION / disconnect / connect
 * Show the code `VintageStoreAssistant` and `VintageStoreChatBot`
 * => I want to add a chat bot to the VintageStore application
 

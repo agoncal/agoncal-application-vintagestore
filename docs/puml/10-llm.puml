@@ -4,7 +4,7 @@ title Adding an AI Chat Bot
 
 actor User
 box "Local" #LightGreen
-participant "WebSocket\n/chat" as WS
+boundary "WebSocket\n/chat" as WS
 participant "VintageStore\nChatBot" as ChatBot
 participant "VintageStore\nAssistant" as Assistant
 end box
