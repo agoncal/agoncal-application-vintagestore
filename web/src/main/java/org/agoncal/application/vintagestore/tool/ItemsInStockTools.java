@@ -18,7 +18,7 @@ public class ItemsInStockTools {
 
   @Tool(name = "get_top_rated_items", value = "Retrieves all items with the highest rating (5 stars) from the vintage store catalog. Use this when customers ask for bestsellers, highest-rated, or premium recommendations.")
   List<Item> getTopRatedItems() {
-    LOG.info("getTopRatedItems()");
+    LOG.debug("getTopRatedItems()");
 
     try {
       UserTransaction userTransaction = Arc.container().instance(UserTransaction.class).get();
@@ -43,7 +43,7 @@ public class ItemsInStockTools {
 
   @Tool(name = "search_catalog", value = "Searches the entire vintage store catalog by keyword, looking through titles, descriptions, and metadata. Use this for broad searches when customers describe what they're looking for rather than specific titles.")
   List<Item> searchItems(@V("Keyword or phrase to search for in titles, descriptions, or content") String keyword) {
-    LOG.info("searchItems(" + keyword + ")");
+    LOG.debug("searchItems(" + keyword + ")");
     if (keyword == null || keyword.trim().isEmpty()) {
       LOG.info("Search keyword is null or empty, returning empty list");
       return Collections.emptyList();

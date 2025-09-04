@@ -24,7 +24,6 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 * In `VintageStoreAssistant` just leave the following code:
 
 ```java
-
 @SessionScoped
 public interface VintageStoreAssistant {
 
@@ -101,6 +100,7 @@ public void onClose() {
 * Disconnect and connect the chat websocket
 * 🧠 "Do you know anything about VintageStore ?"
 * 🧠 "What is the capital of France ?"
+* 🧠 "What's the day today?'"
 * Show logs and check the system prompt (look for `"system"`) and look for `The current date is`
 * 🧠 "I HATE YOU AND YOUR WEBSITE"
 
@@ -151,15 +151,16 @@ public void onClose() {
 * Now CLEAR THE CONVERSATION in the chat
 * Implement `redisChatMemoryStore.deleteMessages("default");` in the `@OnTextMessage` method
 * Implement `redisChatMemoryStore.deleteMessages("default");` in the `@OnClose` method
-
-## 22 - Multiple User Chat History
-
 * In Chrome
   * 🧠 "My name is Antonio"
   * 🧠 "What's my name ?"
 * In Firefox
   * 🧠 "What's my name ?"
   * 🧠 "No, my name is Maria"
+* => One unique conversation is stored 
+
+## 22 - Multiple User Chat History
+
 * Show the discussion in Redis
 * Add `@Inject WebSocketConnection webSocketConnection;`
 * Add memory id `String chat(@MemoryId String sessionId, @UserMessage String userMessage);`
@@ -168,7 +169,14 @@ public void onClose() {
 * Add connection id to remove `redisChatMemoryStore.deleteMessages(webSocketConnection.id());` in `@OnClose` and `@OnTextMessage`
 * Add connection id to ChatMemoryProvider `.id(webSocketConnection.id())`
 * Restart Quarkus (press 's' in the terminal)
+* In Chrome
+  * 🧠 "My name is Antonio"
+  * 🧠 "What's my name ?"
+* In Firefox
+  * 🧠 "What's my name ?"
+  * 🧠 "No, my name is Maria"
 * Show the 2 discussions in Redis
+* Clear one conversation and show Redis
 * 🧠 "What are the Terms and Conditions of VintageStore ?"
 * 🧠 "What is your VAT number ?"
 
@@ -201,11 +209,11 @@ public void onClose() {
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
 * 🧠 "Give me all my user details"
-* 🧠 "Do you have any book on Java ?"
+* 🧠 "When were the terms and condition updated?"
 * 🧠 "What are the top-rated CDs ?"
-* 🧠 "What are the currencies I can pay with ?"
 * But we need an external service to convert to Euros
-* 🧠 "You use dollars. But how much is the book in Euros ?"
+* 🧠 "You use dollars. But how much are the CDs in Euros ?"
+* => We need to access an external service
 
 ## 41 - MCP (lc-mcp)
 
@@ -214,9 +222,12 @@ public void onClose() {
 * Add the MCP to the assistant with `.toolProvider(toolProvider)`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
-* 🧠 "Do you have any book on Java ?"
-* 🧠 "How much are the books in Euros ?"
+* 🧠 "What are the top-rated CDs ?"
+* 🧠 "How much are the CDs in Euros ?"
 * Show the log `dollars to euros:`
+* 🧠 "Any books on Java?"
+* 🧠 "Any books on Python?"
+* => Too many tokens sent
 
 ## 50 - Token consumption (lc-token)
 
@@ -242,6 +253,7 @@ public void onClose() {
 * Sign-in as `john.doe`
 * 🧠 "Hi"
 * 🧠 "I like the colour black"
+* 🧠 "What are my profile details?"
 * 🧠 "Any books on Java?"
 * 🧠 "What are the top rated CDs ?"
 * 🧠 "What is my favourite colour ?"
