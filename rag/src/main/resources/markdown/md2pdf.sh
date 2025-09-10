@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# brew install pandoc
+
 # Create the PDF output directory if it doesn't exist
 PDF_DIR="../pdf"
 mkdir -p "$PDF_DIR"

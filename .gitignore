@@ -50,6 +50,7 @@ nb-configuration.xml
 create.sql
 drop.sql
 *.pptx
+*.docx
 DEMO.pdf
 *dummy*
 *.png
