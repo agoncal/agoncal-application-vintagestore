@@ -82,14 +82,14 @@ public class VintageStoreChatBot {
 
   @OnOpen
   public String onOpen() throws Exception {
-    LOG.info("WebSocket chat connection opened with session id " + webSocketConnection.id());
+    LOG.info("WebSocket chat connection opened with session id " + sessionId());
     assistant = initializeVintageStoreAssistant();
     return WELCOME_PROMPT;
   }
 
   @OnTextMessage
   public String onMessage(String message) throws Exception {
-    LOG.info("Received message: " + message + " with session id " + webSocketConnection.id());
+    LOG.info("Received message: " + message + " with session id " + sessionId());
 
     if ("CLEAR_CONVERSATION".equals(message)) {
       LOG.info("Clearing conversation history");
@@ -110,7 +110,7 @@ public class VintageStoreChatBot {
 
   @OnClose
   public void onClose() {
-    LOG.info("WebSocket chat connection closed with session id " + webSocketConnection.id());
+    LOG.info("WebSocket chat connection closed with session id " + sessionId());
     redisChatMemoryStore.deleteMessages(webSocketConnection.id());
     if (qdrantClient != null) {
       LOG.info("Closing Qdrant client connection");
@@ -132,6 +132,14 @@ public class VintageStoreChatBot {
       LOG.warn(ORANGE + message + RESET);
     } else {
       LOG.error(RED + message + RESET);
+    }
+  }
+
+  private String sessionId() {
+    if (webSocketConnection == null) {
+      return "default";
+    } else {
+      return webSocketConnection.id();
     }
   }
 
