@@ -32,20 +32,20 @@ public interface VintageStoreAssistant {
 ```
 
 * In `VintageStoreChatBot`:
-  * Remove `@Inject WebSocketConnection webSocketConnection;`
+  * Remove the `@Inject` annotation on the `WebSocketConnection`
   * Remove the entire method `initializeVintageStoreAssistant`
   * Change the code of the WebSocket to the following:
 
 ```java
 @OnOpen
 public String onOpen() throws Exception {
-  LOG.info("WebSocket chat connection opened");
+  LOG.info("WebSocket chat connection opened with session id " + sessionId());
   return WELCOME_PROMPT;
 }
 
 @OnTextMessage
 public String onMessage(String message) throws Exception {
-  LOG.info("Received message: " + message);
+  LOG.info("Received message: " + message + " with session id " + sessionId());
 
   if ("CLEAR_CONVERSATION".equals(message)) {
     LOG.info("Clearing conversation history");
@@ -60,7 +60,7 @@ public String onMessage(String message) throws Exception {
 
 @OnClose
 public void onClose() {
-  LOG.info("WebSocket chat connection closed");
+  LOG.info("WebSocket chat connection closed with session id " + sessionId());
 }
 ```
 
@@ -89,7 +89,7 @@ public void onClose() {
 * 🧠 "What is the capital of France ?"
 * Show logs and check the LLM calls (look for `"content"` in the logs)
 * This is totally useless for VintageStore, so we will add a system prompt
-* 🧠 "Do you know anything about VintageStore ?"
+* 🧠 **"Do you know anything about VintageStore ?"**
 
 ## 11 - Add a System Prompt  (lc-prompt)
 
@@ -102,7 +102,7 @@ public void onClose() {
 * 🧠 "What is the capital of France ?"
 * 🧠 "What's the day today?'"
 * Show logs and check the system prompt (look for `"system"`) and look for `The current date is`
-* 🧠 "I HATE YOU AND YOUR WEBSITE"
+* 🧠 **"I HATE YOU AND YOUR WEBSITE"**
 
 ## 12 - Moderation (lc-moderate)
 
@@ -116,9 +116,9 @@ public void onClose() {
 * 🧠 "I HATE YOU AND YOUR WEBSITE"
 * Show the logs and look for `hate_and_discrimination`
 * => LLM has no memory
-* 🧠 "What's my name ?"
-* 🧠 "My name is Antonio"
-* 🧠 "What's my name ?"
+* 🧠 **"What's my name ?"**
+* 🧠 **"My name is Antonio"**
+* 🧠 **"What's my name ?"**
 
 ## 20 - Memory (lc-memory)
 
@@ -152,11 +152,11 @@ public void onClose() {
 * Implement `redisChatMemoryStore.deleteMessages("default");` in the `@OnTextMessage` method
 * Implement `redisChatMemoryStore.deleteMessages("default");` in the `@OnClose` method
 * In Chrome
-  * 🧠 "My name is Antonio"
-  * 🧠 "What's my name ?"
+  * 🧠 **"My name is Antonio"**
+  * 🧠 **"What's my name ?"**
 * In Firefox
-  * 🧠 "What's my name ?"
-  * 🧠 "No, my name is Maria"
+  * 🧠 **"What's my name ?"**
+  * 🧠 **"No, my name is Maria"**
 * => One unique conversation is stored 
 
 ## 22 - Multiple User Chat History
@@ -164,7 +164,6 @@ public void onClose() {
 * Show the discussion in Redis
 * Add `@Inject WebSocketConnection webSocketConnection;`
 * Add memory id `String chat(@MemoryId String sessionId, @UserMessage String userMessage);`
-* Add connection id to logs `LOG.info("WebSocket chat connection opened with ID: " + webSocketConnection.id());`
 * Add connection id to chat `return assistant.chat(webSocketConnection.id(), message);`
 * Add connection id to remove `redisChatMemoryStore.deleteMessages(webSocketConnection.id());` in `@OnClose` and `@OnTextMessage`
 * Add connection id to ChatMemoryProvider `.id(webSocketConnection.id())`
@@ -177,8 +176,8 @@ public void onClose() {
   * 🧠 "No, my name is Maria"
 * Show the 2 discussions in Redis
 * Clear one conversation and show Redis
-* 🧠 "What are the Terms and Conditions of VintageStore ?"
-* 🧠 "What is your VAT number ?"
+* 🧠 **"What are the Terms and Conditions of VintageStore ?"**
+* 🧠 **"What is your VAT number ?"**
 
 ## 30 - RAG (lc-rag)
 
@@ -198,9 +197,9 @@ public void onClose() {
 * 🧠 "What are the currencies I can pay with ?"
 * Show the logs
 * But we need to access tools
-* 🧠 "Give me all my user details"
-* 🧠 "Do you have any book on Java ?"
-* 🧠 "What are the top-rated CDs ?"
+* 🧠 **"Give me all my user details"**
+* 🧠 **"Do you have any book on Java ?"**
+* 🧠 **"What are the top-rated CDs ?"**
 
 ## 40 - Tools (lc-tools)
 
@@ -212,7 +211,7 @@ public void onClose() {
 * 🧠 "When were the terms and condition updated?"
 * 🧠 "What are the top-rated CDs ?"
 * But we need an external service to convert to Euros
-* 🧠 "You use dollars. But how much are the CDs in Euros ?"
+* 🧠 **"You use dollars. But how much are the CDs in Euros ?"**
 * => We need to access an external service
 
 ## 41 - MCP (lc-mcp)
@@ -225,8 +224,8 @@ public void onClose() {
 * 🧠 "What are the top-rated CDs ?"
 * 🧠 "How much are the CDs in Euros ?"
 * Show the log `dollars to euros:`
-* 🧠 "Any books on Java?"
-* 🧠 "Any books on Python?"
+* 🧠 **"Any books on Java?"**
+* 🧠 **"Any books on Python?"**
 * => Too many tokens sent
 
 ## 50 - Token consumption (lc-token)
