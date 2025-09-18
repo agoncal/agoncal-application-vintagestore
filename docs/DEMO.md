@@ -66,7 +66,7 @@ public void onClose() {
 
 ## 01 - Show the VintageStore application
 
-* Start PostgreSQL database (`docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up`) and Quarkus (`mvn quarkus:dev`)
+* Start PostgreSQL database (`docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up`)
 * Start Quarkus in dev mode with `mvn quarkus:dev`
 * Go to http://localhost:8080
 * Browse CD and Books
@@ -77,7 +77,7 @@ public void onClose() {
 * 🧠 "Echo"
 * CLEAR CONVERSATION / disconnect / connect
 * Show the code `VintageStoreAssistant` and `VintageStoreChatBot`
-* => I want to add a chat bot to the VintageStore application
+* => **I want to add a chat bot to the VintageStore application**
 
 ## 10 - Add an LLM to the Chat Bot (lc-llm)
 
@@ -120,26 +120,13 @@ public void onClose() {
 * 🧠 **"My name is Antonio"**
 * 🧠 **"What's my name ?"**
 
-## 20 - Memory (lc-memory)
+## 20 - Memory in Persistent Storage (lc-redis)
 
 * REMOVE MODERATION BECAUSE IT WILL CLASH WITH MEMORY `//@Moderate`
-* In `VintageStoreChatBot` add the memory by running `lc-memory`
-* Add `.chatMemory(chatMemory)`
-* Restart Quarkus (press 's' in the terminal)
-* Disconnect and connect the chat websocket
-* 🧠 "What's my name ?"
-* 🧠 "My name is Antonio"
-* 🧠 "What's my name ?"
-* Show the logs and check the memory (look for `"What's my name ?"` in the logs)
-* DISCONNECT AND CONNECT WEBSOCKET, MEMORY IS LOST
-* 🧠 "What's my name ?"
-* => Context is lost because memory is not persistent
-
-## 21 - Memory in Persistent Storage (lc-redis)
-
 * Start Redis with `docker compose -p vintagestore -f infrastructure/docker/redis.yml up`
 * Show the Redis Commander http://localhost:8089
-* Remove `ChatMemory` and execute `lc-redis`
+* In `VintageStoreChatBot` add the memory by running `lc-redis`
+* Add `.chatMemoryProvider(redisChatMemoryProvider)`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
 * 🧠 "What's my name ?"
@@ -162,11 +149,11 @@ public void onClose() {
 ## 22 - Multiple User Chat History
 
 * Show the discussion in Redis
-* Add `@Inject WebSocketConnection webSocketConnection;`
+* Add `@Inject` to `WebSocketConnection webSocketConnection;`
 * Add memory id `String chat(@MemoryId String sessionId, @UserMessage String userMessage);`
 * Add connection id to chat `return assistant.chat(webSocketConnection.id(), message);`
-* Add connection id to remove `redisChatMemoryStore.deleteMessages(webSocketConnection.id());` in `@OnClose` and `@OnTextMessage`
 * Add connection id to ChatMemoryProvider `.id(webSocketConnection.id())`
+* Add connection id to remove `redisChatMemoryStore.deleteMessages(webSocketConnection.id());` in `@OnClose` and `@OnTextMessage`
 * Restart Quarkus (press 's' in the terminal)
 * In Chrome
   * 🧠 "My name is Antonio"
@@ -579,15 +566,6 @@ private VintageStoreAssistant initializeVintageStoreAssistant() {
 
   return assistant;
 }
-```
-
-lc-memory - LangChain4j Demo - Adds volatile memory
-
-```java
-// Initialize the memory
-ChatMemory chatMemory = MessageWindowChatMemory.builder()
-    .maxMessages(20)
-    .build();
 ```
 
 lc-moderate - LangChain4j Demo - Adding Moderation
