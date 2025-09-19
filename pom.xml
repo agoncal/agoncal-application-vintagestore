@@ -22,7 +22,7 @@
     <quarkus.platform.version>3.26.2</quarkus.platform.version>
     <quarkus.renarde.version>3.1.1</quarkus.renarde.version>
     <!-- Web -->
-    <bootstrap.version>5.3.7</bootstrap.version>
+    <bootstrap.version>5.3.8</bootstrap.version>
     <bootstrap-icons.version>1.13.1</bootstrap-icons.version>
     <!-- LangChain4j -->
     <langchain4j.version>1.4.0</langchain4j.version>
