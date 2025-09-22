@@ -28,7 +28,7 @@
     <langchain4j.version>1.4.0</langchain4j.version>
     <langchain4j-community.version>1.4.0-beta10</langchain4j-community.version>
     <!-- Plugins -->
-    <compiler-plugin.version>3.14.0</compiler-plugin.version>
+    <compiler-plugin.version>3.14.1</compiler-plugin.version>
     <surefire-plugin.version>3.5.3</surefire-plugin.version>
     <exec-plugin.version>3.5.1</exec-plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
