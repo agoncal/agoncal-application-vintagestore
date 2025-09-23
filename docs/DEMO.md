@@ -89,6 +89,7 @@ public void onClose() {
 * 🧠 "What is the capital of France ?"
 * Show logs and check the LLM calls (look for `"content"` in the logs)
 * This is totally useless for VintageStore, so we will add a system prompt
+* 🧠 **"What's the day today ?"**
 * 🧠 **"Do you know anything about VintageStore ?"**
 
 ## 11 - Add a System Prompt  (lc-prompt)
