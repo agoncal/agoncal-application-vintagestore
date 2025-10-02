@@ -1,0 +1,182 @@
+#!/usr/bin/env bash
+
+# Execute this script to deploy the needed Azure AI Foundry resources to execute the application.
+# For this, you need Azure CLI installed: https://learn.microsoft.com/cli/azure/install-azure-cli
+# If already installed, check the version with `az --version` and make sure it is up to date with `az upgrade`
+# Check the resource providers that are installed with `az provider list --query "[?registrationState=='Registered'].{Namespace:namespace,State:registrationState}" --output table`
+# Register the CognitiveServices provider if it's not registered with `az provider register --namespace 'Microsoft.CognitiveServices'`
+
+
+printf "%s\n" "-----------------------------------"
+printf "%s\n" "Setting up environment variables..."
+printf "%s\n" "-----------------------------------"
+export UNIQUE_IDENTIFIER=${GITHUB_USER:-$(whoami)}
+export PROJECT="vintagestore$UNIQUE_IDENTIFIER"
+export RESOURCE_GROUP="rg-$PROJECT"
+export LOCATION="swedencentral" # check https://learn.microsoft.com/azure/ai-foundry/reference/region-support
+export TAG="$PROJECT"
+export AZURE_AI_FOUNDRY_NAME="ai-$PROJECT"
+
+# Chat Model
+export CHAT="vintagestore-chat"
+export CHAT_DEPLOYMENT="$AGENT_CODE_SAMPLE-model"
+export CHAT_MODEL_FORMAT="OpenAI"
+export CHAT_MODEL_NAME="gpt-5-chat"
+export CHAT_MODEL_VERSION="2025-08-07"
+export CHAT_SKU_CAPACITY="10"
+export CHAT_SKU_NAME="GlobalStandard"
+
+# Moderation
+export MODERATION="vintagestore-moderation"
+export MODERATION_DEPLOYMENT="$AGENT_REFERENCE-model"
+export MODERATION_MODEL_FORMAT="Microsoft"
+export MODERATION_MODEL_NAME="Phi-4"
+export MODERATION_MODEL_VERSION="7"
+export MODERATION_SKU_CAPACITY="1"
+export MODERATION_SKU_NAME="GlobalStandard"
+
+# Embedding
+export EMBEDDING="vintagestore-embedding"
+export EMBEDDING_DEPLOYMENT="$AGENT_RELEASE-model"
+export EMBEDDING_MODEL_FORMAT="Cohere"
+export EMBEDDING_MODEL_NAME="Cohere-embed-v3-english"
+export EMBEDDING_MODEL_VERSION="1"
+export EMBEDDING_SKU_CAPACITY="10"
+export EMBEDDING_SKU_NAME="GlobalStandard"
+
+# Summarization
+export SUMMARIZATION="vintagestore-summarization"
+export SUMMARIZATION_DEPLOYMENT="$AGENT_STATISTICS-model"
+export SUMMARIZATION_MODEL_FORMAT="MistralAI"
+export SUMMARIZATION_MODEL_NAME="mistral-small-2503"
+export SUMMARIZATION_MODEL_VERSION="1"
+export SUMMARIZATION_SKU_CAPACITY="10"
+export SUMMARIZATION_SKU_NAME="GlobalStandard"
+
+# Setting verbose to true will display extra information
+verbose=false
+
+#printf "\n%s\n" "Logging in..."
+#printf "%s\n"   "-------------"
+#az login
+
+
+if [ "$verbose" = true ]; then
+    printf "\n%s\n" "Checking the Azure account..."
+    printf "%s\n"   "-----------------------------"
+    az account show
+fi
+
+
+if [ "$verbose" = true ]; then
+    printf "\n%s\n" "Displaying Azure locations..."
+    printf "%s\n"   "-----------------------------"
+    az account list-locations \
+      --query "sort_by([].{Name:name, DisplayName:displayName, RegionalDisplayName:regionalDisplayName}, &Name)" --output table
+fi
+
+
+printf "\n%s\n" "Creating the resource group..."
+printf "%s\n"   "------------------------------"
+az group create \
+  --name "$RESOURCE_GROUP" \
+  --location "$LOCATION" \
+  --tags system="$TAG"
+
+
+if [ "$verbose" = true ]; then
+    printf "\n%s\n" "Checking the SKUs..."
+    printf "%s\n"   "--------------------"
+    az cognitiveservices account list-skus --location "$LOCATION" --output table
+fi
+
+
+printf "\n%s\n" "Creating Azure AI Foundry service..."
+printf "%s\n"   "------------------------------------"
+az cognitiveservices account create \
+  --resource-group "$RESOURCE_GROUP" \
+  --location "$LOCATION" \
+  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --custom-domain "$AZURE_AI_FOUNDRY_NAME" \
+  --kind AIServices \
+  --sku S0
+
+if [ "$verbose" = true ]; then
+    printf "\n%s\n" "Checking all the available models..."
+    printf "%s\n"   "------------------------------------"
+    az cognitiveservices account list-models \
+      --resource-group "$RESOURCE_GROUP" \
+      --name "$AZURE_AI_FOUNDRY_NAME" \
+      --query "sort_by(@, &format)[].{Format:format,Name:name,Version:version,Sku:skus[0].name,Capacity:skus[0].capacity.default}" \
+      --output table
+fi
+
+
+printf "\n%s\n" "Deploying the Chat model..."
+printf "%s\n"   "---------------------------"
+az cognitiveservices account deployment create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --deployment-name "$CHAT_DEPLOYMENT" \
+  --model-format "$CHAT_MODEL_FORMAT" \
+  --model-name "$CHAT_MODEL_NAME" \
+  --model-version "$CHAT_MODEL_VERSION" \
+  --sku-capacity "$CHAT_SKU_CAPACITY" \
+  --sku-name "$CHAT_SKU_NAME"
+
+
+printf "\n%s\n" "Deploying the Moderation model..."
+printf "%s\n"   "---------------------------------"
+az cognitiveservices account deployment create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --deployment-name "$MODERATION_DEPLOYMENT" \
+  --model-format "$MODERATION_MODEL_FORMAT" \
+  --model-name "$MODERATION_MODEL_NAME" \
+  --model-version "$MODERATION_MODEL_VERSION" \
+  --sku-capacity "$MODERATION_SKU_CAPACITY" \
+  --sku-name "$MODERATION_SKU_NAME"
+
+
+printf "\n%s\n" "Deploying the Embedding model..."
+printf "%s\n"   "--------------------------------"
+az cognitiveservices account deployment create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --deployment-name "$EMBEDDING_DEPLOYMENT" \
+  --model-format "$EMBEDDING_MODEL_FORMAT" \
+  --model-name "$EMBEDDING_MODEL_NAME" \
+  --model-version "$EMBEDDING_MODEL_VERSION" \
+  --sku-capacity "$EMBEDDING_SKU_CAPACITY" \
+  --sku-name "$EMBEDDING_SKU_NAME"
+
+
+printf "\n%s\n" "Deploying the model for the Agent Statistics Writer..."
+printf "%s\n"   "------------------------------------------------------"
+az cognitiveservices account deployment create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --deployment-name "$SUMMARIZATION_DEPLOYMENT" \
+  --model-format "$SUMMARIZATION_MODEL_FORMAT" \
+  --model-name "$SUMMARIZATION_MODEL_NAME" \
+  --model-version "$SUMMARIZATION_MODEL_VERSION" \
+  --sku-capacity "$SUMMARIZATION_SKU_CAPACITY" \
+  --sku-name "$SUMMARIZATION_SKU_NAME"
+
+
+printf "\n%s\n" "Displaying environment variables..."
+printf "%s\n"   "-----------------------------------"
+export AZURE_AI_FOUNDRY_KEY=$(az cognitiveservices account keys list \
+  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --query "key1" \
+  --output tsv)
+printf "\n%s\n" "$AZURE_AI_FOUNDRY_KEY"
+
+# Appending `models` at the end of the URL
+export AZURE_AI_FOUNDRY_ENDPOINT=$(az cognitiveservices account show \
+  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --query "properties.endpoint" \
+  --output tsv)models
+printf "%s\n" "$AZURE_AI_FOUNDRY_ENDPOINT"
