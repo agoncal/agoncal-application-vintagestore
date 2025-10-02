@@ -19,13 +19,13 @@
     <!-- Quarkus -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.26.2</quarkus.platform.version>
+    <quarkus.platform.version>3.28.1</quarkus.platform.version>
     <quarkus.renarde.version>3.1.1</quarkus.renarde.version>
     <!-- Web -->
     <bootstrap.version>5.3.7</bootstrap.version>
     <bootstrap-icons.version>1.13.1</bootstrap-icons.version>
     <!-- LangChain4j -->
-    <langchain4j.version>1.4.0</langchain4j.version>
+    <langchain4j.version>1.6.0</langchain4j.version>
     <langchain4j-community.version>1.4.0-beta10</langchain4j-community.version>
     <!-- Plugins -->
     <compiler-plugin.version>3.14.0</compiler-plugin.version>
