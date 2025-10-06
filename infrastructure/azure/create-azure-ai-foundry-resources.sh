@@ -19,7 +19,7 @@ export AZURE_AI_FOUNDRY_NAME="ai-$PROJECT"
 
 # Chat Model
 export CHAT="vintagestore-chat"
-export CHAT_DEPLOYMENT="$AGENT_CODE_SAMPLE-model"
+export CHAT_DEPLOYMENT="$CHAT-model"
 export CHAT_MODEL_FORMAT="OpenAI"
 export CHAT_MODEL_NAME="gpt-5-chat"
 export CHAT_MODEL_VERSION="2025-08-07"
@@ -28,7 +28,7 @@ export CHAT_SKU_NAME="GlobalStandard"
 
 # Moderation
 export MODERATION="vintagestore-moderation"
-export MODERATION_DEPLOYMENT="$AGENT_REFERENCE-model"
+export MODERATION_DEPLOYMENT="$MODERATION-model"
 export MODERATION_MODEL_FORMAT="Microsoft"
 export MODERATION_MODEL_NAME="Phi-4"
 export MODERATION_MODEL_VERSION="7"
@@ -37,20 +37,20 @@ export MODERATION_SKU_NAME="GlobalStandard"
 
 # Embedding
 export EMBEDDING="vintagestore-embedding"
-export EMBEDDING_DEPLOYMENT="$AGENT_RELEASE-model"
+export EMBEDDING_DEPLOYMENT="$EMBEDDING-model"
 export EMBEDDING_MODEL_FORMAT="Cohere"
 export EMBEDDING_MODEL_NAME="Cohere-embed-v3-english"
 export EMBEDDING_MODEL_VERSION="1"
-export EMBEDDING_SKU_CAPACITY="10"
+export EMBEDDING_SKU_CAPACITY="1"
 export EMBEDDING_SKU_NAME="GlobalStandard"
 
 # Summarization
 export SUMMARIZATION="vintagestore-summarization"
-export SUMMARIZATION_DEPLOYMENT="$AGENT_STATISTICS-model"
-export SUMMARIZATION_MODEL_FORMAT="MistralAI"
+export SUMMARIZATION_DEPLOYMENT="$SUMMARIZATION-model"
+export SUMMARIZATION_MODEL_FORMAT="Mistral AI"
 export SUMMARIZATION_MODEL_NAME="mistral-small-2503"
 export SUMMARIZATION_MODEL_VERSION="1"
-export SUMMARIZATION_SKU_CAPACITY="10"
+export SUMMARIZATION_SKU_CAPACITY="1"
 export SUMMARIZATION_SKU_NAME="GlobalStandard"
 
 # Setting verbose to true will display extra information
