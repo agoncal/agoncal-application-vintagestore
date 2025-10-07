@@ -5,6 +5,8 @@
 # If already installed, check the version with `az --version` and make sure it is up to date with `az upgrade`
 # Check the resource providers that are installed with `az provider list --query "[?registrationState=='Registered'].{Namespace:namespace,State:registrationState}" --output table`
 # Register the CognitiveServices provider if it's not registered with `az provider register --namespace 'Microsoft.CognitiveServices'`
+# Register the Redis provider if it's not registered with `az provider register --namespace 'Microsoft.Cache'`
+# Register the Azure AI Search provider if it's not registered with `az provider register --namespace 'Microsoft.Search'`
 
 
 printf "%s\n" "-----------------------------------"
@@ -15,7 +17,13 @@ export PROJECT="vintagestore$UNIQUE_IDENTIFIER"
 export RESOURCE_GROUP="rg-$PROJECT"
 export LOCATION="swedencentral" # check https://learn.microsoft.com/azure/ai-foundry/reference/region-support
 export TAG="$PROJECT"
+
+# Azure AI Search
 export AZURE_AI_FOUNDRY_NAME="ai-$PROJECT"
+export AZURE_AI_SEARCH_NAME="search-$PROJECT"
+
+# Redis
+export REDIS_NAME="redis-$PROJECT"
 
 # Chat Model
 export CHAT="vintagestore-chat"
@@ -82,6 +90,49 @@ az group create \
   --name "$RESOURCE_GROUP" \
   --location "$LOCATION" \
   --tags system="$TAG"
+
+
+printf "\n%s\n" "Creating the Redis cache..."
+printf "%s\n"   "---------------------------"
+az redis create \
+  --name "$REDIS_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --location "$LOCATION" \
+  --sku Basic \
+  --vm-size c0
+
+REDIS_HOSTNAME=$(
+  az redis show \
+    --name "$REDIS_NAME" \
+    --resource-group "$RESOURCE_GROUP" \
+    --query "hostName" \
+    --output tsv
+)
+echo "REDIS_HOSTNAME=$REDIS_HOSTNAME"
+
+
+printf "\n%s\n" "Creating the AI Search Service..."
+printf "%s\n"   "---------------------------------"
+az search service create \
+  --name "$AZURE_AI_SEARCH_NAME" \
+  --resource-group "$RESOURCE_GROUP" \
+  --location "$LOCATION" \
+  --sku Standard \
+  --partition-count 1 \
+  --replica-count 1
+
+echo "Storing the key and endpoint in environment variables..."
+echo "--------------------------------------------------------"
+AZURE_SEARCH_ENDPOINT="https://$AZURE_AI_SEARCH_NAME.search.windows.net"
+AZURE_SEARCH_KEY=$(
+    az search admin-key show \
+      --service-name "$AZURE_AI_SEARCH_NAME" \
+      --resource-group "$RESOURCE_GROUP" \
+      | jq -r .primaryKey
+)
+
+echo "AZURE_SEARCH_ENDPOINT=$AZURE_SEARCH_ENDPOINT"
+echo "AZURE_SEARCH_KEY=$AZURE_SEARCH_KEY"
 
 
 if [ "$verbose" = true ]; then
@@ -171,7 +222,6 @@ export AZURE_AI_FOUNDRY_KEY=$(az cognitiveservices account keys list \
   --resource-group "$RESOURCE_GROUP" \
   --query "key1" \
   --output tsv)
-printf "\n%s\n" "$AZURE_AI_FOUNDRY_KEY"
 
 # Appending `models` at the end of the URL
 export AZURE_AI_FOUNDRY_ENDPOINT=$(az cognitiveservices account show \
@@ -179,4 +229,6 @@ export AZURE_AI_FOUNDRY_ENDPOINT=$(az cognitiveservices account show \
   --resource-group "$RESOURCE_GROUP" \
   --query "properties.endpoint" \
   --output tsv)models
-printf "%s\n" "$AZURE_AI_FOUNDRY_ENDPOINT"
+
+echo "AZURE_AI_FOUNDRY_KEY=$AZURE_AI_FOUNDRY_KEY"
+echo "AZURE_AI_FOUNDRY_ENDPOINT=$AZURE_AI_FOUNDRY_ENDPOINT"
