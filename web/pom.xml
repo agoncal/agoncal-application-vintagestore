@@ -58,15 +58,15 @@
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
-      <artifactId>langchain4j-azure-ai-search</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-anthropic</artifactId>
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-mistral-ai</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-ollama</artifactId>
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
@@ -83,6 +83,11 @@
     <dependency>
       <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-mcp</artifactId>
+    </dependency>
+    <!-- Azure -->
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-azure-ai-search</artifactId>
     </dependency>
     <!-- Quarkus -->
     <dependency>

@@ -15,11 +15,15 @@ import dev.langchain4j.model.cohere.CohereEmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.mistralai.MistralAiModerationModel;
 import dev.langchain4j.model.moderation.ModerationModel;
+import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 import dev.langchain4j.model.output.TokenUsage;
+import dev.langchain4j.rag.DefaultRetrievalAugmentor;
+import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
+import dev.langchain4j.rag.query.router.QueryRouter;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.ModerationException;
 import dev.langchain4j.service.Result;
@@ -33,6 +37,8 @@ import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
 import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.inject.Inject;
+import org.agoncal.application.vintagestore.guardrail.ModeratingInputMessageGuardrail;
+import org.agoncal.application.vintagestore.rag.IsContentRelatedQueryRouter;
 import org.agoncal.application.vintagestore.summarize.OpenAISummarizer;
 import org.agoncal.application.vintagestore.summarize.SummarizingTokenWindowChatMemory;
 import org.agoncal.application.vintagestore.tool.ItemsInStockTools;
@@ -145,6 +151,10 @@ public class VintageStoreChatBot {
 
   private VintageStoreAssistant initializeVintageStoreAssistant() {
 
+    // =============================
+    // ==        AI MODELS        ==
+    // =============================
+
     // Initialize the chat model
     ChatModel anthropicChatModel = AnthropicChatModel.builder()
       .apiKey(ANTHROPIC_API_KEY)
@@ -172,6 +182,16 @@ public class VintageStoreChatBot {
       .logResponses(IS_LOGGING_ENABLED)
       .build();
 
+    // Initialize the query router model
+    ChatModel ollamaQueryRouterModel = OllamaChatModel.builder()
+      .baseUrl("http://localhost:11434/")
+      .modelName("phi4-mini")
+      .temperature(0.1)
+      .timeout(ofSeconds(60))
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
     // Initialize the summary model
     ChatModel openAiSummarizationModel = OpenAiChatModel.builder()
       .apiKey(OPENAI_API_KEY)
@@ -180,7 +200,11 @@ public class VintageStoreChatBot {
       .logResponses(IS_LOGGING_ENABLED)
       .build();
 
-    // Initialize the memory
+
+    // =============================
+    // ==         MEMORY          ==
+    // =============================
+
     redisChatMemoryStore = RedisChatMemoryStore.builder()
       .host("localhost")
       .port(6379)
@@ -193,7 +217,12 @@ public class VintageStoreChatBot {
       .chatMemoryStore(redisChatMemoryStore)
       .build();
 
-    // Initialize the embedding model and embedding store
+
+    // =============================
+    // ==           RAG           ==
+    // =============================
+
+    // Initialize the embedding store
     qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false).build());
 
     QdrantEmbeddingStore qdrantEmbeddingStore = QdrantEmbeddingStore.builder()
@@ -201,9 +230,28 @@ public class VintageStoreChatBot {
       .collectionName(QDRANT_COLLECTION)
       .build();
 
-    ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(qdrantEmbeddingStore, cohereEmbeddingModel);
+    ContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
+      .embeddingStore(qdrantEmbeddingStore)
+      .embeddingModel(cohereEmbeddingModel)
+      .maxResults(2)
+      .minScore(0.6)
+      .build();
 
-    // MCP Currency
+    // Creating the query router
+    QueryRouter queryRouter = IsContentRelatedQueryRouter.builder()
+      .chatModel(ollamaQueryRouterModel)
+      .contentRetriever(contentRetriever)
+      .build();
+
+    RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
+      .queryRouter(queryRouter)
+      .build();
+
+
+    // =============================
+    // ==           MCP           ==
+    // =============================
+
     McpTransport transport = new StreamableHttpMcpTransport.Builder()
       .url("http://localhost:8780/mcp")
       .logRequests(IS_LOGGING_ENABLED)
@@ -219,13 +267,19 @@ public class VintageStoreChatBot {
       .mcpClients(mcpClient)
       .build();
 
+
+    // =============================
+    // == VINTAGE STORE ASSISTANT ==
+    // =============================
+
     // Create the VintageStoreAssistant with all components
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicChatModel)
       .moderationModel(mistralModerationModel)
       .chatMemoryProvider(redisChatMemoryProvider)
-      .contentRetriever(qdrantContentRetriever)
+      .retrievalAugmentor(retrievalAugmentor)
       .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
+//      .inputGuardrails(new ModeratingInputMessageGuardrail(mistralModerationModel))
       .toolProvider(mcpToolProvider)
       .build();
 

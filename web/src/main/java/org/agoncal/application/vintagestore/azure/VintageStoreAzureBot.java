@@ -1,4 +1,4 @@
-package org.agoncal.application.vintagestore.chat;
+package org.agoncal.application.vintagestore.azure;
 
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
 import dev.langchain4j.mcp.McpToolProvider;
@@ -29,6 +29,7 @@ import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
 import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.inject.Inject;
+import org.agoncal.application.vintagestore.chat.VintageStoreAssistant;
 import org.agoncal.application.vintagestore.summarize.OpenAISummarizer;
 import org.agoncal.application.vintagestore.summarize.SummarizingTokenWindowChatMemory;
 import org.agoncal.application.vintagestore.tool.ItemsInStockTools;
@@ -38,7 +39,7 @@ import org.jboss.logging.Logger;
 
 import static java.time.Duration.ofSeconds;
 
-@WebSocket(path = "/chat")
+@WebSocket(path = "/chatazure")
 public class VintageStoreAzureBot {
 
   private static final Logger LOG = Logger.getLogger(VintageStoreAzureBot.class);
