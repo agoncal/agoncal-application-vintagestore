@@ -109,7 +109,6 @@ public class VintageStoreChatBot {
       Result<String> response = assistant.chat(webSocketConnection.id(), message);
       logInvocation(startTime, response.tokenUsage());
       return response.content();
-
     } catch (InputGuardrailException e) {
       Throwable cause = e.getCause();
       if (cause instanceof ModerationException) {
@@ -199,14 +198,6 @@ public class VintageStoreChatBot {
       .logResponses(IS_LOGGING_ENABLED)
       .build();
 
-    // Initialize the summary model
-    ChatModel openAiSummarizationModel = OpenAiChatModel.builder()
-      .apiKey(OPENAI_API_KEY)
-      .modelName(GPT_4_1_MINI)
-      .logRequests(IS_LOGGING_ENABLED)
-      .logResponses(IS_LOGGING_ENABLED)
-      .build();
-
 
     // =============================
     // ==         MEMORY          ==
@@ -217,10 +208,9 @@ public class VintageStoreChatBot {
       .port(6379)
       .build();
 
-    ChatMemoryProvider redisChatMemoryProvider = memoryId -> SummarizingTokenWindowChatMemory.builder()
+    ChatMemoryProvider redisChatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
       .id(webSocketConnection.id())
-      .maxTokens(MAX_TOKENS, new OpenAiTokenCountEstimator(GPT_4_1_MINI))
-      .summarizer(new OpenAISummarizer((OpenAiChatModel) openAiSummarizationModel, TOKEN_LIMIT))
+      .maxMessages(20)
       .chatMemoryStore(redisChatMemoryStore)
       .build();
 
@@ -237,17 +227,15 @@ public class VintageStoreChatBot {
       .collectionName(QDRANT_COLLECTION)
       .build();
 
-    ContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
+    ContentRetriever qdrantContentRetriever = EmbeddingStoreContentRetriever.builder()
       .embeddingStore(qdrantEmbeddingStore)
       .embeddingModel(cohereEmbeddingModel)
-      .maxResults(2)
-      .minScore(0.6)
       .build();
 
     // Creating the query router
     QueryRouter queryRouter = IsContentRelatedQueryRouter.builder()
       .chatModel(ollamaQueryRouterModel)
-      .contentRetriever(contentRetriever)
+      .contentRetriever(qdrantContentRetriever)
       .build();
 
     RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
@@ -272,6 +260,7 @@ public class VintageStoreChatBot {
 
     McpToolProvider mcpToolProvider = McpToolProvider.builder()
       .mcpClients(mcpClient)
+      .filter((client, tool) -> tool.name().contains("converts_usd_to"))
       .build();
 
 
@@ -279,7 +268,6 @@ public class VintageStoreChatBot {
     // == VINTAGE STORE ASSISTANT ==
     // =============================
 
-    // Create the VintageStoreAssistant with all components
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicChatModel)
       .chatMemoryProvider(redisChatMemoryProvider)

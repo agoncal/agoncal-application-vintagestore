@@ -20,6 +20,9 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 * Start Ollama
 * Start Qdrant and remove the collection `VintageStore` if it exists http://localhost:6333/dashboard
 * Start Redis and remove all the keys. Remove also the default http://localhost:8089
+  * `docker exec -it redis redis-cli`
+  * And once in the CLI `FLUSHDB`
+  * CTRL+C to exit the CLI
 * In Intellij IDEA:
   * Uncheck `optimize imports on the fly`
   * Copilot Disable Completion
@@ -36,7 +39,7 @@ public interface VintageStoreAssistant {
 ```
 
 * In `VintageStoreChatBot`:
-  * Remove the `@Inject` annotation on the `WebSocketConnection`
+  * Remove the `@Inject` annotation on the `WebSocketConnection` (just the annotation)
   * Remove the entire method `initializeVintageStoreAssistant`
   * Change the code of the WebSocket to the following:
 
@@ -90,11 +93,11 @@ public void onClose() {
 * Add `String response = assistant.chat(message);` to the `@OnTextMessage` method
 * Restart Quarkus (press 's' in the terminal)
 * 🧠 "Hi"
-* 🧠 "What is the capital of France ?"
+* 🧠 "What is the capital of France?"
 * Show logs and check the LLM calls (look for `"content"` in the logs)
 * This is totally useless for VintageStore, so we will add a system prompt
-* 🧠 **"What's the day today ?"**
-* 🧠 **"Do you know anything about VintageStore ?"**
+* 🧠 **"What's the day today?"**
+* 🧠 **"Do you know anything about VintageStore?"**
 
 ## 11 - Add a System Prompt  (lc-prompt)
 
@@ -103,31 +106,17 @@ public void onClose() {
 * Restart Quarkus (press 's' in the terminal)
 * In Intellij IDEA Quarkus terminal clear the logs with `CMD + K`
 * Disconnect and connect the chat websocket
-* 🧠 "Do you know anything about VintageStore ?"
-* 🧠 "What is the capital of France ?"
-* 🧠 "What's the day today?'"
+* 🧠 "What is the capital of France?"
+* 🧠 "What's the day today?"
+* 🧠 "Do you know anything about VintageStore?"
 * Show logs and check the system prompt (look for `"system"`) and look for `The current date is`
-* 🧠 **"I HATE YOU AND YOUR WEBSITE"**
-
-## 12 - Moderation (lc-moderate)
-
-* In `VintageStoreChatBot` add the moderation model running `lc-moderate`
-* Add `.moderationModel(mistralModerationModel)`
-* Show the text of the `MODERATION_PROMPT`
-* Add `@Moderate` in `VintageStoreAssistant`
-* Restart Quarkus (press 's' in the terminal)
-* In Intellij IDEA Quarkus terminal clear the logs with `CMD + K`
-* Disconnect and connect the chat websocket
-* 🧠 "I HATE YOU AND YOUR WEBSITE"
-* Show the logs and look for `hate_and_discrimination`
 * => LLM has no memory
-* 🧠 **"What's my name ?"**
+* 🧠 **"What's my name?"**
 * 🧠 **"My name is Antonio"**
-* 🧠 **"What's my name ?"**
+* 🧠 **"What's my name?"**
 
 ## 20 - Memory in Persistent Storage (lc-redis)
 
-* REMOVE MODERATION BECAUSE IT WILL CLASH WITH MEMORY `//@Moderate`
 * Start Redis with `docker compose -p vintagestore -f infrastructure/docker/redis.yml up`
 * Show the Redis Commander http://localhost:8089
 * In `VintageStoreChatBot` add the memory by running `lc-redis`
@@ -168,75 +157,106 @@ public void onClose() {
   * 🧠 "No, my name is Maria"
 * Show the 2 discussions in Redis
 * Clear one conversation and show Redis
-* 🧠 **"What are the Terms and Conditions of VintageStore ?"**
-* 🧠 **"What is your VAT number ?"**
+* 🧠 **"I HATE YOU AND YOUR WEBSITE"**
 
-## 30 - RAG (lc-rag)
+## 30 - Guardrails and Moderation (lc-moderate)
+
+* Show code in `ModeratingInputMessageGuardrail`
+* In `VintageStoreChatBot` add the moderation model running `lc-moderate`
+* Show the text of the `MODERATION_PROMPT`
+* Restart Quarkus (press 's' in the terminal)
+* In Intellij IDEA Quarkus terminal clear the logs with `CMD + K`
+* Disconnect and connect the chat websocket
+* 🧠 "I HATE YOU AND YOUR WEBSITE"
+* Show the logs and look for `hate_and_discrimination`
+* 🧠 **"What are the Terms and Conditions of VintageStore?"**
+* 🧠 **"What is your V.A.T. number?"**
+
+## 40 - RAG (lc-rag)
 
 * Show the PDFs in the web application and show that T&C are there
 * Start Qdrant with `docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up`
 * Show Qdrant dashboard with no collection (http://localhost:6333/dashboard)
 * Show code in `DocumentIngestor`
-* `cd rag` and execute `mvn compile exec:java`
+* `cd rag` and execute `mvn clean compile exec:java`
 * Show Qdrant dashboard with `VintageStore` collection and show the text segments
 * Add the code for the `EmbeddingStore` with `lc-rag`
 * Add `.contentRetriever(qdrantContentRetriever)`
 * Move the `qdrantClient.close();` code to the `@OnClose`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
-* 🧠 "What are the Terms and Conditions of VintageStore ?"
-* 🧠 "What is your VAT number ?"
-* 🧠 "What are the currencies I can pay with ?"
+* 🧠 "What are the Terms and Conditions of VintageStore?"
+* 🧠 "What is the V.A.T. number?"
+* 🧠 "What are the currencies I can pay with?"
 * Show the logs
 * But we need to access tools
-* 🧠 **"Give me all my user details"**
-* 🧠 **"Do you have any book on Java ?"**
-* 🧠 **"What are the top-rated CDs ?"**
+* 🧠 **"Can you give me my user details please?"**
+* 🧠 **"When were the terms and condition updated?"**
+* 🧠 **"What are the top-rated CDs?"**
 
-## 40 - Tools (lc-tools)
+## 50 - Tools (lc-tools)
 
 * Show the code of the Tools `LegalDocumentTools`, `ItemsInStockTools`, `UserLoggedInTools`
 * Add the tools with `lc-tools`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
-* 🧠 "Give me all my user details"
+* 🧠 "Can you give me my user details please?"
 * 🧠 "When were the terms and condition updated?"
-* 🧠 "What are the top-rated CDs ?"
+* 🧠 "What are the currencies I can pay with?"
+* 🧠 "What are the top-rated CDs?"
 * But we need an external service to convert to Euros
-* 🧠 **"You use dollars. But how much are the CDs in Euros ?"**
+* 🧠 **"You use dollars. But how much are the CDs in Euros?"**
 * => We need to access an external service
 
-## 41 - MCP (lc-mcp)
+## 51 - MCP (lc-mcp)
 
 * Show the code of the `MCPServerCurrency`
 * Add the MCP client in `VintageStoreChatBot` with `lc-mcp`
-* Add the MCP to the assistant with `.toolProvider(toolProvider)`
+* Add the MCP to the assistant with `.toolProvider(mcpToolProvider)`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
-* 🧠 "What are the top-rated CDs ?"
-* 🧠 "How much are the CDs in Euros ?"
+* 🧠 "What are the top-rated CDs?"
+* 🧠 "How much are the CDs in Euros?"
 * Show the log `dollars to euros:`
 * 🧠 **"Any books on Java?"**
 * 🧠 **"Any books on Python?"**
+* => It's getting slower and slower
 * => Too many tokens sent
 
-## 50 - Token consumption (lc-token)
+## 60 - Token consumption (lc-token)
 
 * Replace method signature `Result<String> chat(@MemoryId String sessionId, @UserMessage String userMessage);`
 * Return the content of the response `return response.content()`
 * Pass the token usage `logInvocation(startTime, response.tokenUsage());`
-* Remove logs `IS_LOGGING_ENABLED = false`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
-* Sign-in as `john.doe`
 * 🧠 "Hi"
-* 🧠 "What are my profile details?"
+* => 2730 tokens
+* => Show RAG
+* => Show Tools and MCP
 * 🧠 "Any books on Java?"
-* 🧠 "What are the top rated CDs ?"
+* => 47589 tokens
+* 🧠 "What are the top rated CDs?"
 * Show the `rate_limit_error`
 * DONT USE CHAT TO SEARCH CATALOG
 
-## 51 - Summarizing conversation (lc-sum)
+## 61 - Query Router for RAG
+
+* Show the code of the `IsContentRelatedQueryRouter`
+* Add the Query Router `VintageStoreChatBot` with `lc-router`
+* Replace `.contentRetriever(qdrantContentRetriever)` with `.retrievalAugmentor(retrievalAugmentor)`
+* Restart Quarkus (press 's' in the terminal)
+* Disconnect and connect the chat websocket
+* 🧠 "Hi"
+* => 2117 instead of 2730 tokens
+
+## 62 - Filtering MCP
+* Add MCP filtering in `McpToolProvider` with `lc-filter`
+* => 1513 instead of 2117 tokens
+
+## 62 - Optimizing internal Tools with database access
+
+## 63 - Summarizing conversation (lc-sum)
 
 * Show the code of `SummarizingTokenWindowChatMemory`
 * In `VintageStoreChatBot` replace `MessageWindowChatMemory` with `SummarizingTokenWindowChatMemory`
@@ -249,11 +269,7 @@ public void onClose() {
 * 🧠 "What are the top rated CDs ?"
 * 🧠 "What is my favourite colour ?"
 
-## Monitoring
-
-## Guardrails
-
-* User inputs is too long
+## Azure and Monitoring
 
 # Final code
 
