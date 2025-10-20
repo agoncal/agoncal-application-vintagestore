@@ -1,6 +1,7 @@
 package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
+import dev.langchain4j.guardrail.InputGuardrailException;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
@@ -108,9 +109,15 @@ public class VintageStoreChatBot {
       Result<String> response = assistant.chat(webSocketConnection.id(), message);
       logInvocation(startTime, response.tokenUsage());
       return response.content();
-    } catch (ModerationException e) {
-      LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + e.moderation());
-      return MODERATION_PROMPT;
+
+    } catch (InputGuardrailException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof ModerationException) {
+        LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + ((ModerationException) cause).moderation());
+        return MODERATION_PROMPT;
+      } else {
+        throw e;
+      }
     }
   }
 
@@ -275,11 +282,10 @@ public class VintageStoreChatBot {
     // Create the VintageStoreAssistant with all components
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicChatModel)
-      .moderationModel(mistralModerationModel)
       .chatMemoryProvider(redisChatMemoryProvider)
+      .inputGuardrails(new ModeratingInputMessageGuardrail(mistralModerationModel))
       .retrievalAugmentor(retrievalAugmentor)
       .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
-//      .inputGuardrails(new ModeratingInputMessageGuardrail(mistralModerationModel))
       .toolProvider(mcpToolProvider)
       .build();
 

@@ -12,7 +12,6 @@ import org.jboss.logging.Logger;
 public class ModeratingInputMessageGuardrail implements InputGuardrail {
 
   private static final Logger LOG = Logger.getLogger(ModeratingInputMessageGuardrail.class);
-  private static final String MODERATION_PROMPT = "I don't know why you are frustrated, but I will redirect you to a human assistant who can help you better. Please wait a moment...";
 
   private final ModerationModel moderationModel;
 
@@ -22,15 +21,13 @@ public class ModeratingInputMessageGuardrail implements InputGuardrail {
 
   @Override
   public InputGuardrailResult validate(UserMessage userMessage) {
-    LOG.info("Moderating message " + userMessage);
-
     Response<Moderation> response = moderationModel.moderate(userMessage);
 
     if (response.content().flagged()) {
-      LOG.error("Moderation response " + response);
-      throw new ModerationException(MODERATION_PROMPT, response.content());
-//      return failure(MODERATION_PROMPT, new ModerationException(MODERATION_PROMPT, response.content()));
+      LOG.error("Moderation: User message has been flagged " + response);
+      return fatal("User message has been flagged", new ModerationException("User message has been flagged", response.content()));
     } else {
+      LOG.info("Moderation: User message is ok");
       return success();
     }
   }
