@@ -27,10 +27,18 @@ cd rag
 ```bash
 # Required external services
 docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up -d
-docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d  
+docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d
 docker compose -p vintagestore -f infrastructure/docker/redis.yml up -d
 
-# Required environment variable
+# Ollama for local LLM inference (query routing)
+# Ollama runs on port 11434 by default
+# Install: https://ollama.ai
+ollama list
+ollama ps
+ollama run phi4-mini
+curl http://localhost:11434/api/tags |jq  # Verify Ollama is running
+
+# Required environment variables
 export ANTHROPIC_API_KEY=your_api_key_here
 export MISTRAL_AI_API_KEY=your_api_key_here
 export COHERE_API_KEY=your_api_key_here
@@ -46,9 +54,15 @@ This is a **multi-module Quarkus application** demonstrating AI-powered e-commer
 
 ### Module Structure
 - **`infrastructure/`** - Docker configurations for PostgreSQL, Qdrant, Redis
-- **`mcp-currency/`** - Currency conversion MCP server component  
+- **`mcp-currency/`** - Currency conversion MCP server component
 - **`rag/`** - Document ingestion system for PDF processing into vector embeddings
 - **`web/`** - Main web application with AI chat functionality
+
+### External Dependencies
+- **PostgreSQL** (port 5432) - Primary database
+- **Qdrant** (port 6333) - Vector database for embeddings
+- **Redis** (port 6379) - Chat memory persistence
+- **Ollama** (port 11434, optional) - Local LLM for query routing with phi4-mini model
 
 ### Core Technology Stack
 - **Quarkus 3.25.4** with Renarde web framework for type-safe templating
@@ -64,6 +78,7 @@ The application features sophisticated **Retrieval Augmented Generation**:
 - **Real-time chat system**: WebSocket endpoint `/chat` with function calling capabilities
 - **Memory management**: Redis-backed conversation persistence with token overflow protection
 - **Function tools**: `ItemsInStockTools`, `LegalDocumentTools`, `UserLoggedInTools` for real-time queries
+- **Query routing**: Ollama-powered query router using phi4-mini model (http://localhost:11434) to determine content relevance
 
 ### Data Model
 Uses **single-table inheritance** with discriminator pattern:

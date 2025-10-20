@@ -33,6 +33,7 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- https://mvnrepository.com/artifact/io.quarkiverse.mcp/quarkus-mcp-server-sse -->
     <dependency>
       <groupId>io.quarkiverse.mcp</groupId>
       <artifactId>quarkus-mcp-server-sse</artifactId>

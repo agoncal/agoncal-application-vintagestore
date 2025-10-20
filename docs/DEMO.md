@@ -4,6 +4,9 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 
 ## 00 - Prepare the demo
 
+* Check listning ports are free
+  * ` lsof -i :8080`
+  * ` lsof -i :8780`
 * Make sure both keys are set and that there is enough credit on the accounts
   * `ANTHROPIC_API_KEY`: https://console.anthropic.com/settings/keys
   * `MISTRAL_AI_API_KEY`: https://admin.mistral.ai/organization/api-keys
@@ -14,6 +17,7 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
   * Qdrant: `docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d`
   * Redis: `docker compose -p vintagestore -f infrastructure/docker/redis.yml up -d`
   * MCP Currency: `docker compose -p vintagestore -f infrastructure/docker/mcp-currency.yml up -d`
+* Start Ollama
 * Start Qdrant and remove the collection `VintageStore` if it exists http://localhost:6333/dashboard
 * Start Redis and remove all the keys. Remove also the default http://localhost:8089
 * In Intellij IDEA:
