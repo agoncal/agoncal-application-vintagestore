@@ -11,9 +11,6 @@ end box
 box "Anthropic" #LightPink
 entity "Claude Sonnet\n(Chat)" as Anthropic
 end box
-box "Mistral AI" #LightPink
-entity "Mistral\nModeration" as Mistral
-end box
 box "Docker" #LightBlue
 database "Redis\n(Chat Memory)" as Redis
 database "PostgreSQL\n(VintageStore DB)" as PostgreSQL
@@ -32,21 +29,14 @@ else Chat
     ChatBot -[#blue]> Assistant: chat(connectionId, message)
     activate Assistant
     Assistant -> Redis: Retrieve chat history
-    Assistant -> Mistral: Moderate message
 
-    alt Message flagged
-        Assistant -[#red]-> ChatBot: ModerationException
-        ChatBot -[#red]-> WS: "I redirect you to a human..."
-    else Message OK
+    Assistant -[#blue]> Anthropic: Generate response with:\n- Chat history\n- User message
+    activate Anthropic
+    Anthropic -[#blue]-> Assistant: AI response
+    deactivate Anthropic
 
-        Assistant -[#blue]> Anthropic: Generate response with:\n- Chat history\n- User message
-        activate Anthropic
-        Anthropic -[#blue]-> Assistant: AI response
-        deactivate Anthropic
-
-        Assistant -> Redis: Store new messages
-        Assistant -[#blue]-> ChatBot: response
-    end
+    Assistant -> Redis: Store new messages
+    Assistant -[#blue]-> ChatBot: response
     deactivate Assistant
 
     ChatBot -[#blue]-> WS: AI response
