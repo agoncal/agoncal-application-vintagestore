@@ -13,7 +13,7 @@
 
   <properties>
     <!-- MCP Server -->
-    <mcp.server.version>1.7.0</mcp.server.version>
+    <mcp.server.version>1.7.1</mcp.server.version>
     <!-- Project -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
