@@ -28,7 +28,7 @@
     <bootstrap-icons.version>1.13.1</bootstrap-icons.version>
     <!-- LangChain4j -->
     <!-- https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-bom -->
-    <langchain4j.version>1.7.1</langchain4j.version>
+    <langchain4j.version>1.8.0</langchain4j.version>
     <!-- https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-community-bom -->
     <langchain4j-community.version>1.7.1-beta14</langchain4j-community.version>
     <!-- Plugins -->
