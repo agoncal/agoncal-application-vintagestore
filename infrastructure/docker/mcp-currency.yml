@@ -1,5 +1,6 @@
 services:
   mcp-currency:
     image: vintagestore/mcp-currency:latest
+    container_name: mcp-currency
     ports:
       - 8780:8780

@@ -73,7 +73,7 @@ public void onClose() {
 
 ## 01 - Show the VintageStore application
 
-* Start PostgreSQL database (`docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up`)
+* Start all Docker containers (`docker compose -p vintagestore -f infrastructure/docker/docker-compose.yml up -d`)
 * Start Quarkus in dev mode with `mvn quarkus:dev`
 * Go to http://localhost:8080
 * Browse CD and Books
@@ -89,8 +89,6 @@ public void onClose() {
 ## 10 - Add an LLM to the Chat Bot (lc-llm)
 
 * In `VintageStoreChatBot`  execute live template `lc-llm`
-* Add `assistant = initializeVintageStoreAssistant();` in the `@OnOpen` method
-* Add `String response = assistant.chat(message);` to the `@OnTextMessage` method
 * Restart Quarkus (press 's' in the terminal)
 * 🧠 "Hi"
 * 🧠 "What is the capital of France?"
@@ -117,10 +115,8 @@ public void onClose() {
 
 ## 20 - Memory in Persistent Storage (lc-redis)
 
-* Start Redis with `docker compose -p vintagestore -f infrastructure/docker/redis.yml up`
 * Show the Redis Commander http://localhost:8089
 * In `VintageStoreChatBot` add the memory by running `lc-redis`
-* Add `.chatMemoryProvider(redisChatMemoryProvider)`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
 * 🧠 "What's my name ?"
@@ -130,8 +126,6 @@ public void onClose() {
 * 🧠 "What's my name ?"
 * Show the Redis Commander and copy the content to the logs.json
 * Now CLEAR THE CONVERSATION in the chat
-* Implement `redisChatMemoryStore.deleteMessages("default");` in the `@OnTextMessage` method
-* Implement `redisChatMemoryStore.deleteMessages("default");` in the `@OnClose` method
 * In Chrome
   * 🧠 **"My name is Antonio"**
   * 🧠 **"What's my name ?"**
@@ -175,14 +169,11 @@ public void onClose() {
 ## 40 - RAG (lc-rag)
 
 * Show the PDFs in the web application and show that T&C are there
-* Start Qdrant with `docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up`
 * Show Qdrant dashboard with no collection (http://localhost:6333/dashboard)
 * Show code in `DocumentIngestor`
 * `cd rag` and execute `mvn clean compile exec:java`
 * Show Qdrant dashboard with `VintageStore` collection and show the text segments
 * Add the code for the `EmbeddingStore` with `lc-rag`
-* Add `.contentRetriever(qdrantContentRetriever)`
-* Move the `qdrantClient.close();` code to the `@OnClose`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
 * 🧠 "What are the Terms and Conditions of VintageStore?"
@@ -212,7 +203,6 @@ public void onClose() {
 
 * Show the code of the `MCPServerCurrency`
 * Add the MCP client in `VintageStoreChatBot` with `lc-mcp`
-* Add the MCP to the assistant with `.toolProvider(mcpToolProvider)`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
 * 🧠 "What are the top-rated CDs?"
@@ -223,7 +213,7 @@ public void onClose() {
 * => It's getting slower and slower
 * => Too many tokens sent
 
-## 60 - Token consumption (lc-token)
+## 60 - Token consumption
 
 * Replace method signature `Result<String> chat(@MemoryId String sessionId, @UserMessage String userMessage);`
 * Return the content of the response `return response.content()`
@@ -240,11 +230,10 @@ public void onClose() {
 * Show the `rate_limit_error`
 * DONT USE CHAT TO SEARCH CATALOG
 
-## 61 - Query Router for RAG
+## 61 - Query Router for RAG (lc-router)
 
 * Show the code of the `IsContentRelatedQueryRouter`
 * Add the Query Router `VintageStoreChatBot` with `lc-router`
-* Replace `.contentRetriever(qdrantContentRetriever)` with `.retrievalAugmentor(retrievalAugmentor)`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
 * 🧠 "Hi"
@@ -632,7 +621,15 @@ public class VintageStoreChatBot {
 lc-llm - LangChain4j Demo - Add an LLM to the Chat Bot
 
 ```java
+-- Add to the @OnOpen method -- assistant = initializeVintageStoreAssistant();
+-- Add to the @OnTextMessage method -- String response = assistant.chat(message);
+
+
 private VintageStoreAssistant initializeVintageStoreAssistant() {
+
+  // =============================
+  // ==        AI MODELS        ==
+  // =============================
 
   // Initialize the chat model
   ChatModel anthropicChatModel = AnthropicChatModel.builder()
@@ -644,7 +641,11 @@ private VintageStoreAssistant initializeVintageStoreAssistant() {
     .logResponses(IS_LOGGING_ENABLED)
     .build();
 
-  // Create the VintageStoreAssistant with all components
+
+  // =============================
+  // == VINTAGE STORE ASSISTANT ==
+  // =============================
+
   VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
     .chatModel(anthropicChatModel)
     .build();
@@ -664,12 +665,20 @@ ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
   .logResponses(IS_LOGGING_ENABLED)
   .build();
 
-  try{
+-- add to AiServices.builder -- .inputGuardrails(new ModeratingInputMessageGuardrail(mistralModerationModel))
+-- add to @OnTextMessage --
+    try {
       // 
-  } catch(ModerationException e) {
-    LOG.warn("/!\\ The customer is not happy /!\\ "+message +" - "+e.moderation());
-    return MODERATION_PROMPT;
-  }
+      } catch (InputGuardrailException e) {
+Throwable cause = e.getCause();
+        if (cause instanceof ModerationException) {
+  LOG.warn("/!\\ The customer is not happy /!\\ " + message + " - " + ((ModerationException) cause).moderation());
+  return MODERATION_PROMPT;
+        } else {
+          throw e;
+        }
+          }
+
 ```
 
 lc-prompt - LangChain4j Demo - Add a System Prompt
@@ -762,11 +771,19 @@ if(qdrantClient !=null){
 lc-redis - langChain4j Demo - Adds Redis
 
 ```java
-// Initialize the memory
-redisChatMemoryStore =RedisChatMemoryStore.builder()
-  .host("localhost")
-  .port(6379)
-  .build();
+-- Add to the AI Assistant -- .chatMemoryProvider(redisChatMemoryProvider)
+-- Add to the CLEAR_CONVERSATION in @OnTextMessage method -- redisChatMemoryStore.deleteMessages("default");
+-- Add to @OnClose method -- redisChatMemoryStore.deleteMessages("default");
+
+
+// =============================
+// ==         MEMORY          ==
+// =============================
+
+redisChatMemoryStore = RedisChatMemoryStore.builder()
+      .host("localhost")
+      .port(6379)
+      .build();
 
 ChatMemoryProvider redisChatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
   .maxMessages(20)
@@ -783,7 +800,10 @@ lc-tools - LangChain4j Demo - Adds tools
 lc-mcp - LangChain4j Demo - Adds MCP Client
 
 ```java
-// MCP Currency
+// =============================
+// ==           MCP           ==
+// =============================
+
 McpTransport transport = new StreamableHttpMcpTransport.Builder()
   .url("http://localhost:8780/mcp")
   .logRequests(IS_LOGGING_ENABLED)
@@ -798,6 +818,35 @@ McpClient mcpClient = new DefaultMcpClient.Builder()
 McpToolProvider mcpToolProvider = McpToolProvider.builder()
   .mcpClients(mcpClient)
   .build();
+
+-- Add to AIService.builder -- .toolProvider(mcpToolProvider)
+```
+
+lc-router - LangChain4j Demo - Adds Query router
+
+```java
+    // Initialize the query router model
+    ChatModel ollamaQueryRouterModel = OllamaChatModel.builder()
+      .baseUrl("http://localhost:11434/")
+      .modelName("phi4-mini")
+      .temperature(0.1)
+      .timeout(ofSeconds(60))
+      .logRequests(IS_LOGGING_ENABLED)
+      .logResponses(IS_LOGGING_ENABLED)
+      .build();
+
+-- Move to RAG
+        // Creating the query router
+        QueryRouter queryRouter = IsContentRelatedQueryRouter.builder()
+            .chatModel(ollamaQueryRouterModel)
+            .contentRetriever(qdrantContentRetriever)
+            .build();
+
+    RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
+            .queryRouter(queryRouter)
+            .build();
+
+-- Replace .contentRetriever(qdrantContentRetriever) with -- .retrievalAugmentor(retrievalAugmentor)`
 ```
 
 lc-sum - LangChain4j Demo - Adds the Summarization
