@@ -1,4 +1,4 @@
-package org.agoncal.application.vintagestore.rag;
+package org.agoncal.application.vintagestore.msfoundry;
 
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
@@ -7,21 +7,17 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
-import io.qdrant.client.QdrantClient;
-import io.qdrant.client.QdrantGrpcClient;
+import static dev.langchain4j.store.embedding.azure.search.AbstractAzureAiSearchEmbeddingStore.DEFAULT_INDEX_NAME;
+import dev.langchain4j.store.embedding.azure.search.AzureAiSearchEmbeddingStore;
 
 import static java.lang.System.exit;
 
 public class QueryDocuments {
 
   // AI-Model API keys from environment variable
-  private static final String COHERE_API_KEY = System.getenv("COHERE_API_KEY");
-  private static final String COHERE_EMBED_ENGLISH = "embed-english-v3.0"; // or embed-english-light-v3.0
-  // Constants for Qdrant configuration
-  private static final String QDRANT_COLLECTION = "VintageStore";
-  private static final String QDRANT_HOST = "localhost";
-  private static final int QDRANT_PORT = 6334;
+  private static final String FOUNDRY_IQ_API_KEY = System.getenv("FOUNDRY_IQ_API_KEY");
+  private static final String FOUNDRY_IQ_URI = System.getenv("FOUNDRY_IQ_URI");
+  private static final String COHERE_EMBED_ENGLISH = "Cohere-embed-v3-english";
 
   private static final boolean IS_LOGGING_ENABLED = true;
 
@@ -53,16 +49,18 @@ public class QueryDocuments {
   }
 
   private static EmbeddingStore<TextSegment> embeddingStore() throws Exception {
-    QdrantClient qdrantClient = new QdrantClient(QdrantGrpcClient.newBuilder(QDRANT_HOST, QDRANT_PORT, false).build());
-    return QdrantEmbeddingStore.builder()
-      .client(qdrantClient)
-      .collectionName(QDRANT_COLLECTION)
+    return AzureAiSearchEmbeddingStore.builder()
+      .endpoint(FOUNDRY_IQ_URI)
+      .apiKey(FOUNDRY_IQ_API_KEY)
+      .indexName(DEFAULT_INDEX_NAME)
+      .dimensions(embeddingModel.dimension())
       .build();
+
   }
 
   private static EmbeddingModel embeddingModel() {
     EmbeddingModel cohereEmbeddingModel = CohereEmbeddingModel.builder()
-      .apiKey(COHERE_API_KEY)
+      .apiKey(FOUNDRY_IQ_API_KEY)
       .modelName(COHERE_EMBED_ENGLISH)
       .inputType("search_document")
       .logRequests(IS_LOGGING_ENABLED)
