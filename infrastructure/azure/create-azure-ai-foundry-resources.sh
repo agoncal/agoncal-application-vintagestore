@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Execute this script to deploy the needed Azure AI Foundry resources to execute the application.
+# Execute this script to deploy the needed Microsoft Foundry resources to execute the application.
 # For this, you need Azure CLI installed: https://learn.microsoft.com/cli/azure/install-azure-cli
 # If already installed, check the version with `az --version` and make sure it is up to date with `az upgrade`
 # Check the resource providers that are installed with `az provider list --query "[?registrationState=='Registered'].{Namespace:namespace,State:registrationState}" --output table`
@@ -8,19 +8,27 @@
 # Register the Redis provider if it's not registered with `az provider register --namespace 'Microsoft.Cache'`
 # Register the Azure AI Search provider if it's not registered with `az provider register --namespace 'Microsoft.Search'`
 
+# Following the Abbreviation recommendations for Azure resources https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations
+
+# Check the following environment variables before executing the script:
+# AZURE_SUBSCRIPTION_ID
 
 printf "%s\n" "-----------------------------------"
 printf "%s\n" "Setting up environment variables..."
 printf "%s\n" "-----------------------------------"
 export UNIQUE_IDENTIFIER=${GITHUB_USER:-$(whoami)}
-export PROJECT="vintagestore$UNIQUE_IDENTIFIER"
+export PROJECT="vintagestorefoundry"
 export RESOURCE_GROUP="rg-$PROJECT"
 export LOCATION="swedencentral" # check https://learn.microsoft.com/azure/ai-foundry/reference/region-support
 export TAG="$PROJECT"
 
-# Azure AI Search
-export AZURE_AI_FOUNDRY_NAME="ai-$PROJECT"
-export AZURE_AI_SEARCH_NAME="search-$PROJECT"
+# Microsoft Foundry
+export MICROSOFT_FOUNDRY="ai-$PROJECT"
+export MICROSOFT_FOUNDRY_IQ="iq-$PROJECT"
+
+# Storage
+export STORAGE_ACCOUNT="st$PROJECT"
+export STORAGE_CONTAINER="$PROJECT"
 
 # Redis
 export REDIS_NAME="redis-$PROJECT"
@@ -35,6 +43,7 @@ export CHAT_SKU_CAPACITY="10"
 export CHAT_SKU_NAME="GlobalStandard"
 
 # Moderation
+# Check Azure-AI-Content-Safety
 export MODERATION="vintagestore-moderation"
 export MODERATION_DEPLOYMENT="$MODERATION-model"
 export MODERATION_MODEL_FORMAT="Microsoft"
@@ -51,6 +60,15 @@ export EMBEDDING_MODEL_NAME="Cohere-embed-v3-english"
 export EMBEDDING_MODEL_VERSION="1"
 export EMBEDDING_SKU_CAPACITY="1"
 export EMBEDDING_SKU_NAME="GlobalStandard"
+
+# Query Router
+export QUERY_ROUTER="vintagestore-query-router"
+export QUERY_ROUTER_DEPLOYMENT="$EMBEDDING-model"
+export QUERY_ROUTER_MODEL_FORMAT="Meta"
+export QUERY_ROUTER_MODEL_NAME="Llama-4-Maverick-17B-128E-Instruct-FP8"
+export QUERY_ROUTER_MODEL_VERSION="1"
+export QUERY_ROUTER_SKU_CAPACITY="1"
+export QUERY_ROUTER_SKU_NAME="GlobalStandard"
 
 # Summarization
 export SUMMARIZATION="vintagestore-summarization"
@@ -73,7 +91,14 @@ if [ "$verbose" = true ]; then
     printf "\n%s\n" "Checking the Azure account..."
     printf "%s\n"   "-----------------------------"
     az account show
+    az account subscription list
 fi
+
+export SUBSCRIPTION_ID=$(
+    az account show --query "id" -o tsv
+)
+echo "SUBSCRIPTION_ID=$SUBSCRIPTION_ID"
+
 
 
 if [ "$verbose" = true ]; then
@@ -98,6 +123,7 @@ az redis create \
   --name "$REDIS_NAME" \
   --resource-group "$RESOURCE_GROUP" \
   --location "$LOCATION" \
+  --tags system="$TAG" \
   --sku Basic \
   --vm-size c0
 
@@ -111,22 +137,47 @@ REDIS_HOSTNAME=$(
 echo "REDIS_HOSTNAME=$REDIS_HOSTNAME"
 
 
+printf "\n%s\n" "Creating the Azure Storage..."
+printf "%s\n"   "-----------------------------"
+az storage account create \
+  --name "$STORAGE_ACCOUNT" \
+  --resource-group "$RESOURCE_GROUP" \
+  --location "$LOCATION" \
+  --sku Standard_RAGRS \
+  --encryption-services blob \
+  --kind BlobStorage \
+  --allow-blob-public-access \
+  --public-network-access Enabled \
+
+az ad signed-in-user show --query id -o tsv | az role assignment create \
+    --role "Storage Blob Data Contributor" \
+    --assignee @- \
+    --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$STORAGE_ACCOUNT"
+
+az storage container create \
+    --account-name "$STORAGE_ACCOUNT" \
+    --name "$STORAGE_CONTAINER" \
+    --public-access blob \
+    --auth-mode login
+
+
 printf "\n%s\n" "Creating the AI Search Service..."
 printf "%s\n"   "---------------------------------"
 az search service create \
-  --name "$AZURE_AI_SEARCH_NAME" \
+  --name "$MICROSOFT_FOUNDRY_IQ" \
   --resource-group "$RESOURCE_GROUP" \
   --location "$LOCATION" \
   --sku Standard \
   --partition-count 1 \
   --replica-count 1
 
+
 echo "Storing the key and endpoint in environment variables..."
 echo "--------------------------------------------------------"
-AZURE_SEARCH_ENDPOINT="https://$AZURE_AI_SEARCH_NAME.search.windows.net"
+AZURE_SEARCH_ENDPOINT="https://$MICROSOFT_FOUNDRY_IQ.search.windows.net"
 AZURE_SEARCH_KEY=$(
     az search admin-key show \
-      --service-name "$AZURE_AI_SEARCH_NAME" \
+      --service-name "$MICROSOFT_FOUNDRY_IQ" \
       --resource-group "$RESOURCE_GROUP" \
       | jq -r .primaryKey
 )
@@ -142,13 +193,13 @@ if [ "$verbose" = true ]; then
 fi
 
 
-printf "\n%s\n" "Creating Azure AI Foundry service..."
+printf "\n%s\n" "Creating Microsoft Foundry service..."
 printf "%s\n"   "------------------------------------"
 az cognitiveservices account create \
   --resource-group "$RESOURCE_GROUP" \
   --location "$LOCATION" \
-  --name "$AZURE_AI_FOUNDRY_NAME" \
-  --custom-domain "$AZURE_AI_FOUNDRY_NAME" \
+  --name "$MICROSOFT_FOUNDRY" \
+  --custom-domain "$MICROSOFT_FOUNDRY" \
   --kind AIServices \
   --sku S0
 
@@ -157,7 +208,7 @@ if [ "$verbose" = true ]; then
     printf "%s\n"   "------------------------------------"
     az cognitiveservices account list-models \
       --resource-group "$RESOURCE_GROUP" \
-      --name "$AZURE_AI_FOUNDRY_NAME" \
+      --name "$MICROSOFT_FOUNDRY" \
       --query "sort_by(@, &format)[].{Format:format,Name:name,Version:version,Sku:skus[0].name,Capacity:skus[0].capacity.default}" \
       --output table
 fi
@@ -167,7 +218,7 @@ printf "\n%s\n" "Deploying the Chat model..."
 printf "%s\n"   "---------------------------"
 az cognitiveservices account deployment create \
   --resource-group "$RESOURCE_GROUP" \
-  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --name "$MICROSOFT_FOUNDRY" \
   --deployment-name "$CHAT_DEPLOYMENT" \
   --model-format "$CHAT_MODEL_FORMAT" \
   --model-name "$CHAT_MODEL_NAME" \
@@ -180,7 +231,7 @@ printf "\n%s\n" "Deploying the Moderation model..."
 printf "%s\n"   "---------------------------------"
 az cognitiveservices account deployment create \
   --resource-group "$RESOURCE_GROUP" \
-  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --name "$MICROSOFT_FOUNDRY" \
   --deployment-name "$MODERATION_DEPLOYMENT" \
   --model-format "$MODERATION_MODEL_FORMAT" \
   --model-name "$MODERATION_MODEL_NAME" \
@@ -193,7 +244,7 @@ printf "\n%s\n" "Deploying the Embedding model..."
 printf "%s\n"   "--------------------------------"
 az cognitiveservices account deployment create \
   --resource-group "$RESOURCE_GROUP" \
-  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --name "$MICROSOFT_FOUNDRY" \
   --deployment-name "$EMBEDDING_DEPLOYMENT" \
   --model-format "$EMBEDDING_MODEL_FORMAT" \
   --model-name "$EMBEDDING_MODEL_NAME" \
@@ -201,12 +252,24 @@ az cognitiveservices account deployment create \
   --sku-capacity "$EMBEDDING_SKU_CAPACITY" \
   --sku-name "$EMBEDDING_SKU_NAME"
 
-
-printf "\n%s\n" "Deploying the model for the Agent Statistics Writer..."
-printf "%s\n"   "------------------------------------------------------"
+printf "\n%s\n" "Deploying the Query Router model..."
+printf "%s\n"   "--------------------------------"
 az cognitiveservices account deployment create \
   --resource-group "$RESOURCE_GROUP" \
-  --name "$AZURE_AI_FOUNDRY_NAME" \
+  --name "$MICROSOFT_FOUNDRY" \
+  --deployment-name "$QUERY_ROUTER_DEPLOYMENT" \
+  --model-format "$QUERY_ROUTER_MODEL_FORMAT" \
+  --model-name "$QUERY_ROUTER_MODEL_NAME" \
+  --model-version "$QUERY_ROUTER_MODEL_VERSION" \
+  --sku-capacity "$QUERY_ROUTER_SKU_CAPACITY" \
+  --sku-name "$QUERY_ROUTER_SKU_NAME"
+
+
+printf "\n%s\n" "Deploying the Summarization model..."
+printf "%s\n"   "------------------------------------"
+az cognitiveservices account deployment create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$MICROSOFT_FOUNDRY" \
   --deployment-name "$SUMMARIZATION_DEPLOYMENT" \
   --model-format "$SUMMARIZATION_MODEL_FORMAT" \
   --model-name "$SUMMARIZATION_MODEL_NAME" \
@@ -217,18 +280,18 @@ az cognitiveservices account deployment create \
 
 printf "\n%s\n" "Displaying environment variables..."
 printf "%s\n"   "-----------------------------------"
-export AZURE_AI_FOUNDRY_KEY=$(az cognitiveservices account keys list \
-  --name "$AZURE_AI_FOUNDRY_NAME" \
+export MICROSOFT_FOUNDRY_KEY=$(az cognitiveservices account keys list \
+  --name "$MICROSOFT_FOUNDRY" \
   --resource-group "$RESOURCE_GROUP" \
   --query "key1" \
   --output tsv)
 
 # Appending `models` at the end of the URL
-export AZURE_AI_FOUNDRY_ENDPOINT=$(az cognitiveservices account show \
-  --name "$AZURE_AI_FOUNDRY_NAME" \
+export MICROSOFT_FOUNDRY_ENDPOINT=$(az cognitiveservices account show \
+  --name "$MICROSOFT_FOUNDRY" \
   --resource-group "$RESOURCE_GROUP" \
   --query "properties.endpoint" \
   --output tsv)models
 
-echo "AZURE_AI_FOUNDRY_KEY=$AZURE_AI_FOUNDRY_KEY"
-echo "AZURE_AI_FOUNDRY_ENDPOINT=$AZURE_AI_FOUNDRY_ENDPOINT"
+echo "MICROSOFT_FOUNDRY_KEY=$MICROSOFT_FOUNDRY_KEY"
+echo "MICROSOFT_FOUNDRY_ENDPOINT=$MICROSOFT_FOUNDRY_ENDPOINT"
