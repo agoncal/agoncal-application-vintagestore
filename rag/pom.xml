@@ -64,14 +64,29 @@
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-anthropic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-open-ai</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-open-ai-official</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Other -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>2.0.17</version>
+      <groupId>org.tinylog</groupId>
+      <artifactId>tinylog-impl</artifactId>
+      <version>${tinylog.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.tinylog</groupId>
+      <artifactId>slf4j-tinylog</artifactId>
+      <version>${tinylog.version}</version>
     </dependency>
   </dependencies>
 
