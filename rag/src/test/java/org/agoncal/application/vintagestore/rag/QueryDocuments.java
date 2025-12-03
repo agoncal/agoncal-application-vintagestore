@@ -29,11 +29,14 @@ public class QueryDocuments {
   private static EmbeddingStore<TextSegment> embeddingStore;
 
   public static void main(String[] args) throws Exception {
-    embeddingStore = embeddingStore();
     embeddingModel = embeddingModel();
+    embeddingStore = embeddingStore();
 
     // Question to ask
     Embedding embeddedQuestion = embeddingModel.embed("What is the VAT number of Vintage Store?").content();
+
+    System.out.println("Dimensions: " + embeddedQuestion.dimension());
+    System.out.println("Vector: " + embeddedQuestion.vectorAsList() + "\n");
 
     // Search
     EmbeddingSearchRequest searchRequest = EmbeddingSearchRequest.builder()
@@ -45,8 +48,8 @@ public class QueryDocuments {
     // Results
     EmbeddingSearchResult<TextSegment> searchResult = embeddingStore.search(searchRequest);
     searchResult.matches().forEach(match -> {
-      System.out.println(match.score());
-      System.out.println(match.embedded().text());
+      System.out.println("Score:" + match.score());
+      System.out.println("Content:" + match.embedded().text());
     });
 
     exit(0);

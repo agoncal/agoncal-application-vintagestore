@@ -62,6 +62,11 @@
       <artifactId>langchain4j-azure-ai-search</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-open-ai</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Other -->
     <dependency>
       <groupId>org.slf4j</groupId>
