@@ -80,8 +80,8 @@ public void onClose() {
 * Show Terms and Conditions
 * Login/Profile/Logout
 * Show logs
-* 🧠 "Hi"
-* 🧠 "Echo"
+* 🧠 **"Hi"**
+* 🧠 **"Echo"**
 * CLEAR CONVERSATION / disconnect / connect
 * Show the code `VintageStoreAssistant` and `VintageStoreChatBot`
 * => **I want to add a chat bot to the VintageStore application**
