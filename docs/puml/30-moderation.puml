@@ -15,6 +15,7 @@ box "Mistral AI" #LightPink
 entity "Mistral\nModeration" as Mistral
 end box
 box "Docker" #LightBlue
+database "Redis\n(Chat Memory)" as Redis
 database "PostgreSQL\n(VintageStore DB)" as PostgreSQL
 end box
 
@@ -25,6 +26,7 @@ WS -[#blue]> ChatBot: @OnTextMessage(message)
 activate ChatBot
 
 alt CLEAR_CONVERSATION
+    ChatBot -> Redis: deleteMessages(connectionId): History cleared
     ChatBot --> WS: "Hello, how can I help you?"
 else Chat
     ChatBot -[#blue]> Assistant: chat(message)
@@ -41,6 +43,7 @@ else Chat
         Anthropic -[#blue]-> Assistant: AI response
         deactivate Anthropic
 
+        Assistant -> Redis: Store new messages
         Assistant -[#blue]-> ChatBot: response
     end
     deactivate Assistant
@@ -56,6 +59,9 @@ deactivate WS
 User -> WS: Disconnect
 activate WS
 WS -> ChatBot: @OnClose()
+activate ChatBot
+ChatBot -> Redis: deleteMessages(connectionId)
+deactivate ChatBot
 deactivate WS
 
 @enduml
