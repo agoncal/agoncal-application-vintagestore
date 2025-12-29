@@ -30,7 +30,7 @@
     <!-- https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-bom -->
     <langchain4j.version>1.9.1</langchain4j.version>
     <!-- https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-community-bom -->
-    <langchain4j-community.version>1.9.1-beta17</langchain4j-community.version>
+    <langchain4j-community.version>1.10.0-beta18</langchain4j-community.version>
     <tinylog.version>2.7.0</tinylog.version>
     <!-- Plugins -->
     <compiler-plugin.version>3.14.1</compiler-plugin.version>
