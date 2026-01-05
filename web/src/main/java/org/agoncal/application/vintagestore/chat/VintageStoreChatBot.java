@@ -2,6 +2,7 @@ package org.agoncal.application.vintagestore.chat;
 
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
 import dev.langchain4j.guardrail.InputGuardrailException;
+import dev.langchain4j.guardrails.MessageModeratorInputGuardrail;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
@@ -38,7 +39,6 @@ import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
 import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.inject.Inject;
-import org.agoncal.application.vintagestore.guardrail.ModeratingInputMessageGuardrail;
 import org.agoncal.application.vintagestore.rag.IsContentRelatedQueryRouter;
 import org.agoncal.application.vintagestore.summarize.OpenAISummarizer;
 import org.agoncal.application.vintagestore.summarize.SummarizingTokenWindowChatMemory;
@@ -271,7 +271,7 @@ public class VintageStoreChatBot {
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicChatModel)
       .chatMemoryProvider(redisChatMemoryProvider)
-      .inputGuardrails(new ModeratingInputMessageGuardrail(mistralModerationModel))
+      .inputGuardrails(new MessageModeratorInputGuardrail(mistralModerationModel))
       .retrievalAugmentor(retrievalAugmentor)
       .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
       .toolProvider(mcpToolProvider)

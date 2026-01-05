@@ -5,8 +5,8 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
 ## 00 - Prepare the demo
 
 * Check listning ports are free
-  * ` lsof -i :8080`
-  * ` lsof -i :8780`
+  * `lsof -i :8080`
+  * `lsof -i :8780`
 * Make sure both keys are set and that there is enough credit on the accounts
   * `ANTHROPIC_API_KEY`: https://console.anthropic.com/settings/keys
   * `MISTRAL_AI_API_KEY`: https://admin.mistral.ai/organization/api-keys
@@ -605,7 +605,7 @@ public class VintageStoreChatBot {
     VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
       .chatModel(anthropicChatModel)
       .chatMemoryProvider(redisChatMemoryProvider)
-      .inputGuardrails(new ModeratingInputMessageGuardrail(mistralModerationModel))
+      .inputGuardrails(new MessageModeratorInputGuardrail(mistralModerationModel))
       .retrievalAugmentor(retrievalAugmentor)
       .tools(new LegalDocumentTools(), new ItemsInStockTools(), new UserLoggedInTools())
       .toolProvider(mcpToolProvider)
@@ -665,7 +665,7 @@ ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
   .logResponses(IS_LOGGING_ENABLED)
   .build();
 
--- add to AiServices.builder -- .inputGuardrails(new ModeratingInputMessageGuardrail(mistralModerationModel))
+-- add to AiServices.builder -- .inputGuardrails(new MessageModeratorInputGuardrail(mistralModerationModel))
 -- add to @OnTextMessage --
     try {
       // 

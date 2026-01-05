@@ -54,6 +54,10 @@
     </dependency>
     <dependency>
       <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-guardrails</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-open-ai</artifactId>
     </dependency>
     <dependency>
