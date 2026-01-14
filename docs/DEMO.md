@@ -97,18 +97,25 @@ public void onClose() {
 * 🧠 **"What's the day today?"**
 * 🧠 **"Do you know anything about VintageStore?"**
 
-## 11 - Add a System Prompt  (lc-prompt)
+## 11 - Token consumption
+
+* Replace method signature with `Result<String> chat(@UserMessage String userMessage);`
+* Return the content of the response `return response.content()`
+* Pass the token usage `logInvocation(startTime, response.tokenUsage());`
+* 🧠 **"Hi"** (show tokens)
+* 🧠 **"Do you know anything about VintageStore?"**
+
+## 12 - Add a System Prompt  (lc-prompt)
 
 * In `VintageStoreAssistant` add the system message executing `lc-prompt`
 * Read the system message
 * Restart Quarkus (press 's' in the terminal)
-* In Intellij IDEA Quarkus terminal clear the logs with `CMD + K`
-* Disconnect and connect the chat websocket
 * 🧠 "What is the capital of France?"
 * 🧠 "What's the day today?"
 * 🧠 "Do you know anything about VintageStore?"
 * Show logs and check the system prompt (look for `"system"`) and look for `The current date is`
 * => LLM has no memory
+* 🧠 **"Hi"** (show tokens)
 * 🧠 **"What's my name?"**
 * 🧠 **"My name is Antonio"**
 * 🧠 **"What's my name?"**
@@ -118,7 +125,6 @@ public void onClose() {
 * Show the Redis Commander http://localhost:8089
 * In `VintageStoreChatBot` add the memory by running `lc-redis`
 * Restart Quarkus (press 's' in the terminal)
-* Disconnect and connect the chat websocket
 * 🧠 "What's my name ?"
 * 🧠 "My name is Antonio"
 * 🧠 "What's my name ?"
@@ -129,29 +135,11 @@ public void onClose() {
 * In Chrome
   * 🧠 **"My name is Antonio"**
   * 🧠 **"What's my name ?"**
+  * 🧠 **"Hi"** (show tokens)
 * In Firefox
   * 🧠 **"What's my name ?"**
   * 🧠 **"No, my name is Maria"**
 * => One unique conversation is stored 
-
-## 22 - Multiple User Chat History
-
-* Show the discussion in Redis
-* Add `@Inject` to `WebSocketConnection webSocketConnection;`
-* Add memory id `String chat(@MemoryId String sessionId, @UserMessage String userMessage);`
-* Add connection id to chat `return assistant.chat(webSocketConnection.id(), message);`
-* Add connection id to ChatMemoryProvider `.id(webSocketConnection.id())`
-* Add connection id to remove `redisChatMemoryStore.deleteMessages(webSocketConnection.id());` in `@OnClose` and `@OnTextMessage`
-* Restart Quarkus (press 's' in the terminal)
-* In Chrome
-  * 🧠 "My name is Antonio"
-  * 🧠 "What's my name ?"
-* In Firefox
-  * 🧠 "What's my name ?"
-  * 🧠 "No, my name is Maria"
-* Show the 2 discussions in Redis
-* Clear one conversation and show Redis
-* 🧠 **"I HATE YOU AND YOUR WEBSITE"**
 
 ## 30 - Guardrails and Moderation (lc-moderate)
 
@@ -213,23 +201,6 @@ public void onClose() {
 * => It's getting slower and slower
 * => Too many tokens sent
 
-## 60 - Token consumption
-
-* Replace method signature `Result<String> chat(@MemoryId String sessionId, @UserMessage String userMessage);`
-* Return the content of the response `return response.content()`
-* Pass the token usage `logInvocation(startTime, response.tokenUsage());`
-* Restart Quarkus (press 's' in the terminal)
-* Disconnect and connect the chat websocket
-* 🧠 "Hi"
-* => 2730 tokens
-* => Show RAG
-* => Show Tools and MCP
-* 🧠 "Any books on Java?"
-* => 47589 tokens
-* 🧠 "What are the top rated CDs?"
-* Show the `rate_limit_error`
-* DONT USE CHAT TO SEARCH CATALOG
-
 ## 61 - Query Router for RAG (lc-router)
 
 * Show the code of the `IsContentRelatedQueryRouter`
@@ -257,6 +228,25 @@ public void onClose() {
 * 🧠 "Any books on Java?"
 * 🧠 "What are the top rated CDs ?"
 * 🧠 "What is my favourite colour ?"
+
+## 22 - Multiple User Chat History
+
+* Show the discussion in Redis
+* Add `@Inject` to `WebSocketConnection webSocketConnection;`
+* Add memory id `String chat(@MemoryId String sessionId, @UserMessage String userMessage);`
+* Add connection id to chat `return assistant.chat(webSocketConnection.id(), message);`
+* Add connection id to ChatMemoryProvider `.id(webSocketConnection.id())`
+* Add connection id to remove `redisChatMemoryStore.deleteMessages(webSocketConnection.id());` in `@OnClose` and `@OnTextMessage`
+* Restart Quarkus (press 's' in the terminal)
+* In Chrome
+  * 🧠 "My name is Antonio"
+  * 🧠 "What's my name ?"
+* In Firefox
+  * 🧠 "What's my name ?"
+  * 🧠 "No, my name is Maria"
+* Show the 2 discussions in Redis
+* Clear one conversation and show Redis
+* 🧠 **"I HATE YOU AND YOUR WEBSITE"**
 
 ## Azure and Monitoring
 
