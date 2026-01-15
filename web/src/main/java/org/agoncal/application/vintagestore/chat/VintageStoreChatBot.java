@@ -70,7 +70,7 @@ public class VintageStoreChatBot {
   private static final int QDRANT_PORT = 6334;
   // Prompts
   private static final String WELCOME_PROMPT = "Hello, how can I help you?";
-  private static final String MODERATION_PROMPT = "I don't know why you are frustrated, but I will redirect you to a human assistant who can help you better. Please wait a moment...";
+  private static final String MODERATION_PROMPT = "/!\\ I don't know why you are frustrated, but I will redirect you to a human assistant who can help you better. Please wait a moment...";
   // Other constants
   private static final int MAX_TOKENS = 32_000;
   private static final int TOKEN_LIMIT = 1_000;
