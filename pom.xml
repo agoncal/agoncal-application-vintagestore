@@ -34,7 +34,7 @@
     <tinylog.version>2.7.0</tinylog.version>
     <!-- Plugins -->
     <compiler-plugin.version>3.15.0</compiler-plugin.version>
-    <surefire-plugin.version>3.5.4</surefire-plugin.version>
+    <surefire-plugin.version>3.5.5</surefire-plugin.version>
     <exec-plugin.version>3.6.3</exec-plugin.version>
     <maven.compiler.release>21</maven.compiler.release>
     <skipITs>true</skipITs>
