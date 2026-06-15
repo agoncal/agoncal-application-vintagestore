@@ -45,14 +45,14 @@ All public methods across controllers and resources have comprehensive entry log
 
 ## Architecture Overview
 
-This is a **Quarkus 3.24.5** vintage store application that demonstrates AI-powered e-commerce with sophisticated chat capabilities.
+This is a **Quarkus 3.36.2** vintage store application that demonstrates AI-powered e-commerce with sophisticated chat capabilities.
 
 ### Core Technology Stack
-- **Quarkus Renarde 3.1.1** - Web framework with type-safe Qute templating
-- **LangChain4j 1.1.0** - AI integration with Anthropic Claude Sonnet 4 and RAG capabilities
+- **Quarkus Renarde 3.1.7** - Web framework with type-safe Qute templating
+- **LangChain4j 1.16.3** - AI integration with Anthropic Claude Sonnet 4 and RAG capabilities
 - **Hibernate ORM with Panache** - Simplified data persistence
-- **PostgreSQL 17.5** - Production database with comprehensive test data
-- **Bootstrap 5.3.7** - Frontend UI framework with WebSocket chat integration
+- **PostgreSQL 17.10** - Production database with comprehensive test data
+- **Bootstrap 5.3.8** - Frontend UI framework with WebSocket chat integration
 
 ### AI/RAG System Architecture
 The application features a sophisticated **Retrieval Augmented Generation (RAG)** system:
