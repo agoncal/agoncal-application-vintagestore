@@ -1,6 +1,6 @@
 services:
   qdrant:
-    image: docker.io/qdrant/qdrant:v1.16.3
+    image: docker.io/qdrant/qdrant:v1.18.2
     container_name: qdrant
     ports:
       - 6333:6333
