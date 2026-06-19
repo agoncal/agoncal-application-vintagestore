@@ -26,9 +26,9 @@ cd rag
 ### Essential Setup Commands
 ```bash
 # Required external services
-docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up -d
-docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d
-docker compose -p vintagestore -f infrastructure/docker/redis.yml up -d
+docker compose -p contosostore -f infrastructure/docker/postgresql.yml up -d
+docker compose -p contosostore -f infrastructure/docker/qdrant.yml up -d
+docker compose -p contosostore -f infrastructure/docker/redis.yml up -d
 
 # Ollama for local LLM inference (query routing)
 # Ollama runs on port 11434 by default
@@ -45,7 +45,7 @@ export COHERE_API_KEY=your_api_key_here
 export OPENAI_API_KEY=your_api_key_here
 
 # Stop all services
-docker compose -p vintagestore down
+docker compose -p contosostore down
 ```
 
 ## Project Architecture
@@ -101,8 +101,8 @@ User Management System:
 - **Function calling pattern** allows AI to query inventory and user state in real-time
 
 ### Database Configuration
-- **Connection**: `jdbc:postgresql://localhost:5432/vintagestore_database`
-- **Test data**: 300KB+ dataset loaded via `vintagestore-data.sql`
+- **Connection**: `jdbc:postgresql://localhost:5432/contosostore_database`
+- **Test data**: 300KB+ dataset loaded via `contosostore-data.sql`
 - **Schema management**: Auto-generated `create.sql` and `drop.sql` files
 - **Junction tables**: Many-to-many relationships for Book-Author, CD-Musician
 

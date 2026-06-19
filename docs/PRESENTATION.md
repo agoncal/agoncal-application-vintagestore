@@ -61,7 +61,7 @@ This hands-on presentation walks through building an AI-powered customer service
 
 ---
 
-# The VintageStore Application
+# The ContosoStore Application
 
 ---
 
@@ -73,12 +73,12 @@ This hands-on presentation walks through building an AI-powered customer service
 
 ```java
 @WebSocket(path = "/chat")
-public class VintageStoreChatBot {
-  private VintageStoreAssistant assistant;
+public class ContosoStoreChatBot {
+  private ContosoStoreAssistant assistant;
   
   @OnOpen
   public String onOpen() throws Exception {
-    assistant = initializeVintageStoreAssistant();
+    assistant = initializeContosoStoreAssistant();
     return "Hello, how can I help you?";
   }
   
@@ -93,20 +93,20 @@ public class VintageStoreChatBot {
 
 # Adding a Chat Model
 
-- Use Ai Services with VintageStoreAssistant
+- Use Ai Services with ContosoStoreAssistant
 - Use AiServices to create proxy implementation
 - Connect to Anthropic Claude Sonnet 4 LLM
 - Enable request/response logging for debugging
 
 ```java
 @SessionScoped
-public interface VintageStoreAssistant {
+public interface ContosoStoreAssistant {
   String chat(String userMessage);
 }
 ```
 
 ```java
-private VintageStoreAssistant initializeVintageStoreAssistant() {
+private ContosoStoreAssistant initializeContosoStoreAssistant() {
   ChatModel anthropicChatModel = AnthropicChatModel.builder()
     .apiKey(ANTHROPIC_API_KEY)
     .modelName(CLAUDE_SONNET_4_20250514.toString())
@@ -116,7 +116,7 @@ private VintageStoreAssistant initializeVintageStoreAssistant() {
     .logResponses(true)
     .build();
 
-  return AiServices.builder(VintageStoreAssistant.class)
+  return AiServices.builder(ContosoStoreAssistant.class)
     .chatModel(anthropicChatModel)
     .build();
 }
@@ -127,17 +127,17 @@ private VintageStoreAssistant initializeVintageStoreAssistant() {
 # Adding System Prompt
 
 - Define AI assistant personality and role
-- Provide context about VintageStore business
+- Provide context about ContosoStore business
 - Set behavioral guidelines (polite, helpful)
 - Use `@SystemMessage` and `@UserMessage` annotations
 
 ```java
 @SessionScoped
-public interface VintageStoreAssistant {
+public interface ContosoStoreAssistant {
   
   @SystemMessage("""
-    You are a helpful customer support assistant for VintageStore.
-    VintageStore is an online store selling vintage books and CDs.
+    You are a helpful customer support assistant for ContosoStore.
+    ContosoStore is an online store selling vintage books and CDs.
     Always be polite and helpful to customers.
     """)
   String chat(@UserMessage String userMessage);
@@ -163,7 +163,7 @@ ModerationModel mistralModerationModel = new MistralAiModerationModel.Builder()
   .build();
 
 // Add moderation to AI Services
-VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+ContosoStoreAssistant assistant = AiServices.builder(ContosoStoreAssistant.class)
   .chatModel(anthropicChatModel)
   .moderationModel(mistralModerationModel)
   .build();
@@ -210,7 +210,7 @@ ChatMemory chatMemory = MessageWindowChatMemory.builder()
   .maxMessages(20)
   .build();
 
-VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+ContosoStoreAssistant assistant = AiServices.builder(ContosoStoreAssistant.class)
   .chatModel(anthropicChatModel)
   .chatMemory(chatMemory)
   .build();
@@ -239,7 +239,7 @@ ChatMemoryProvider redisChatMemoryProvider = memoryId ->
     .build();
 
 // Use memory provider instead of direct memory
-VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+ContosoStoreAssistant assistant = AiServices.builder(ContosoStoreAssistant.class)
   .chatModel(anthropicChatModel)
   .chatMemory(chatMemory)
   .chatMemoryProvider(redisChatMemoryProvider)
@@ -260,7 +260,7 @@ VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class
 WebSocketConnection webSocketConnection;
 
 // Use connection ID as memory identifier
-public interface VintageStoreAssistant {
+public interface ContosoStoreAssistant {
   String chat(@MemoryId String sessionId, @UserMessage String userMessage);
 }
 
@@ -279,7 +279,7 @@ ChatMemoryProvider redisChatMemoryProvider = memoryId ->
 
 ---
 
-# RAG - Injecting VintageStore Documents in Qdrant
+# RAG - Injecting ContosoStore Documents in Qdrant
 
 - Parse PDF documents (Terms & Conditions, user manuals)
 - Split documents into chunks (1000 chars, 200 overlap)
@@ -308,7 +308,7 @@ embeddingStore.addAll(embeddings, segments);
 # RAG - Retrieving Content from Qdrant
 
 - Connect to Qdrant vector database
-- Set up embedding store with VintageStore collection
+- Set up embedding store with ContosoStore collection
 - Create content retriever for semantic search
 - Same embedding model as ingestion for consistency
 
@@ -341,7 +341,7 @@ ContentRetriever qdrantContentRetriever = new EmbeddingStoreContentRetriever(
 - **Test**: Ask about Terms and Conditions, cookies, VAT
 
 ```java
-VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+ContosoStoreAssistant assistant = AiServices.builder(ContosoStoreAssistant.class)
   .chatModel(anthropicChatModel)
   .moderationModel(mistralModerationModel)
   .chatMemoryProvider(redisChatMemoryProvider)
@@ -402,7 +402,7 @@ List<TextSegment> segments = splitter.split(document);
 # Final Architecture
 
 ```java
-VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+ContosoStoreAssistant assistant = AiServices.builder(ContosoStoreAssistant.class)
   .chatModel(anthropicChatModel)           // LLM
   .moderationModel(mistralModerationModel) // Safety
   .chatMemoryProvider(redisChatMemoryProvider) // Memory

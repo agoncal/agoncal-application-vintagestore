@@ -45,7 +45,7 @@ All public methods across controllers and resources have comprehensive entry log
 
 ## Architecture Overview
 
-This is a **Quarkus 3.36.2** vintage store application that demonstrates AI-powered e-commerce with sophisticated chat capabilities.
+This is a **Quarkus 3.36.2** Contoso Store application that demonstrates AI-powered e-commerce with sophisticated chat capabilities.
 
 ### Core Technology Stack
 - **Quarkus Renarde 3.1.7** - Web framework with type-safe Qute templating
@@ -60,7 +60,7 @@ The application features a sophisticated **Retrieval Augmented Generation (RAG)*
 - **AllMiniLM-L6-V2 model** generates embeddings for PDF documents in `/static/terms/`
 - **Redis** persists chat memory with 20-message conversation windows
 - **Function calling** enables real-time inventory queries during chat
-- **VintageStoreChatBot** WebSocket endpoint at `/chat` provides real-time communication
+- **ContosoStoreChatBot** WebSocket endpoint at `/chat` provides real-time communication
 
 ### Data Model
 Uses **single-table inheritance** with discriminator pattern:
@@ -79,7 +79,7 @@ User Management:
 ├── User (PanacheEntity)
 │   ├── Attributes: login, password, firstName, lastName, email
 │   ├── UserRole enum: USER, ADMIN
-│   └── Table: VINTAGESTORE_USER
+│   └── Table: CONTOSOSTORE_USER
 ├── UserSession (@ApplicationScoped CDI bean)
 │   └── Manages authentication state and current user
 └── TemplateGlobals (static methods with @TemplateGlobal)
@@ -87,10 +87,10 @@ User Management:
 ```
 
 ### Package Structure
-- **`org.agoncal.application.vintagestore.web`** - Renarde controllers and static resources
-- **`org.agoncal.application.vintagestore.model`** - Panache entities and data model
-- **`org.agoncal.application.vintagestore.chat`** - WebSocket chat implementation
-- **`org.agoncal.application.vintagestore.rag`** - Document ingestion and RAG components
+- **`org.agoncal.application.contosostore.web`** - Renarde controllers and static resources
+- **`org.agoncal.application.contosostore.model`** - Panache entities and data model
+- **`org.agoncal.application.contosostore.chat`** - WebSocket chat implementation
+- **`org.agoncal.application.contosostore.rag`** - Document ingestion and RAG components
 
 ### Template Architecture
 Uses **Qute templating engine** with Renarde for type-safe templates:
@@ -100,7 +100,7 @@ Uses **Qute templating engine** with Renarde for type-safe templates:
 - **Chat sidebar** - 700px wide with Markdown support via Marked.js, clear conversation functionality
 
 ### Database Configuration
-- **Test data via `vintagestore-data.sql`** (300KB+ comprehensive dataset)
+- **Test data via `contosostore-data.sql`** (300KB+ comprehensive dataset)
 - **99 books** with categories, publishers, and author relationships
 - **101 CDs** with genres, labels, and musician relationships  
 - **Book-Author and CD-Musician junction tables** for many-to-many relationships
@@ -126,8 +126,8 @@ Complete user authentication implemented with:
 
 ### Database Configuration Notes
 - **PostgreSQL setup**: Uses custom initialization script at `../infrastructure/docker/db-init/initialize-databases.sql`
-- **Schema permissions**: Script grants necessary permissions to `vintagestore` user for table creation
-- **Connection**: `jdbc:postgresql://localhost:5432/vintagestore_database?user=vintagestore&password=vintagestore`
+- **Schema permissions**: Script grants necessary permissions to `contosostore` user for table creation
+- **Connection**: `jdbc:postgresql://localhost:5432/contosostore_database?user=contosostore&password=contosostore`
 - **DDL generation**: Configured to generate `create.sql` and `drop.sql` files for schema management
 
 ### Testing Strategy

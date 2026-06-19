@@ -1,9 +1,9 @@
-# VINTAGE STORE PRIVACY NOTICE
+# CONTOSO STORE PRIVACY NOTICE
 
-This privacy notice for **VintageStore Inc.** ("we," "us," or "our"), describes how and why we might collect, store, use, and/or share ("process") your information when you use our services ("Services"), such as when you:
+This privacy notice for **ContosoStore Inc.** ("we," "us," or "our"), describes how and why we might collect, store, use, and/or share ("process") your information when you use our services ("Services"), such as when you:
 
-- Visit our website at www.vintagestore.com
-- Download and use our mobile application (VintageStore)
+- Visit our website at www.contosostore.com
+- Download and use our mobile application (ContosoStore)
 - Create an account and browse our vintage collectibles catalog
 - Make purchases through our e-commerce platform
 - Subscribe to our newsletters or promotional communications
@@ -197,7 +197,7 @@ When we have no ongoing legitimate business need to process your personal inform
 
 ***In Short:** We do not knowingly collect data from or market to children under 18 years of age.*
 
-We do not knowingly collect, solicit data from, or market to children under 18 years of age, nor do we knowingly sell such personal information. By using the Services, you represent that you are at least 18 or that you are the parent or guardian of such a minor and consent to such minor dependent's use of the Services. If we learn that personal information from users less than 18 years of age has been collected, we will deactivate the account and take reasonable measures to promptly delete such data from our records. If you become aware of any data we may have collected from children under age 18, please contact us at **privacy@vintagestore.com**.
+We do not knowingly collect, solicit data from, or market to children under 18 years of age, nor do we knowingly sell such personal information. By using the Services, you represent that you are at least 18 or that you are the parent or guardian of such a minor and consent to such minor dependent's use of the Services. If we learn that personal information from users less than 18 years of age has been collected, we will deactivate the account and take reasonable measures to promptly delete such data from our records. If you become aware of any data we may have collected from children under age 18, please contact us at **privacy@contosostore.com**.
 
 ## 9. WHAT ARE YOUR PRIVACY RIGHTS?
 
@@ -212,7 +212,7 @@ However, please note that this will not affect the lawfulness of the processing 
 If you would at any time like to review or change the information in your account or terminate your account, you can:
 
 - **Log into your account settings** and update your user account information
-- **Contact our customer support team** at support@vintagestore.com
+- **Contact our customer support team** at support@contosostore.com
 - **Use our data subject access request form** (link provided below)
 
 Upon your request to terminate your account, we will deactivate or delete your account and information from our active databases. However, we may retain some information in our files to prevent fraud, troubleshoot problems, assist with any investigations, enforce our legal terms and/or comply with applicable legal requirements.
@@ -243,15 +243,15 @@ We may update this privacy notice from time to time. The updated version will be
 
 If you have questions or comments about this notice, you may contact us by post at:
 
-**VintageStore Inc.**  
+**ContosoStore Inc.**  
 **Privacy Officer**  
 **123 Nostalgic Lane**  
 **Retro City, CA 90210**  
 **United States**
 
-**Email:** privacy@vintagestore.com  
+**Email:** privacy@contosostore.com  
 **Phone:** 1-800-VINTAGE (1-800-846-8243)  
-**Online:** Contact form available at www.vintagestore.com/contact
+**Online:** Contact form available at www.contosostore.com/contact
 **VAT Number:** US-1234-567-890
 
 ## 13. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?
@@ -260,8 +260,8 @@ Based on the applicable laws of your country, you may have the right to request 
 
 To request to review, update, or delete your personal information, please:
 
-- **Submit a data subject access request** at: www.vintagestore.com/privacy-request
-- **Email us directly** at: privacy@vintagestore.com
+- **Submit a data subject access request** at: www.contosostore.com/privacy-request
+- **Email us directly** at: privacy@contosostore.com
 - **Call our privacy hotline** at: 1-800-VINTAGE, ext. 2
 - **Write to us** at the address provided in Section 12 above
 

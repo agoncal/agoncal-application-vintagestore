@@ -1,5 +1,5 @@
 {#include base.html }
-  {#title}Users - Vintage Store{/title}
+  {#title}Users - Contoso Store{/title}
 
   <div class="mb-3"></div>
 
@@ -112,7 +112,7 @@
                   <td>
                     <div class="user-email">{user.email}</div>
                     <small class="text-muted">
-                      {#if user.email.contains("@vintagestore.com")}
+                      {#if user.email.contains("@contosostore.com")}
                         <i class="bi bi-building me-1"></i>Internal
                       {#else}
                         <i class="bi bi-globe me-1"></i>External

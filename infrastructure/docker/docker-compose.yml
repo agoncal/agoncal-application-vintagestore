@@ -40,11 +40,11 @@ services:
       - "8089:8081"
 
   mcp-currency:
-    image: vintagestore/mcp-currency:latest
+    image: contosostore/mcp-currency:latest
     container_name: mcp-currency
     ports:
       - 8780:8780
 
 networks:
-  vintage-store-network:
+  contoso-store-network:
     driver: bridge

@@ -1,4 +1,4 @@
-# Vintage Store
+# Contoso Store
 
 A modular AI-powered e-commerce application demonstrating sophisticated chat capabilities using **Retrieval Augmented Generation (RAG)** and real-time WebSocket communication. The project is organized into four distinct modules showcasing AI-enabled applications with Quarkus and LangChain4j.
 
@@ -31,13 +31,13 @@ A modular AI-powered e-commerce application demonstrating sophisticated chat cap
 1. **Start External Services** (required for full functionality):
 ```bash
 # Start PostgreSQL database
-docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up -d
+docker compose -p contosostore -f infrastructure/docker/postgresql.yml up -d
 
 # Start Qdrant vector database (required for AI chat)
-docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d
+docker compose -p contosostore -f infrastructure/docker/qdrant.yml up -d
 
 # Start Redis for chat memory persistence  
-docker compose -p vintagestore -f infrastructure/docker/redis.yml up -d
+docker compose -p contosostore -f infrastructure/docker/redis.yml up -d
 
 # Set ANTHROPIC_API_KEY API key for chat functionality
 export ANTHROPIC_API_KEY=your_api_key_here
@@ -65,7 +65,7 @@ Access the application at: **http://localhost:8080**
 ### Stop the application:
 
 ```bash
-docker compose -p vintagestore down
+docker compose -p contosostore down
 ```
 
 ## Web Application Architecture
@@ -102,7 +102,7 @@ The **RAG (Retrieval Augmented Generation)** module provides the knowledge base 
 ### Running Document Ingestion
 ```bash
 # Ensure Qdrant is running
-docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d
+docker compose -p contosostore -f infrastructure/docker/qdrant.yml up -d
 
 # Process documents into vector database
 cd rag
@@ -153,7 +153,7 @@ curl http://localhost:6333/collections/documents/points/count
 - **Single-table inheritance** with discriminator pattern for Items (Books/CDs)
 - **Many-to-many relationships** via junction tables (Book-Author, CD-Musician)
 - **User management tables** with authentication and role-based access
-- **Comprehensive test data** loaded via `vintagestore-data.sql` (300KB+ dataset) into PostgreSQL
+- **Comprehensive test data** loaded via `contosostore-data.sql` (300KB+ dataset) into PostgreSQL
 - **Author birth dates** with age calculation using modern Java time APIs
 
 ### Demo Accounts
@@ -215,7 +215,7 @@ java -jar target/*-runner.jar
 ```bash
 cd web
 ./mvnw package -Dnative
-./target/vintagestore-1.0.0-SNAPSHOT-runner
+./target/contosostore-1.0.0-SNAPSHOT-runner
 ```
 
 ### Container-based Native Build
@@ -269,12 +269,12 @@ Standalone module for **document ingestion and RAG system**:
 - **Bootstrap 5.x** for modern responsive UI
 
 ### Package Structure
-- `org.agoncal.application.vintagestore.chat` - WebSocket chat implementation and AI tools
-- `org.agoncal.application.vintagestore.model` - Panache entities and data model
-- `org.agoncal.application.vintagestore.web` - Renarde controllers and static resources
-- `org.agoncal.application.vintagestore.tool` - Function calling tools for AI integration
-- `org.agoncal.application.vintagestore.summarize` - Chat memory and summarization components
-- `org.agoncal.application.vintagestore.guardrail` - Message guardrails and safety features
+- `org.agoncal.application.contosostore.chat` - WebSocket chat implementation and AI tools
+- `org.agoncal.application.contosostore.model` - Panache entities and data model
+- `org.agoncal.application.contosostore.web` - Renarde controllers and static resources
+- `org.agoncal.application.contosostore.tool` - Function calling tools for AI integration
+- `org.agoncal.application.contosostore.summarize` - Chat memory and summarization components
+- `org.agoncal.application.contosostore.guardrail` - Message guardrails and safety features
 
 ### Template Engine & UI
 - **Qute templating** with Renarde for type-safe templates
