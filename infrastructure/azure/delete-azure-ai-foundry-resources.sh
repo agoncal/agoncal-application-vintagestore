@@ -8,7 +8,7 @@ echo "----------------------------------"
 echo "Setting up environment variables..."
 echo "----------------------------------"
 export UNIQUE_IDENTIFIER=${GITHUB_USER:-$(whoami)}
-export PROJECT="vintagestore$UNIQUE_IDENTIFIER"
+export PROJECT="contosostore$UNIQUE_IDENTIFIER"
 export RESOURCE_GROUP="rg-$PROJECT"
 export AZURE_AI_FOUNDRY_NAME="ai-$PROJECT"
 

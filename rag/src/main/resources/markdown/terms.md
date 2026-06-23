@@ -1,18 +1,18 @@
-# VINTAGE STORE TERMS OF USE
+# CONTOSO STORE TERMS OF USE
 
 ## AGREEMENT TO OUR LEGAL TERMS
 
-We are VintageStore Inc. ('Company', 'we', 'us', or 'our'), a company registered in the **United States** at **123 Nostalgic Lane, Retro City, CA 90210**. Our **Tax ID number is 12-3456789**.
+We are ContosoStore Inc. ('Company', 'we', 'us', or 'our'), a company registered in the **United States** at **123 Nostalgic Lane, Retro City, CA 90210**. Our **Tax ID number is 12-3456789**.
 
-We operate the website http://www.vintagestore.com (the 'Site'), the mobile application VintageStore (the 'App'), as well as any other related products and services that refer or link to these legal terms (the 'Legal Terms') (collectively, the 'Services').
+We operate the website http://www.contosostore.com (the 'Site'), the mobile application ContosoStore (the 'App'), as well as any other related products and services that refer or link to these legal terms (the 'Legal Terms') (collectively, the 'Services').
 
-At VintageStore, we specialize in offering a carefully curated catalogue of vintage items that transport you back to the golden eras of music and literature. Our collection includes an extensive range of vinyl records, cassette tapes, classic books, and CDs, each piece handpicked for its unique charm and historical significance. We also feature rare collectibles, vintage posters, and other nostalgic memorabilia that celebrate the rich cultural heritage of past decades.
+At ContosoStore, we specialize in offering a carefully curated catalogue of vintage items that transport you back to the golden eras of music and literature. Our collection includes an extensive range of vinyl records, cassette tapes, classic books, and CDs, each piece handpicked for its unique charm and historical significance. We also feature rare collectibles, vintage posters, and other nostalgic memorabilia that celebrate the rich cultural heritage of past decades.
 
-You can contact us by email at **contact@vintagestore.com**, by phone at **1-800-VINTAGE (1-800-846-8243)**, or by mail to **123 Nostalgic Lane, Retro City, CA 90210, United States**.
+You can contact us by email at **contact@contosostore.com**, by phone at **1-800-VINTAGE (1-800-846-8243)**, or by mail to **123 Nostalgic Lane, Retro City, CA 90210, United States**.
 
-These Legal Terms constitute a legally binding agreement made between you, whether personally or on behalf of an entity ('you'), and VintageStore Inc., concerning your access to and use of the Services. You agree that by accessing the Services, you have read, understood, and agreed to be bound by all of these Legal Terms. **IF YOU DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE USE IMMEDIATELY.**
+These Legal Terms constitute a legally binding agreement made between you, whether personally or on behalf of an entity ('you'), and ContosoStore Inc., concerning your access to and use of the Services. You agree that by accessing the Services, you have read, understood, and agreed to be bound by all of these Legal Terms. **IF YOU DO NOT AGREE WITH ALL OF THESE LEGAL TERMS, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SERVICES AND YOU MUST DISCONTINUE USE IMMEDIATELY.**
 
-We will provide you with prior notice of any scheduled changes to the Services you are using. The modified Legal Terms will become effective upon posting or notifying you by **legal@vintagestore.com**, as stated in the email message. By continuing to use the Services after the effective date of any changes, you agree to be bound by the modified terms.
+We will provide you with prior notice of any scheduled changes to the Services you are using. The modified Legal Terms will become effective upon posting or notifying you by **legal@contosostore.com**, as stated in the email message. By continuing to use the Services after the effective date of any changes, you agree to be bound by the modified terms.
 
 All users who are minors in the jurisdiction in which they reside (generally under the age of 18) must have the permission of, and be directly supervised by, their parent or guardian to use the Services. If you are a minor, you must have your parent or guardian read and agree to these Legal Terms prior to you using the Services.
 
@@ -86,7 +86,7 @@ solely for your personal, non-commercial use.
 
 Except as set out in this section or elsewhere in our Legal Terms, no part of the Services and no Content or Marks may be copied, reproduced, aggregated, republished, uploaded, posted, publicly displayed, encoded, translated, transmitted, distributed, sold, licensed, or otherwise exploited for any commercial purpose whatsoever, without our express prior written permission.
 
-If you wish to make any use of the Services, Content, or Marks other than as set out in this section or elsewhere in our Legal Terms, please address your request to: **legal@vintagestore.com**. If we ever grant you the permission to post, reproduce, or publicly display any part of our Services or Content, you must identify us as the owners or licensors of the Services, Content, or Marks and ensure that any copyright or proprietary notice appears or is visible on posting, reproducing, or displaying our Content.
+If you wish to make any use of the Services, Content, or Marks other than as set out in this section or elsewhere in our Legal Terms, please address your request to: **legal@contosostore.com**. If we ever grant you the permission to post, reproduce, or publicly display any part of our Services or Content, you must identify us as the owners or licensors of the Services, Content, or Marks and ensure that any copyright or proprietary notice appears or is visible on posting, reproducing, or displaying our Content.
 
 We reserve all rights not expressly granted to you in and to the Services, Content, and Marks.
 
@@ -176,7 +176,7 @@ Please review our Return Policy posted on the Services prior to making any purch
 **Return Window:** 30 days from delivery date for most items
 **Condition Requirements:** Items must be returned in original condition with all packaging
 **Vintage Item Returns:** Special consideration for vintage items due to their unique nature
-**Return Process:** Detailed instructions available at www.vintagestore.com/returns
+**Return Process:** Detailed instructions available at www.contosostore.com/returns
 **Refund Processing:** Refunds processed within 5-7 business days of receiving returned items
 
 ## 8. PROHIBITED ACTIVITIES
@@ -287,7 +287,7 @@ We reserve the right, but not the obligation, to: (1) monitor the Services for v
 
 ## 16. PRIVACY POLICY
 
-We care about data privacy and security. Please review our Privacy Policy: **http://www.vintagestore.com/privacy**. By using the Services, you agree to be bound by our Privacy Policy, which is incorporated into these Legal Terms. Please be advised the Services are hosted in the **United States**. If you access the Services from any other region of the world with laws or other requirements governing personal data collection, use, or disclosure that differ from applicable laws in the **United States**, then through your continued use of the Services, you are transferring your data to the **United States**, and you expressly consent to have your data transferred to and processed in the **United States**.
+We care about data privacy and security. Please review our Privacy Policy: **http://www.contosostore.com/privacy**. By using the Services, you agree to be bound by our Privacy Policy, which is incorporated into these Legal Terms. Please be advised the Services are hosted in the **United States**. If you access the Services from any other region of the world with laws or other requirements governing personal data collection, use, or disclosure that differ from applicable laws in the **United States**, then through your continued use of the Services, you are transferring your data to the **United States**, and you expressly consent to have your data transferred to and processed in the **United States**.
 
 ## 17. TERM AND TERMINATION
 
@@ -303,7 +303,7 @@ We cannot guarantee the Services will be available at all times. We may experien
 
 ## 19. GOVERNING LAW
 
-These Legal Terms are governed by and interpreted following the laws of **California, United States**, and the use of the United Nations Convention of Contracts for the International Sales of Goods is expressly excluded. If your habitual residence is in the EU, and you are a consumer, you additionally possess the protection provided to you by obligatory provisions of the law in your country to residence. VintageStore Inc. and yourself both agree to submit to the non-exclusive jurisdiction of the courts of **California**, which means that you may make a claim to defend your consumer protection rights in regards to these Legal Terms in **California**, or in the EU country in which you reside.
+These Legal Terms are governed by and interpreted following the laws of **California, United States**, and the use of the United Nations Convention of Contracts for the International Sales of Goods is expressly excluded. If your habitual residence is in the EU, and you are a consumer, you additionally possess the protection provided to you by obligatory provisions of the law in your country to residence. ContosoStore Inc. and yourself both agree to submit to the non-exclusive jurisdiction of the courts of **California**, which means that you may make a claim to defend your consumer protection rights in regards to these Legal Terms in **California**, or in the EU country in which you reside.
 
 ## 20. DISPUTE RESOLUTION
 
@@ -357,7 +357,7 @@ Please be aware that message and data rates may apply to any SMS messages sent o
 
 ### Support
 
-If you have any questions or need assistance regarding our SMS communications, please email us at **contact@vintagestore.com**.
+If you have any questions or need assistance regarding our SMS communications, please email us at **contact@contosostore.com**.
 
 ## 28. CALIFORNIA USERS AND RESIDENTS
 
@@ -371,12 +371,12 @@ These Legal Terms and any policies or operating rules posted by us on the Servic
 
 In order to resolve a complaint regarding the Services or to receive further information regarding use of the Services, please contact us at:
 
-**VintageStore Inc.**  
+**ContosoStore Inc.**  
 **123 Nostalgic Lane**  
 **Retro City, CA 90210**  
 **United States**
 
-**Email:** contact@vintagestore.com  
+**Email:** contact@contosostore.com  
 **Phone:** 1-800-VINTAGE (1-800-846-8243)  
-**Legal inquiries:** legal@vintagestore.com  
-**Customer support:** support@vintagestore.com
+**Legal inquiries:** legal@contosostore.com  
+**Customer support:** support@contosostore.com

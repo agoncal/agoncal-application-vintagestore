@@ -1,14 +1,14 @@
-# VINTAGE STORE END USER LICENSE AGREEMENT
+# CONTOSO STORE END USER LICENSE AGREEMENT
 
-**VintageStore Mobile Application** is licensed to You (End-User) by **VintageStore Inc.**, located at **123 Nostalgic Lane, Retro City, CA 90210, United States** ("Licensor"), for use only under the terms of this License Agreement.
+**ContosoStore Mobile Application** is licensed to You (End-User) by **ContosoStore Inc.**, located at **123 Nostalgic Lane, Retro City, CA 90210, United States** ("Licensor"), for use only under the terms of this License Agreement.
 
 By downloading the Licensed Application from **Apple App Store, Google Play Store, or other authorized app distribution platforms**, and any update thereto (as permitted by this License Agreement), You indicate that You agree to be bound by all of the terms and conditions of this License Agreement, and that You accept this License Agreement, referred to in this License Agreement as "Services."
 
-The parties of this License Agreement acknowledge that the Services are not a Party to this License Agreement and are not bound by any provisions or obligations with regard to the Licensed Application, such as warranty, liability, maintenance and support thereof. **VintageStore Inc.**, not the Services, is solely responsible for the Licensed Application and the content thereof.
+The parties of this License Agreement acknowledge that the Services are not a Party to this License Agreement and are not bound by any provisions or obligations with regard to the Licensed Application, such as warranty, liability, maintenance and support thereof. **ContosoStore Inc.**, not the Services, is solely responsible for the Licensed Application and the content thereof.
 
-This License Agreement may not provide for usage rules for the Licensed Application that are in conflict with the latest **App Store Terms of Service or Google Play Developer Policy** ("Usage Rules"). **VintageStore Inc.** acknowledges that it had the opportunity to review the Usage Rules and this License Agreement is not conflicting with them.
+This License Agreement may not provide for usage rules for the Licensed Application that are in conflict with the latest **App Store Terms of Service or Google Play Developer Policy** ("Usage Rules"). **ContosoStore Inc.** acknowledges that it had the opportunity to review the Usage Rules and this License Agreement is not conflicting with them.
 
-**VintageStore Mobile Application** when purchased or downloaded through the Services, is licensed to You for use only under the terms of this License Agreement. The Licensor reserves all rights not expressly granted to You. **VintageStore Mobile Application** is to be used on devices that operate with **iOS 12.0 or later, Android 8.0 (API level 26) or later**.
+**ContosoStore Mobile Application** when purchased or downloaded through the Services, is licensed to You for use only under the terms of this License Agreement. The Licensor reserves all rights not expressly granted to You. **ContosoStore Mobile Application** is to be used on devices that operate with **iOS 12.0 or later, Android 8.0 (API level 26) or later**.
 
 ## TABLE OF CONTENTS
 
@@ -31,7 +31,7 @@ This License Agreement may not provide for usage rules for the Licensed Applicat
 
 ## 1. THE APPLICATION
 
-**VintageStore Mobile Application** ("Licensed Application") is a piece of software created to **provide users with a mobile e-commerce platform for browsing, purchasing, and managing orders of vintage collectibles including vinyl records, cassette tapes, CDs, and vintage books** — and customized for mobile devices ("Devices"). It is used to **browse product catalogs, manage shopping carts, process payments, track orders, and interact with VintageStore's e-commerce services**.
+**ContosoStore Mobile Application** ("Licensed Application") is a piece of software created to **provide users with a mobile e-commerce platform for browsing, purchasing, and managing orders of vintage collectibles including vinyl records, cassette tapes, CDs, and vintage books** — and customized for mobile devices ("Devices"). It is used to **browse product catalogs, manage shopping carts, process payments, track orders, and interact with ContosoStore's e-commerce services**.
 
 ## 2. SCOPE OF LICENSE
 
@@ -39,7 +39,7 @@ This License Agreement may not provide for usage rules for the Licensed Applicat
 
 2.2 This license will also govern any updates of the Licensed Application provided by Licensor that replace, repair, and/or supplement the first Licensed Application, unless a separate license is provided for such update, in which case the terms of that new license will govern.
 
-2.3 You may not reverse engineer, translate, disassemble, integrate, decompile, remove, modify, combine, create derivative works or updates of, adapt, or attempt to derive the source code of the Licensed Application, or any part thereof (except with VintageStore Inc.'s prior written consent).
+2.3 You may not reverse engineer, translate, disassemble, integrate, decompile, remove, modify, combine, create derivative works or updates of, adapt, or attempt to derive the source code of the Licensed Application, or any part thereof (except with ContosoStore Inc.'s prior written consent).
 
 2.4 You may not copy (excluding when expressly authorized by this license and the Usage Rules) or alter the Licensed Application or portions thereof. You may create and store copies only on devices that You own or control for backup keeping under the terms of this license, the Usage Rules, and any other terms of use applicable to the device or software used.
 
@@ -61,9 +61,9 @@ This License Agreement may not provide for usage rules for the Licensed Applicat
 
 ## 4. NO MAINTENANCE AND SUPPORT
 
-4.1 **VintageStore Inc.** is not obligated, expressed or implied, to provide any maintenance, technical or other support for the Licensed Application.
+4.1 **ContosoStore Inc.** is not obligated, expressed or implied, to provide any maintenance, technical or other support for the Licensed Application.
 
-4.2 **VintageStore Inc.** and the End-User acknowledge that the Services have no obligation whatsoever to furnish any maintenance and support services with respect to the Licensed Application.
+4.2 **ContosoStore Inc.** and the End-User acknowledge that the Services have no obligation whatsoever to furnish any maintenance and support services with respect to the Licensed Application.
 
 ## 5. USER-GENERATED CONTRIBUTIONS
 
@@ -117,11 +117,11 @@ We do not assert any ownership over your Contributions. You retain full ownershi
 
 8.1 Licensor warrants that the Licensed Application is free of spyware, trojan horses, viruses, or any other malware at the time of Your download. Licensor warrants that the Licensed Application works as described in the user documentation.
 
-8.2 No warranty is provided for the Licensed Application that is not executable on the device, that has been unauthorizedly modified, handled inappropriately or culpably, combined or installed with inappropriate hardware or software, used with inappropriate accessories, regardless if by Yourself or by third parties, or if there are any other reasons outside of **VintageStore Inc.**'s sphere of influence that affect the executability of the Licensed Application.
+8.2 No warranty is provided for the Licensed Application that is not executable on the device, that has been unauthorizedly modified, handled inappropriately or culpably, combined or installed with inappropriate hardware or software, used with inappropriate accessories, regardless if by Yourself or by third parties, or if there are any other reasons outside of **ContosoStore Inc.**'s sphere of influence that affect the executability of the Licensed Application.
 
-8.3 You are required to inspect the Licensed Application immediately after installing it and notify **VintageStore Inc.** about issues discovered without delay by email provided in Contact Information. The defect report will be taken into consideration and further investigated if it has been emailed within a period of **thirty (30)** days after discovery.
+8.3 You are required to inspect the Licensed Application immediately after installing it and notify **ContosoStore Inc.** about issues discovered without delay by email provided in Contact Information. The defect report will be taken into consideration and further investigated if it has been emailed within a period of **thirty (30)** days after discovery.
 
-8.4 If we confirm that the Licensed Application is defective, **VintageStore Inc.** reserves a choice to remedy the situation either by means of solving the defect or substitute delivery.
+8.4 If we confirm that the Licensed Application is defective, **ContosoStore Inc.** reserves a choice to remedy the situation either by means of solving the defect or substitute delivery.
 
 8.5 In the event of any failure of the Licensed Application to conform to any applicable warranty, You may notify the Services Store Operator, and Your Licensed Application purchase price will be refunded to You. To the maximum extent permitted by applicable law, the Services Store Operator will have no other warranty obligation whatsoever with respect to the Licensed Application, and any other losses, claims, damages, liabilities, expenses, and costs attributable to any negligence to adhere to any warranty.
 
@@ -129,7 +129,7 @@ We do not assert any ownership over your Contributions. You retain full ownershi
 
 ## 9. PRODUCT CLAIMS
 
-**VintageStore Inc.** and the End-User acknowledge that **VintageStore Inc.**, and not the Services, is responsible for addressing any claims of the End-User or any third party relating to the Licensed Application or the End-User's possession and/or use of that Licensed Application, including, but not limited to:
+**ContosoStore Inc.** and the End-User acknowledge that **ContosoStore Inc.**, and not the Services, is responsible for addressing any claims of the End-User or any third party relating to the Licensed Application or the End-User's possession and/or use of that Licensed Application, including, but not limited to:
 
 (i) product liability claims;
 (ii) any claim that the Licensed Application fails to conform to any applicable legal or regulatory requirement; and
@@ -143,27 +143,27 @@ You represent and warrant that You are not located in a country that is subject 
 
 For general inquiries, complaints, questions or claims concerning the Licensed Application, please contact:
 
-**VintageStore Inc.**  
+**ContosoStore Inc.**  
 **Legal Department**  
 **123 Nostalgic Lane**  
 **Retro City, CA 90210**  
 **United States**  
-**Email:** legal@vintagestore.com  
+**Email:** legal@contosostore.com  
 **Phone:** 1-800-VINTAGE (1-800-846-8243)
 
 ## 12. TERMINATION
 
-The license is valid until terminated by **VintageStore Inc.** or by You. Your rights under this license will terminate automatically and without notice from **VintageStore Inc.** if You fail to adhere to any term(s) of this license. Upon License termination, You shall stop all use of the Licensed Application, and destroy all copies, full or partial, of the Licensed Application.
+The license is valid until terminated by **ContosoStore Inc.** or by You. Your rights under this license will terminate automatically and without notice from **ContosoStore Inc.** if You fail to adhere to any term(s) of this license. Upon License termination, You shall stop all use of the Licensed Application, and destroy all copies, full or partial, of the Licensed Application.
 
 ## 13. THIRD-PARTY TERMS OF AGREEMENTS AND BENEFICIARY
 
-**VintageStore Inc.** represents and warrants that **VintageStore Inc.** will comply with applicable third-party terms of agreement when using Licensed Application.
+**ContosoStore Inc.** represents and warrants that **ContosoStore Inc.** will comply with applicable third-party terms of agreement when using Licensed Application.
 
 In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer's End-User License Agreement," subsidiaries shall be third-party beneficiaries of this End User License Agreement and — upon Your acceptance of the terms and conditions of this License Agreement, will have the right (and will be deemed to have accepted the right) to enforce this End User License Agreement against You as a third-party beneficiary thereof.
 
 ## 14. INTELLECTUAL PROPERTY RIGHTS
 
-**VintageStore Inc.** and the End-User acknowledge that, in the event of any third-party claim that the Licensed Application or the End-User's possession and use of that Licensed Application infringes on the third party's intellectual property rights, **VintageStore Inc.**, and not the Services, will be solely responsible for the investigation, defense, settlement, and discharge of any such intellectual property infringement claims.
+**ContosoStore Inc.** and the End-User acknowledge that, in the event of any third-party claim that the Licensed Application or the End-User's possession and use of that Licensed Application infringes on the third party's intellectual property rights, **ContosoStore Inc.**, and not the Services, will be solely responsible for the investigation, defense, settlement, and discharge of any such intellectual property infringement claims.
 
 ## 15. APPLICABLE LAW
 

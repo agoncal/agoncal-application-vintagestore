@@ -17,7 +17,7 @@ printf "%s\n" "-----------------------------------"
 printf "%s\n" "Setting up environment variables..."
 printf "%s\n" "-----------------------------------"
 export UNIQUE_IDENTIFIER=${GITHUB_USER:-$(whoami)}
-export PROJECT="vintagestorefoundry"
+export PROJECT="contosostorefoundry"
 export RESOURCE_GROUP="rg-$PROJECT"
 export LOCATION="swedencentral" # check https://learn.microsoft.com/azure/ai-foundry/reference/region-support
 export TAG="$PROJECT"
@@ -34,7 +34,7 @@ export STORAGE_CONTAINER="$PROJECT"
 export REDIS_NAME="redis-$PROJECT"
 
 # Chat Model
-export CHAT="vintagestore-chat"
+export CHAT="contosostore-chat"
 export CHAT_DEPLOYMENT="$CHAT-model"
 export CHAT_MODEL_FORMAT="OpenAI"
 export CHAT_MODEL_NAME="gpt-5-chat"
@@ -44,7 +44,7 @@ export CHAT_SKU_NAME="GlobalStandard"
 
 # Moderation
 # Check Azure-AI-Content-Safety
-export MODERATION="vintagestore-moderation"
+export MODERATION="contosostore-moderation"
 export MODERATION_DEPLOYMENT="$MODERATION-model"
 export MODERATION_MODEL_FORMAT="Microsoft"
 export MODERATION_MODEL_NAME="Phi-4"
@@ -53,7 +53,7 @@ export MODERATION_SKU_CAPACITY="1"
 export MODERATION_SKU_NAME="GlobalStandard"
 
 # Embedding
-export EMBEDDING="vintagestore-embedding"
+export EMBEDDING="contosostore-embedding"
 export EMBEDDING_DEPLOYMENT="$EMBEDDING-model"
 export EMBEDDING_MODEL_FORMAT="Cohere"
 export EMBEDDING_MODEL_NAME="Cohere-embed-v3-english"
@@ -62,7 +62,7 @@ export EMBEDDING_SKU_CAPACITY="1"
 export EMBEDDING_SKU_NAME="GlobalStandard"
 
 # Query Router
-export QUERY_ROUTER="vintagestore-query-router"
+export QUERY_ROUTER="contosostore-query-router"
 export QUERY_ROUTER_DEPLOYMENT="$EMBEDDING-model"
 export QUERY_ROUTER_MODEL_FORMAT="Meta"
 export QUERY_ROUTER_MODEL_NAME="Llama-4-Maverick-17B-128E-Instruct-FP8"
@@ -71,7 +71,7 @@ export QUERY_ROUTER_SKU_CAPACITY="1"
 export QUERY_ROUTER_SKU_NAME="GlobalStandard"
 
 # Summarization
-export SUMMARIZATION="vintagestore-summarization"
+export SUMMARIZATION="contosostore-summarization"
 export SUMMARIZATION_DEPLOYMENT="$SUMMARIZATION-model"
 export SUMMARIZATION_MODEL_FORMAT="Mistral AI"
 export SUMMARIZATION_MODEL_NAME="mistral-small-2503"

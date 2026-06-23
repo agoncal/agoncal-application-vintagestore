@@ -5,8 +5,8 @@ title Moderating the Chat
 actor User
 box "Local" #LightGreen
 boundary "WebSocket\n/chat" as WS
-participant "VintageStore\nChatBot" as ChatBot
-participant "VintageStore\nAssistant" as Assistant
+participant "ContosoStore\nChatBot" as ChatBot
+participant "ContosoStore\nAssistant" as Assistant
 end box
 box "Anthropic" #LightPink
 entity "Claude Sonnet\n(Chat)" as Anthropic
@@ -16,7 +16,7 @@ entity "Mistral\nModeration" as Mistral
 end box
 box "Docker" #LightBlue
 database "Redis\n(Chat Memory)" as Redis
-database "PostgreSQL\n(VintageStore DB)" as PostgreSQL
+database "PostgreSQL\n(ContosoStore DB)" as PostgreSQL
 end box
 
 == Chat ==

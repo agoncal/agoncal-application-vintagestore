@@ -1,8 +1,8 @@
-# VINTAGE STORE DISCLAIMER
+# CONTOSO STORE DISCLAIMER
 
 ## WEBSITE DISCLAIMER
 
-The information provided by VintageStore ("we," "us," or "our") on http://www.vintagestore.com (the "Site") and our mobile application is for general informational purposes only. All information on the Site and our mobile application is provided in good faith, however we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the Site or our mobile application.
+The information provided by ContosoStore ("we," "us," or "our") on http://www.contosostore.com (the "Site") and our mobile application is for general informational purposes only. All information on the Site and our mobile application is provided in good faith, however we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the Site or our mobile application.
 
 **UNDER NO CIRCUMSTANCE SHALL WE HAVE ANY LIABILITY TO YOU FOR ANY LOSS OR DAMAGE OF ANY KIND INCURRED AS A RESULT OF THE USE OF THE SITE OR OUR MOBILE APPLICATION OR RELIANCE ON ANY INFORMATION PROVIDED ON THE SITE AND OUR MOBILE APPLICATION. YOUR USE OF THE SITE AND OUR MOBILE APPLICATION AND YOUR RELIANCE ON ANY INFORMATION ON THE SITE AND OUR MOBILE APPLICATION IS SOLELY AT YOUR OWN RISK.**
 
@@ -69,7 +69,7 @@ Despite our efforts to ensure accuracy, our Site may contain technical inaccurac
 
 ## LIMITATION OF LIABILITY
 
-**IN NO EVENT SHALL VINTAGESTORE, ITS DIRECTORS, EMPLOYEES, PARTNERS, AGENTS, SUPPLIERS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, PUNITIVE, SPECIAL, OR CONSEQUENTIAL DAMAGES, INCLUDING WITHOUT LIMITATION, LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM YOUR USE OF THE SITE, MOBILE APPLICATION, OR ANY PRODUCTS PURCHASED.**
+**IN NO EVENT SHALL CONTOSOSTORE, ITS DIRECTORS, EMPLOYEES, PARTNERS, AGENTS, SUPPLIERS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, PUNITIVE, SPECIAL, OR CONSEQUENTIAL DAMAGES, INCLUDING WITHOUT LIMITATION, LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM YOUR USE OF THE SITE, MOBILE APPLICATION, OR ANY PRODUCTS PURCHASED.**
 
 ## CHANGES TO DISCLAIMER
 
@@ -79,6 +79,6 @@ We reserve the right to modify this disclaimer at any time. Changes will be effe
 
 If you have any questions about this Disclaimer, please contact us at:
 
-- **Email:** legal@vintagestore.com
+- **Email:** legal@contosostore.com
 - **Phone:** 1-800-VINTAGE (1-800-846-8243)
-- **Mail:** VintageStore Legal Department, 123 Nostalgic Lane, Retro City, CA 90210
+- **Mail:** ContosoStore Legal Department, 123 Nostalgic Lane, Retro City, CA 90210

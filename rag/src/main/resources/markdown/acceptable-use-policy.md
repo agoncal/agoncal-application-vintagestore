@@ -1,4 +1,4 @@
-# VINTAGE STORE ACCEPTABLE USE POLICY
+# CONTOSO STORE ACCEPTABLE USE POLICY
 
 This Acceptable Use Policy ("Policy") is part of our **Terms of Service** ("Legal Terms") and should therefore be read alongside our main Legal Terms: **Terms of Service**. If you do not agree with these Legal Terms, please refrain from using our Services. Your continued use of our Services implies acceptance of these Legal Terms.
 
@@ -9,7 +9,7 @@ Please carefully review this Policy which applies to any and all:
 
 ## WHO WE ARE
 
-We are VintageStore ("Company," "we," "us," or "our") a company registered in **United States** at **123 Nostalgic Lane, Retro City, CA 90210**. We operate **www.vintagestore.com**, as well as any other related products and services that refer or link to this Policy (collectively, the "Services").
+We are ContosoStore ("Company," "we," "us," or "our") a company registered in **United States** at **123 Nostalgic Lane, Retro City, CA 90210**. We operate **www.contosostore.com**, as well as any other related products and services that refer or link to this Policy (collectively, the "Services").
 
 ## USE OF THE SERVICES
 
@@ -63,7 +63,7 @@ You also acknowledge that you may not:
 
 - **Post false or misleading product reviews** or manipulate our rating system in any way.
 
-- **Resell items purchased from VintageStore** for commercial purposes without proper authorization, particularly rare or limited edition collectibles.
+- **Resell items purchased from ContosoStore** for commercial purposes without proper authorization, particularly rare or limited edition collectibles.
 
 - **Attempt to circumvent age verification** systems for age-restricted vintage items or content.
 
@@ -84,16 +84,16 @@ We exclude our liability for all action we may take in response to any of your b
 ## REPORTING VIOLATIONS
 
 If you become aware of any violations of this Policy, please report them to us immediately at:
-- **Email:** abuse@vintagestore.com
+- **Email:** abuse@contosostore.com
 - **Phone:** 1-800-VINTAGE (1-800-846-8243)
-- **Mail:** VintageStore Legal Department, 123 Nostalgic Lane, Retro City, CA 90210
+- **Mail:** ContosoStore Legal Department, 123 Nostalgic Lane, Retro City, CA 90210
 
 ## HOW CAN YOU CONTACT US ABOUT THIS POLICY?
 
 If you have any further questions or comments about this Policy, you may contact us by:
 
-- **Email:** legal@vintagestore.com
+- **Email:** legal@contosostore.com
 - **Phone:** 1-800-VINTAGE (1-800-846-8243)
-- **Mail:** VintageStore Legal Department, 123 Nostalgic Lane, Retro City, CA 90210
-- **Online Contact Form:** Available at www.vintagestore.com/contact
+- **Mail:** ContosoStore Legal Department, 123 Nostalgic Lane, Retro City, CA 90210
+- **Online Contact Form:** Available at www.contosostore.com/contact
 - **VAT Number:** US-1234-567-890

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="408" viewBox="0 0 512 408">
+  <!-- Rounded rectangle background (white, transparent fill) -->
+  <rect x="8" y="8" width="496" height="392" rx="64" ry="64" fill="none" stroke="#ffffff" stroke-width="8"/>
+  <!-- "CS" letters in white -->
+  <text x="256" y="290" font-family="Arial, Helvetica, sans-serif" font-size="240" font-weight="bold"
+        text-anchor="middle" fill="#ffffff">CS</text>
+</svg>

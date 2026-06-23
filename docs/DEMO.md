@@ -1,6 +1,6 @@
 # Demo
 
-This is the demo for the LangChain4j VintageStore application, showcasing how to add a chat bot with an LLM (Large Language Model), with memory, RAG, tools, etc.
+This is the demo for the LangChain4j ContosoStore application, showcasing how to add a chat bot with an LLM (Large Language Model), with memory, RAG, tools, etc.
 
 ## 00 - Prepare the demo
 
@@ -13,12 +13,12 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
   * `COHERE_API_KEY`: https://dashboard.cohere.com/api-keys
   * `OPENAI_API_KEY`: https://platform.openai.com/api-keys
 * Make sure all Docker Compose are working
-  * PostgreSQL: `docker compose -p vintagestore -f infrastructure/docker/postgresql.yml up -d`
-  * Qdrant: `docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d`
-  * Redis: `docker compose -p vintagestore -f infrastructure/docker/redis.yml up -d`
-  * MCP Currency: `docker compose -p vintagestore -f infrastructure/docker/mcp-currency.yml up -d`
+  * PostgreSQL: `docker compose -p contosostore -f infrastructure/docker/postgresql.yml up -d`
+  * Qdrant: `docker compose -p contosostore -f infrastructure/docker/qdrant.yml up -d`
+  * Redis: `docker compose -p contosostore -f infrastructure/docker/redis.yml up -d`
+  * MCP Currency: `docker compose -p contosostore -f infrastructure/docker/mcp-currency.yml up -d`
 * Start Ollama
-* Start Qdrant and remove the collection `VintageStore` if it exists http://localhost:6333/dashboard
+* Start Qdrant and remove the collection `ContosoStore` if it exists http://localhost:6333/dashboard
 * Start Redis and remove all the keys. Remove also the default http://localhost:8089
   * `docker exec -it redis redis-cli`
   * And once in the CLI `FLUSHDB`
@@ -28,19 +28,19 @@ This is the demo for the LangChain4j VintageStore application, showcasing how to
   * Copilot Disable Completion
 * Open several terminals in the IDE `web`, `rag`, `mcp`
 * Open 2 different Browsers (eg. Edge and Firefox)
-* In `VintageStoreAssistant` just leave the following code:
+* In `ContosoStoreAssistant` just leave the following code:
 
 ```java
 @SessionScoped
-public interface VintageStoreAssistant {
+public interface ContosoStoreAssistant {
 
   String chat(@UserMessage String userMessage);
 }
 ```
 
-* In `VintageStoreChatBot`:
+* In `ContosoStoreChatBot`:
   * Remove the `@Inject` annotation on the `WebSocketConnection` (just the annotation)
-  * Remove the entire method `initializeVintageStoreAssistant`
+  * Remove the entire method `initializeContosoStoreAssistant`
   * Change the code of the WebSocket to the following:
 
 ```java
@@ -71,9 +71,9 @@ public void onClose() {
 }
 ```
 
-## 01 - Show the VintageStore application
+## 01 - Show the ContosoStore application
 
-* Start all Docker containers (`docker compose -p vintagestore -f infrastructure/docker/docker-compose.yml up -d`)
+* Start all Docker containers (`docker compose -p contosostore -f infrastructure/docker/docker-compose.yml up -d`)
 * Start Quarkus in dev mode with `mvn quarkus:dev`
 * Go to http://localhost:8080
 * Browse CD and Books
@@ -83,19 +83,19 @@ public void onClose() {
 * 🧠 **"Hi"**
 * 🧠 **"Echo"**
 * CLEAR CONVERSATION / disconnect / connect
-* Show the code `VintageStoreAssistant` and `VintageStoreChatBot`
-* => **I want to add a chat bot to the VintageStore application**
+* Show the code `ContosoStoreAssistant` and `ContosoStoreChatBot`
+* => **I want to add a chat bot to the ContosoStore application**
 
 ## 10 - Add an LLM to the Chat Bot (lc-llm)
 
-* In `VintageStoreChatBot`  execute live template `lc-llm`
+* In `ContosoStoreChatBot`  execute live template `lc-llm`
 * Restart Quarkus (press 's' in the terminal)
 * 🧠 "Hi"
 * 🧠 "What is the capital of France?"
 * Show logs and check the LLM calls (look for `"content"` in the logs)
-* This is totally useless for VintageStore, so we will add a system prompt
+* This is totally useless for ContosoStore, so we will add a system prompt
 * 🧠 **"What's the day today?"**
-* 🧠 **"Do you know anything about VintageStore?"**
+* 🧠 **"Do you know anything about ContosoStore?"**
 
 ## 11 - Token consumption
 
@@ -103,16 +103,16 @@ public void onClose() {
 * Return the content of the response `return response.content()`
 * Pass the token usage `logInvocation(startTime, response.tokenUsage());`
 * 🧠 **"Hi"** (show tokens)
-* 🧠 **"Do you know anything about VintageStore?"**
+* 🧠 **"Do you know anything about ContosoStore?"**
 
 ## 12 - Add a System Prompt  (lc-prompt)
 
-* In `VintageStoreAssistant` add the system message executing `lc-prompt`
+* In `ContosoStoreAssistant` add the system message executing `lc-prompt`
 * Read the system message
 * Restart Quarkus (press 's' in the terminal)
 * 🧠 "What is the capital of France?"
 * 🧠 "What's the day today?"
-* 🧠 "Do you know anything about VintageStore?"
+* 🧠 "Do you know anything about ContosoStore?"
 * Show logs and check the system prompt (look for `"system"`) and look for `The current date is`
 * => LLM has no memory
 * 🧠 **"Hi"** (show tokens)
@@ -123,7 +123,7 @@ public void onClose() {
 ## 20 - Memory in Persistent Storage (lc-redis)
 
 * Show the Redis Commander http://localhost:8089
-* In `VintageStoreChatBot` add the memory by running `lc-redis`
+* In `ContosoStoreChatBot` add the memory by running `lc-redis`
 * Restart Quarkus (press 's' in the terminal)
 * 🧠 "What's my name ?"
 * 🧠 "My name is Antonio"
@@ -144,14 +144,14 @@ public void onClose() {
 ## 30 - Guardrails and Moderation (lc-moderate)
 
 * Show code in `ModeratingInputMessageGuardrail`
-* In `VintageStoreChatBot` add the moderation model running `lc-moderate`
+* In `ContosoStoreChatBot` add the moderation model running `lc-moderate`
 * Show the text of the `MODERATION_PROMPT`
 * Restart Quarkus (press 's' in the terminal)
 * In Intellij IDEA Quarkus terminal clear the logs with `CMD + K`
 * Disconnect and connect the chat websocket
 * 🧠 "I HATE YOU AND YOUR WEBSITE"
 * Show the logs and look for `hate_and_discrimination`
-* 🧠 **"What are the Terms and Conditions of VintageStore?"**
+* 🧠 **"What are the Terms and Conditions of ContosoStore?"**
 * 🧠 **"What is your V.A.T. number?"**
 
 ## 40 - RAG (lc-rag)
@@ -160,11 +160,11 @@ public void onClose() {
 * Show Qdrant dashboard with no collection (http://localhost:6333/dashboard)
 * Show code in `DocumentIngestor`
 * `cd rag` and execute `mvn clean compile exec:java`
-* Show Qdrant dashboard with `VintageStore` collection and show the text segments
+* Show Qdrant dashboard with `ContosoStore` collection and show the text segments
 * Add the code for the `EmbeddingStore` with `lc-rag`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
-* 🧠 "What are the Terms and Conditions of VintageStore?"
+* 🧠 "What are the Terms and Conditions of ContosoStore?"
 * 🧠 "What is the V.A.T. number?"
 * 🧠 "What are the currencies I can pay with?"
 * Show the logs
@@ -190,7 +190,7 @@ public void onClose() {
 ## 51 - MCP (lc-mcp)
 
 * Show the code of the `MCPServerCurrency`
-* Add the MCP client in `VintageStoreChatBot` with `lc-mcp`
+* Add the MCP client in `ContosoStoreChatBot` with `lc-mcp`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
 * 🧠 "What are the top-rated CDs?"
@@ -204,7 +204,7 @@ public void onClose() {
 ## 61 - Query Router for RAG (lc-router)
 
 * Show the code of the `IsContentRelatedQueryRouter`
-* Add the Query Router `VintageStoreChatBot` with `lc-router`
+* Add the Query Router `ContosoStoreChatBot` with `lc-router`
 * Restart Quarkus (press 's' in the terminal)
 * Disconnect and connect the chat websocket
 * 🧠 "Hi"
@@ -219,7 +219,7 @@ public void onClose() {
 ## 63 - Summarizing conversation (lc-sum)
 
 * Show the code of `SummarizingTokenWindowChatMemory`
-* In `VintageStoreChatBot` replace `MessageWindowChatMemory` with `SummarizingTokenWindowChatMemory`
+* In `ContosoStoreChatBot` replace `MessageWindowChatMemory` with `SummarizingTokenWindowChatMemory`
 * Add the summary model with `lc-sum`
 * Sign-in as `john.doe`
 * 🧠 "Hi"
@@ -253,7 +253,7 @@ public void onClose() {
 # Final code
 
 ```java
-package org.agoncal.application.vintagestore.chat;
+package org.agoncal.application.contosostore.chat;
 
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.Result;
@@ -262,16 +262,16 @@ import dev.langchain4j.service.UserMessage;
 import jakarta.enterprise.context.SessionScoped;
 
 @SessionScoped
-public interface VintageStoreAssistant {
+public interface ContosoStoreAssistant {
 
   @SystemMessage("""
-    You are the official customer service chatbot for **Vintage Store**. Your primary role is to assist customers with inquiries related to our products, services, policies, and shopping experience.
+    You are the official customer service chatbot for **Contoso Store**. Your primary role is to assist customers with inquiries related to our products, services, policies, and shopping experience.
     
     The current date is {{current_date}}
     
-    ## What is Vintage Store?
+    ## What is Contoso Store?
     
-    Vintage Store is a specialized e-commerce platform dedicated to vintage and collectible items, particularly focusing on:
+    Contoso Store is a specialized e-commerce platform dedicated to vintage and collectible items, particularly focusing on:
     
     **Product Categories:**
     - **Books**: A curated collection of vintage and rare books across various categories, publishers, and authors
@@ -302,14 +302,14 @@ public interface VintageStoreAssistant {
     
     ## Response Protocol
     
-    **For Vintage Store-related questions:**
+    **For Contoso Store-related questions:**
     - Provide accurate, helpful information directly
-    - If you don't know a specific answer, respond with: *"I don't have that information available right now. Please contact our customer service team at [contact@vintagestore.com] or check our website for the most up-to-date details."*
+    - If you don't know a specific answer, respond with: *"I don't have that information available right now. Please contact our customer service team at [contact@contosostore.com] or check our website for the most up-to-date details."*
     - Offer relevant alternatives or next steps when possible
     
-    **For non-Vintage Store questions:**
+    **For non-Contoso Store questions:**
     - Briefly acknowledge the question and provide a helpful response if appropriate
-    - Include this disclaimer: *"Please note: I'm Vintage Store's customer service bot and specialize in questions about our products and services. For detailed information outside of Vintage Store topics, I recommend consulting other specialized resources."*
+    - Include this disclaimer: *"Please note: I'm Contoso Store's customer service bot and specialize in questions about our products and services. For detailed information outside of Contoso Store topics, I recommend consulting other specialized resources."*
     
     ## Additional Instructions
     - Always prioritize customer satisfaction and helpfulness
@@ -322,7 +322,7 @@ public interface VintageStoreAssistant {
 ```
 
 ```java
-package org.agoncal.application.vintagestore.chat;
+package org.agoncal.application.contosostore.chat;
 
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
 import dev.langchain4j.guardrail.InputGuardrailException;
@@ -362,13 +362,13 @@ import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
 import io.quarkus.websockets.next.WebSocketConnection;
 import jakarta.inject.Inject;
-import org.agoncal.application.vintagestore.guardrail.ModeratingInputMessageGuardrail;
-import org.agoncal.application.vintagestore.rag.IsContentRelatedQueryRouter;
-import org.agoncal.application.vintagestore.summarize.OpenAISummarizer;
-import org.agoncal.application.vintagestore.summarize.SummarizingTokenWindowChatMemory;
-import org.agoncal.application.vintagestore.tool.ItemsInStockTools;
-import org.agoncal.application.vintagestore.tool.LegalDocumentTools;
-import org.agoncal.application.vintagestore.tool.UserLoggedInTools;
+import org.agoncal.application.contosostore.guardrail.ModeratingInputMessageGuardrail;
+import org.agoncal.application.contosostore.rag.IsContentRelatedQueryRouter;
+import org.agoncal.application.contosostore.summarize.OpenAISummarizer;
+import org.agoncal.application.contosostore.summarize.SummarizingTokenWindowChatMemory;
+import org.agoncal.application.contosostore.tool.ItemsInStockTools;
+import org.agoncal.application.contosostore.tool.LegalDocumentTools;
+import org.agoncal.application.contosostore.tool.UserLoggedInTools;
 import org.jboss.logging.Logger;
 
 import static dev.langchain4j.model.anthropic.AnthropicChatModelName.CLAUDE_SONNET_4_20250514;
@@ -378,9 +378,9 @@ import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_1_MINI;
 import static java.time.Duration.ofSeconds;
 
 @WebSocket(path = "/chat")
-public class VintageStoreChatBot {
+public class ContosoStoreChatBot {
 
-  private static final Logger LOG = Logger.getLogger(VintageStoreChatBot.class);
+  private static final Logger LOG = Logger.getLogger(ContosoStoreChatBot.class);
 
   // AI-Model API keys from environment variable
   private static final String ANTHROPIC_API_KEY = System.getenv("ANTHROPIC_API_KEY");
@@ -389,7 +389,7 @@ public class VintageStoreChatBot {
   private static final String COHERE_EMBED_ENGLISH = "embed-english-v3.0"; // or embed-english-light-v3.0
   private static final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
   // Constants for Qdrant configuration
-  private static final String QDRANT_COLLECTION = "VintageStore";
+  private static final String QDRANT_COLLECTION = "ContosoStore";
   private static final String QDRANT_HOST = "localhost";
   private static final int QDRANT_PORT = 6334;
   // Prompts
@@ -404,7 +404,7 @@ public class VintageStoreChatBot {
   private static final String RESET = "\u001B[0m";
   private static final boolean IS_LOGGING_ENABLED = true;
 
-  private VintageStoreAssistant assistant;
+  private ContosoStoreAssistant assistant;
   private ChatMemoryStore redisChatMemoryStore;
   private QdrantClient qdrantClient;
 
@@ -414,7 +414,7 @@ public class VintageStoreChatBot {
   @OnOpen
   public String onOpen() throws Exception {
     LOG.info("WebSocket chat connection opened with session id " + sessionId());
-    assistant = initializeVintageStoreAssistant();
+    assistant = initializeContosoStoreAssistant();
     return WELCOME_PROMPT;
   }
 
@@ -479,7 +479,7 @@ public class VintageStoreChatBot {
     }
   }
 
-  private VintageStoreAssistant initializeVintageStoreAssistant() {
+  private ContosoStoreAssistant initializeContosoStoreAssistant() {
 
     // =============================
     // ==        AI MODELS        ==
@@ -578,7 +578,7 @@ public class VintageStoreChatBot {
       .build();
 
     McpClient mcpClient = new DefaultMcpClient.Builder()
-      .key("VintageStoreMCPClient")
+      .key("ContosoStoreMCPClient")
       .transport(transport)
       .build();
 
@@ -589,10 +589,10 @@ public class VintageStoreChatBot {
 
 
     // =============================
-    // == VINTAGE STORE ASSISTANT ==
+    // == CONTOSO STORE ASSISTANT ==
     // =============================
 
-    VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+    ContosoStoreAssistant assistant = AiServices.builder(ContosoStoreAssistant.class)
       .chatModel(anthropicChatModel)
       .chatMemoryProvider(redisChatMemoryProvider)
       .inputGuardrails(new MessageModeratorInputGuardrail(mistralModerationModel))
@@ -611,11 +611,11 @@ public class VintageStoreChatBot {
 lc-llm - LangChain4j Demo - Add an LLM to the Chat Bot
 
 ```java
--- Add to the @OnOpen method -- assistant = initializeVintageStoreAssistant();
+-- Add to the @OnOpen method -- assistant = initializeContosoStoreAssistant();
 -- Add to the @OnTextMessage method -- String response = assistant.chat(message);
 
 
-private VintageStoreAssistant initializeVintageStoreAssistant() {
+private ContosoStoreAssistant initializeContosoStoreAssistant() {
 
   // =============================
   // ==        AI MODELS        ==
@@ -633,10 +633,10 @@ private VintageStoreAssistant initializeVintageStoreAssistant() {
 
 
   // =============================
-  // == VINTAGE STORE ASSISTANT ==
+  // == CONTOSO STORE ASSISTANT ==
   // =============================
 
-  VintageStoreAssistant assistant = AiServices.builder(VintageStoreAssistant.class)
+  ContosoStoreAssistant assistant = AiServices.builder(ContosoStoreAssistant.class)
     .chatModel(anthropicChatModel)
     .build();
 
@@ -675,13 +675,13 @@ lc-prompt - LangChain4j Demo - Add a System Prompt
 
 ```java
   @SystemMessage("""
-  You are the official customer service chatbot for **Vintage Store**. Your primary role is to assist customers with inquiries related to our products, services, policies, and shopping experience.
+  You are the official customer service chatbot for **Contoso Store**. Your primary role is to assist customers with inquiries related to our products, services, policies, and shopping experience.
   
   The current date is {{current_date}}
   
-  ## What is Vintage Store?
+  ## What is Contoso Store?
   
-  Vintage Store is a specialized e-commerce platform dedicated to vintage and collectible items, particularly focusing on:
+  Contoso Store is a specialized e-commerce platform dedicated to vintage and collectible items, particularly focusing on:
   
   **Product Categories:**
   - **Books**: A curated collection of vintage and rare books across various categories, publishers, and authors
@@ -712,14 +712,14 @@ lc-prompt - LangChain4j Demo - Add a System Prompt
   
   ## Response Protocol
   
-  **For Vintage Store-related questions:**
+  **For Contoso Store-related questions:**
   - Provide accurate, helpful information directly
-  - If you don't know a specific answer, respond with: *"I don't have that information available right now. Please contact our customer service team at [contact@vintagestore.com] or check our website for the most up-to-date details."*
+  - If you don't know a specific answer, respond with: *"I don't have that information available right now. Please contact our customer service team at [contact@contosostore.com] or check our website for the most up-to-date details."*
   - Offer relevant alternatives or next steps when possible
   
-  **For non-Vintage Store questions:**
+  **For non-Contoso Store questions:**
   - Briefly acknowledge the question and provide a helpful response if appropriate
-  - Include this disclaimer: *"Please note: I'm Vintage Store's customer service bot and specialize in questions about our products and services. For detailed information outside of Vintage Store topics, I recommend consulting other specialized resources."*
+  - Include this disclaimer: *"Please note: I'm Contoso Store's customer service bot and specialize in questions about our products and services. For detailed information outside of Contoso Store topics, I recommend consulting other specialized resources."*
   
   ## Additional Instructions
   - Always prioritize customer satisfaction and helpfulness
@@ -801,7 +801,7 @@ McpTransport transport = new StreamableHttpMcpTransport.Builder()
   .build();
 
 McpClient mcpClient = new DefaultMcpClient.Builder()
-  .key("VintageStoreMCPClient")
+  .key("ContosoStoreMCPClient")
   .transport(transport)
   .build();
 
