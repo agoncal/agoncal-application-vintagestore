@@ -39,6 +39,9 @@ docker compose -p vintagestore -f infrastructure/docker/qdrant.yml up -d
 # Start Redis for chat memory persistence  
 docker compose -p vintagestore -f infrastructure/docker/redis.yml up -d
 
+# Start the Currency MCP server (build it first)  
+docker compose -p vintagestore -f infrastructure/docker/mcp-currency.yml up -d
+
 # Set ANTHROPIC_API_KEY API key for chat functionality
 export ANTHROPIC_API_KEY=your_api_key_here
 ```

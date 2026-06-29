@@ -17,54 +17,193 @@ public class MCPServerCurrency {
   private static double DOLLARS_TO_CNY = 7.25; // Chinese Yuan/Renminbi
   private static double DOLLARS_TO_CHF = 0.88; // Swiss Franc
 
-  @Tool(description = "Converts US Dollar (USD) amounts to European Euro (EUR) currency. Takes a numeric dollar amount as input and returns the equivalent value in euros using the current conversion rate of 0.85 EUR per 1 USD. Useful for international pricing calculations and currency conversion needs.",
+  private ToolResponse convertCurrency(double amount, String fromName, String fromCode, double fromPerDollar, String toName, String toCode, double toPerDollar) {
+    LOG.info("Converting " + amount + " " + fromCode + " to " + toCode);
+    double converted = (amount / fromPerDollar) * toPerDollar;
+    return ToolResponse.success(
+      new TextContent(
+        "Converted " + amount + " " + fromName + " to " + toName + ": " + converted + " " + toCode
+      ));
+  }
+
+  @Tool(description = "Converts US Dollar amounts to Euro.",
     annotations = @Annotations(title = "converts_usd_to_eur", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
-  ToolResponse toEuros(@ToolArg(description = "Amount in dollars") double dollars) {
-    LOG.info("Converting " + dollars + " USD to EUR");
-    return ToolResponse.success(
-      new TextContent(
-        "Converted " + dollars + " dollars to euros: " + dollars * DOLLARS_TO_EUROS + " euros"
-      ));
+  ToolResponse toEurosFromDollars(@ToolArg(description = "Amount in dollars") double dollars) {
+    return convertCurrency(dollars, "dollars", "USD", 1.0, "euros", "EUR", DOLLARS_TO_EUROS);
   }
 
-  @Tool(description = "Converts US Dollar (USD) amounts to Japanese Yen (JPY) currency. Takes a numeric dollar amount as input and returns the equivalent value in Japanese Yen using the current conversion rate of 150 JPY per 1 USD. Essential for pricing calculations in the Japanese market and international commerce.",
-    annotations = @Annotations(title = "converts_usd_to_jpy", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
-  ToolResponse toJPY(@ToolArg(description = "Amount in dollars") double dollars) {
-    LOG.info("Converting " + dollars + " USD to JPY");
-    return ToolResponse.success(
-      new TextContent(
-        "Converted " + dollars + " dollars to Japanese Yen: " + dollars * DOLLARS_TO_JPY + " JPY"
-      ));
+  @Tool(description = "Converts British Pound amounts to Euro.",
+    annotations = @Annotations(title = "converts_gbp_to_eur", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toEurosFromGbp(@ToolArg(description = "Amount in GBP") double gbp) {
+    return convertCurrency(gbp, "GBP", "GBP", DOLLARS_TO_GBP, "euros", "EUR", DOLLARS_TO_EUROS);
   }
 
-  @Tool(description = "Converts US Dollar (USD) amounts to British Pound Sterling (GBP) currency. Takes a numeric dollar amount as input and returns the equivalent value in British Pounds using the current conversion rate of 0.79 GBP per 1 USD. Ideal for UK market pricing and British financial transactions.",
+  @Tool(description = "Converts Japanese Yen amounts to Euro.",
+    annotations = @Annotations(title = "converts_jpy_to_eur", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toEurosFromJpy(@ToolArg(description = "Amount in JPY") double jpy) {
+    return convertCurrency(jpy, "JPY", "JPY", DOLLARS_TO_JPY, "euros", "EUR", DOLLARS_TO_EUROS);
+  }
+
+  @Tool(description = "Converts Chinese Yuan amounts to Euro.",
+    annotations = @Annotations(title = "converts_cny_to_eur", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toEurosFromCny(@ToolArg(description = "Amount in CNY") double cny) {
+    return convertCurrency(cny, "CNY", "CNY", DOLLARS_TO_CNY, "euros", "EUR", DOLLARS_TO_EUROS);
+  }
+
+  @Tool(description = "Converts Swiss Franc amounts to Euro.",
+    annotations = @Annotations(title = "converts_chf_to_eur", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toEurosFromChf(@ToolArg(description = "Amount in CHF") double chf) {
+    return convertCurrency(chf, "CHF", "CHF", DOLLARS_TO_CHF, "euros", "EUR", DOLLARS_TO_EUROS);
+  }
+
+  @Tool(description = "Converts US Dollar amounts to British Pound.",
     annotations = @Annotations(title = "converts_usd_to_gbp", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
-  ToolResponse toGBP(@ToolArg(description = "Amount in dollars") double dollars) {
-    LOG.info("Converting " + dollars + " USD to GBP");
-    return ToolResponse.success(
-      new TextContent(
-        "Converted " + dollars + " dollars to British Pound Sterling: " + dollars * DOLLARS_TO_GBP + " GBP"
-      ));
+  ToolResponse toGbpFromDollars(@ToolArg(description = "Amount in dollars") double dollars) {
+    return convertCurrency(dollars, "dollars", "USD", 1.0, "GBP", "GBP", DOLLARS_TO_GBP);
   }
 
-  @Tool(description = "Converts US Dollar (USD) amounts to Chinese Yuan/Renminbi (CNY) currency. Takes a numeric dollar amount as input and returns the equivalent value in Chinese Yuan using the current conversion rate of 7.25 CNY per 1 USD. Perfect for Chinese market calculations and mainland China business operations.",
+  @Tool(description = "Converts Euro amounts to British Pound.",
+    annotations = @Annotations(title = "converts_eur_to_gbp", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toGbpFromEuros(@ToolArg(description = "Amount in EUR") double euros) {
+    return convertCurrency(euros, "EUR", "EUR", DOLLARS_TO_EUROS, "GBP", "GBP", DOLLARS_TO_GBP);
+  }
+
+  @Tool(description = "Converts Japanese Yen amounts to British Pound.",
+    annotations = @Annotations(title = "converts_jpy_to_gbp", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toGbpFromJpy(@ToolArg(description = "Amount in JPY") double jpy) {
+    return convertCurrency(jpy, "JPY", "JPY", DOLLARS_TO_JPY, "GBP", "GBP", DOLLARS_TO_GBP);
+  }
+
+  @Tool(description = "Converts Chinese Yuan amounts to British Pound.",
+    annotations = @Annotations(title = "converts_cny_to_gbp", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toGbpFromCny(@ToolArg(description = "Amount in CNY") double cny) {
+    return convertCurrency(cny, "CNY", "CNY", DOLLARS_TO_CNY, "GBP", "GBP", DOLLARS_TO_GBP);
+  }
+
+  @Tool(description = "Converts Swiss Franc amounts to British Pound.",
+    annotations = @Annotations(title = "converts_chf_to_gbp", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toGbpFromChf(@ToolArg(description = "Amount in CHF") double chf) {
+    return convertCurrency(chf, "CHF", "CHF", DOLLARS_TO_CHF, "GBP", "GBP", DOLLARS_TO_GBP);
+  }
+
+  @Tool(description = "Converts US Dollar amounts to Japanese Yen.",
+    annotations = @Annotations(title = "converts_usd_to_jpy", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toJpyFromDollars(@ToolArg(description = "Amount in dollars") double dollars) {
+    return convertCurrency(dollars, "dollars", "USD", 1.0, "JPY", "JPY", DOLLARS_TO_JPY);
+  }
+
+  @Tool(description = "Converts Euro amounts to Japanese Yen.",
+    annotations = @Annotations(title = "converts_eur_to_jpy", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toJpyFromEuros(@ToolArg(description = "Amount in EUR") double euros) {
+    return convertCurrency(euros, "EUR", "EUR", DOLLARS_TO_EUROS, "JPY", "JPY", DOLLARS_TO_JPY);
+  }
+
+  @Tool(description = "Converts British Pound amounts to Japanese Yen.",
+    annotations = @Annotations(title = "converts_gbp_to_jpy", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toJpyFromGbp(@ToolArg(description = "Amount in GBP") double gbp) {
+    return convertCurrency(gbp, "GBP", "GBP", DOLLARS_TO_GBP, "JPY", "JPY", DOLLARS_TO_JPY);
+  }
+
+  @Tool(description = "Converts Chinese Yuan amounts to Japanese Yen.",
+    annotations = @Annotations(title = "converts_cny_to_jpy", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toJpyFromCny(@ToolArg(description = "Amount in CNY") double cny) {
+    return convertCurrency(cny, "CNY", "CNY", DOLLARS_TO_CNY, "JPY", "JPY", DOLLARS_TO_JPY);
+  }
+
+  @Tool(description = "Converts Swiss Franc amounts to Japanese Yen.",
+    annotations = @Annotations(title = "converts_chf_to_jpy", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toJpyFromChf(@ToolArg(description = "Amount in CHF") double chf) {
+    return convertCurrency(chf, "CHF", "CHF", DOLLARS_TO_CHF, "JPY", "JPY", DOLLARS_TO_JPY);
+  }
+
+  @Tool(description = "Converts US Dollar amounts to Chinese Yuan.",
     annotations = @Annotations(title = "converts_usd_to_cny", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
-  ToolResponse toCNY(@ToolArg(description = "Amount in dollars") double dollars) {
-    LOG.info("Converting " + dollars + " USD to CNY");
-    return ToolResponse.success(
-      new TextContent(
-        "Converted " + dollars + " dollars to Chinese Yuan/Renminbi: " + dollars * DOLLARS_TO_CNY + " CNY"
-      ));
+  ToolResponse toCnyFromDollars(@ToolArg(description = "Amount in dollars") double dollars) {
+    return convertCurrency(dollars, "dollars", "USD", 1.0, "CNY", "CNY", DOLLARS_TO_CNY);
   }
 
-  @Tool(description = "Converts US Dollar (USD) amounts to Swiss Franc (CHF) currency. Takes a numeric dollar amount as input and returns the equivalent value in Swiss Francs using the current conversion rate of 0.88 CHF per 1 USD. Valuable for Swiss market pricing and financial calculations in Switzerland.",
+  @Tool(description = "Converts Euro amounts to Chinese Yuan.",
+    annotations = @Annotations(title = "converts_eur_to_cny", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toCnyFromEuros(@ToolArg(description = "Amount in EUR") double euros) {
+    return convertCurrency(euros, "EUR", "EUR", DOLLARS_TO_EUROS, "CNY", "CNY", DOLLARS_TO_CNY);
+  }
+
+  @Tool(description = "Converts British Pound amounts to Chinese Yuan.",
+    annotations = @Annotations(title = "converts_gbp_to_cny", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toCnyFromGbp(@ToolArg(description = "Amount in GBP") double gbp) {
+    return convertCurrency(gbp, "GBP", "GBP", DOLLARS_TO_GBP, "CNY", "CNY", DOLLARS_TO_CNY);
+  }
+
+  @Tool(description = "Converts Japanese Yen amounts to Chinese Yuan.",
+    annotations = @Annotations(title = "converts_jpy_to_cny", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toCnyFromJpy(@ToolArg(description = "Amount in JPY") double jpy) {
+    return convertCurrency(jpy, "JPY", "JPY", DOLLARS_TO_JPY, "CNY", "CNY", DOLLARS_TO_CNY);
+  }
+
+  @Tool(description = "Converts Swiss Franc amounts to Chinese Yuan.",
+    annotations = @Annotations(title = "converts_chf_to_cny", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toCnyFromChf(@ToolArg(description = "Amount in CHF") double chf) {
+    return convertCurrency(chf, "CHF", "CHF", DOLLARS_TO_CHF, "CNY", "CNY", DOLLARS_TO_CNY);
+  }
+
+  @Tool(description = "Converts US Dollar amounts to Swiss Franc.",
     annotations = @Annotations(title = "converts_usd_to_chf", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
-  ToolResponse toCHF(@ToolArg(description = "Amount in dollars") double dollars) {
-    LOG.info("Converting " + dollars + " USD to CHF");
-    return ToolResponse.success(
-      new TextContent(
-        "Converted " + dollars + " dollars to Swiss Franc: " + dollars * DOLLARS_TO_CHF + " CHF"
-      ));
+  ToolResponse toChfFromDollars(@ToolArg(description = "Amount in dollars") double dollars) {
+    return convertCurrency(dollars, "dollars", "USD", 1.0, "CHF", "CHF", DOLLARS_TO_CHF);
+  }
+
+  @Tool(description = "Converts Euro amounts to Swiss Franc.",
+    annotations = @Annotations(title = "converts_eur_to_chf", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toChfFromEuros(@ToolArg(description = "Amount in EUR") double euros) {
+    return convertCurrency(euros, "EUR", "EUR", DOLLARS_TO_EUROS, "CHF", "CHF", DOLLARS_TO_CHF);
+  }
+
+  @Tool(description = "Converts British Pound amounts to Swiss Franc.",
+    annotations = @Annotations(title = "converts_gbp_to_chf", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toChfFromGbp(@ToolArg(description = "Amount in GBP") double gbp) {
+    return convertCurrency(gbp, "GBP", "GBP", DOLLARS_TO_GBP, "CHF", "CHF", DOLLARS_TO_CHF);
+  }
+
+  @Tool(description = "Converts Japanese Yen amounts to Swiss Franc.",
+    annotations = @Annotations(title = "converts_jpy_to_chf", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toChfFromJpy(@ToolArg(description = "Amount in JPY") double jpy) {
+    return convertCurrency(jpy, "JPY", "JPY", DOLLARS_TO_JPY, "CHF", "CHF", DOLLARS_TO_CHF);
+  }
+
+  @Tool(description = "Converts Chinese Yuan amounts to Swiss Franc.",
+    annotations = @Annotations(title = "converts_cny_to_chf", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toChfFromCny(@ToolArg(description = "Amount in CNY") double cny) {
+    return convertCurrency(cny, "CNY", "CNY", DOLLARS_TO_CNY, "CHF", "CHF", DOLLARS_TO_CHF);
+  }
+
+  @Tool(description = "Converts Euro amounts to US Dollar.",
+    annotations = @Annotations(title = "converts_eur_to_usd", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toDollarsFromEuros(@ToolArg(description = "Amount in EUR") double euros) {
+    return convertCurrency(euros, "EUR", "EUR", DOLLARS_TO_EUROS, "dollars", "USD", 1.0);
+  }
+
+  @Tool(description = "Converts British Pound amounts to US Dollar.",
+    annotations = @Annotations(title = "converts_gbp_to_usd", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toDollarsFromGbp(@ToolArg(description = "Amount in GBP") double gbp) {
+    return convertCurrency(gbp, "GBP", "GBP", DOLLARS_TO_GBP, "dollars", "USD", 1.0);
+  }
+
+  @Tool(description = "Converts Japanese Yen amounts to US Dollar.",
+    annotations = @Annotations(title = "converts_jpy_to_usd", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toDollarsFromJpy(@ToolArg(description = "Amount in JPY") double jpy) {
+    return convertCurrency(jpy, "JPY", "JPY", DOLLARS_TO_JPY, "dollars", "USD", 1.0);
+  }
+
+  @Tool(description = "Converts Chinese Yuan amounts to US Dollar.",
+    annotations = @Annotations(title = "converts_cny_to_usd", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toDollarsFromCny(@ToolArg(description = "Amount in CNY") double cny) {
+    return convertCurrency(cny, "CNY", "CNY", DOLLARS_TO_CNY, "dollars", "USD", 1.0);
+  }
+
+  @Tool(description = "Converts Swiss Franc amounts to US Dollar.",
+    annotations = @Annotations(title = "converts_chf_to_usd", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse toDollarsFromChf(@ToolArg(description = "Amount in CHF") double chf) {
+    return convertCurrency(chf, "CHF", "CHF", DOLLARS_TO_CHF, "dollars", "USD", 1.0);
   }
 
   @Tool(description = "Retrieves comprehensive historical exchange rate data for a specific currency pair over a given time period. This advanced tool provides detailed statistical analysis including daily rates, weekly averages, monthly trends, volatility metrics, highest and lowest rates recorded, and percentage changes over the specified timeframe. The data can be used for financial forecasting, risk assessment, portfolio optimization, and understanding long-term currency market behavior. Supports major currency pairs including USD/EUR, USD/GBP, USD/JPY, USD/CNY, USD/CHF and their reverse pairs. Returns aggregated statistical summaries with confidence intervals and standard deviations for professional financial analysis.",
@@ -298,6 +437,132 @@ public class MCPServerCurrency {
           "Optimal instruments: 50% forwards, 30% options (put spreads), 20% unhedged, " +
           "Estimated hedging cost: 1.2% annually, " +
           "Risk-adjusted benefit: High (reduces P&L volatility by 65%)"
+      ));
+  }
+
+  @Tool(description = "Calculates FX spread and spread percentage using bid and ask prices.",
+    annotations = @Annotations(title = "calculate_fx_spread", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse calculateFxSpread(@ToolArg(description = "Currency pair (e.g., EUR/USD)") String pair,
+                                 @ToolArg(description = "Bid price") double bid,
+                                 @ToolArg(description = "Ask price") double ask) {
+    LOG.info("Calculating FX spread for " + pair);
+    double spread = ask - bid;
+    double spreadPct = (spread / ask) * 100;
+    return ToolResponse.success(
+      new TextContent(
+        "FX spread for " + pair + ": " +
+          "Bid: " + bid + ", Ask: " + ask + ", Spread: " + spread + ", Spread %: " + spreadPct + "%"
+      ));
+  }
+
+  @Tool(description = "Calculates a cross-currency rate from each currency's rate against USD.",
+    annotations = @Annotations(title = "calculate_cross_rate", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse calculateCrossRate(@ToolArg(description = "Base currency code") String baseCurrency,
+                                  @ToolArg(description = "Quote currency code") String quoteCurrency,
+                                  @ToolArg(description = "Base currency per USD") double basePerUsd,
+                                  @ToolArg(description = "Quote currency per USD") double quotePerUsd) {
+    LOG.info("Calculating cross rate for " + baseCurrency + "/" + quoteCurrency);
+    double crossRate = basePerUsd / quotePerUsd;
+    return ToolResponse.success(
+      new TextContent(
+        "Cross rate for " + baseCurrency + "/" + quoteCurrency + ": " + crossRate +
+          " (derived from " + baseCurrency + "/USD=" + basePerUsd + " and " + quoteCurrency + "/USD=" + quotePerUsd + ")"
+      ));
+  }
+
+  @Tool(description = "Estimates forward FX rate using covered interest parity approximation.",
+    annotations = @Annotations(title = "estimate_forward_fx_rate", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse estimateForwardFxRate(@ToolArg(description = "Spot rate") double spotRate,
+                                     @ToolArg(description = "Domestic annual interest rate (decimal)") double domesticRate,
+                                     @ToolArg(description = "Foreign annual interest rate (decimal)") double foreignRate,
+                                     @ToolArg(description = "Maturity in months") int months) {
+    LOG.info("Estimating forward FX rate");
+    double t = months / 12.0;
+    double forwardRate = spotRate * ((1 + (domesticRate * t)) / (1 + (foreignRate * t)));
+    return ToolResponse.success(
+      new TextContent(
+        "Estimated " + months + "-month forward rate: " + forwardRate +
+          " (spot=" + spotRate + ", domestic rate=" + domesticRate + ", foreign rate=" + foreignRate + ")"
+      ));
+  }
+
+  @Tool(description = "Checks triangular arbitrage opportunity from three quoted exchange rates.",
+    annotations = @Annotations(title = "detect_triangular_arbitrage", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse detectTriangularArbitrage(@ToolArg(description = "Rate A/B") double rateAB,
+                                         @ToolArg(description = "Rate B/C") double rateBC,
+                                         @ToolArg(description = "Rate C/A") double rateCA) {
+    LOG.info("Checking triangular arbitrage");
+    double cycle = rateAB * rateBC * rateCA;
+    double edgePct = (cycle - 1.0) * 100;
+    String status = Math.abs(edgePct) > 0.1 ? "Potential arbitrage detected" : "No material arbitrage";
+    return ToolResponse.success(
+      new TextContent(
+        "Triangular arbitrage check: cycle product=" + cycle + ", edge=" + edgePct + "%, status=" + status
+      ));
+  }
+
+  @Tool(description = "Calculates FX pip value in USD for a position size.",
+    annotations = @Annotations(title = "calculate_fx_pip_value", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse calculateFxPipValue(@ToolArg(description = "Currency pair") String currencyPair,
+                                   @ToolArg(description = "Lot size (units)") double lotSize,
+                                   @ToolArg(description = "Pip size (e.g., 0.0001)") double pipSize,
+                                   @ToolArg(description = "Quote currency to USD rate") double quoteToUsd) {
+    LOG.info("Calculating pip value for " + currencyPair);
+    double pipValueInQuote = lotSize * pipSize;
+    double pipValueInUsd = pipValueInQuote * quoteToUsd;
+    return ToolResponse.success(
+      new TextContent(
+        "Pip value for " + currencyPair + ": " +
+          pipValueInQuote + " quote currency units per pip, equivalent to $" + pipValueInUsd + " USD per pip"
+      ));
+  }
+
+  @Tool(description = "Calculates hedged and unhedged currency exposure from a hedge ratio.",
+    annotations = @Annotations(title = "calculate_hedged_exposure", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse calculateHedgedExposure(@ToolArg(description = "Total exposure amount") double exposureAmount,
+                                       @ToolArg(description = "Hedge ratio in percent") double hedgeRatioPercent) {
+    LOG.info("Calculating hedged exposure for amount " + exposureAmount);
+    double hedged = exposureAmount * (hedgeRatioPercent / 100.0);
+    double unhedged = exposureAmount - hedged;
+    return ToolResponse.success(
+      new TextContent(
+        "Exposure split: Hedged=" + hedged + ", Unhedged=" + unhedged +
+          " (hedge ratio=" + hedgeRatioPercent + "%)"
+      ));
+  }
+
+  @Tool(description = "Calculates rebalanced allocations for a USD portfolio across EUR, GBP, JPY, and CHF buckets.",
+    annotations = @Annotations(title = "rebalance_currency_portfolio", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse rebalanceCurrencyPortfolio(@ToolArg(description = "Total portfolio amount in USD") double totalUsd,
+                                          @ToolArg(description = "EUR allocation percent") double eurPct,
+                                          @ToolArg(description = "GBP allocation percent") double gbpPct,
+                                          @ToolArg(description = "JPY allocation percent") double jpyPct,
+                                          @ToolArg(description = "CHF allocation percent") double chfPct) {
+    LOG.info("Rebalancing currency portfolio with total USD " + totalUsd);
+    double totalPct = eurPct + gbpPct + jpyPct + chfPct;
+    double eurAmount = totalUsd * (eurPct / 100.0);
+    double gbpAmount = totalUsd * (gbpPct / 100.0);
+    double jpyAmount = totalUsd * (jpyPct / 100.0);
+    double chfAmount = totalUsd * (chfPct / 100.0);
+    return ToolResponse.success(
+      new TextContent(
+        "Portfolio rebalance result (total weight=" + totalPct + "%): " +
+          "EUR=$" + eurAmount + ", GBP=$" + gbpAmount + ", JPY=$" + jpyAmount + ", CHF=$" + chfAmount
+      ));
+  }
+
+  @Tool(description = "Calculates currency-adjusted invoice totals by applying exchange rate and transfer fee percentage.",
+    annotations = @Annotations(title = "calculate_currency_invoice_total", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+  ToolResponse calculateCurrencyInvoiceTotal(@ToolArg(description = "Invoice amount in source currency") double invoiceAmount,
+                                             @ToolArg(description = "Exchange rate to target currency") double exchangeRate,
+                                             @ToolArg(description = "Transfer fee percent") double feePercent) {
+    LOG.info("Calculating currency-adjusted invoice total");
+    double gross = invoiceAmount * exchangeRate;
+    double fee = gross * (feePercent / 100.0);
+    double net = gross - fee;
+    return ToolResponse.success(
+      new TextContent(
+        "Currency invoice total: Gross=" + gross + ", Fee=" + fee + ", Net received=" + net
       ));
   }
 }
