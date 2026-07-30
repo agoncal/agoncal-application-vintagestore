@@ -1,0 +1,186 @@
+{#include base.html }
+  {#title}Sales Statistics - Vintage Store{/title}
+
+  <div class="mb-3"></div>
+
+  <!-- Page Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-3 mb-md-0">
+          <h1 class="display-5 fw-bold text-primary mb-2">
+            <i class="bi bi-bar-chart-fill me-3"></i>Sales Statistics
+          </h1>
+          <p class="lead text-muted mb-0">Catalog analytics and inventory overview</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-secondary fs-6">
+            <i class="bi bi-clock me-1"></i>
+            Last refresh: <span id="refreshAge">computing…</span>
+          </span>
+          <a href="/view/statistics" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row mb-4 g-3">
+    <div class="col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center py-4">
+          <i class="bi bi-collection text-primary mb-2" style="font-size: 2.5rem;"></i>
+          <h2 class="fw-bold text-primary mb-0">{snapshot.totalItems}</h2>
+          <p class="text-muted mb-0 small">Total Catalog Items</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center py-4">
+          <i class="bi bi-book text-success mb-2" style="font-size: 2.5rem;"></i>
+          <h2 class="fw-bold text-success mb-0">{snapshot.bookCount}</h2>
+          <p class="text-muted mb-0 small">Books</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center py-4">
+          <i class="bi bi-disc text-warning mb-2" style="font-size: 2.5rem;"></i>
+          <h2 class="fw-bold text-warning mb-0">{snapshot.cdCount}</h2>
+          <p class="text-muted mb-0 small">CDs</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center py-4">
+          <i class="bi bi-people text-info mb-2" style="font-size: 2.5rem;"></i>
+          <h2 class="fw-bold text-info mb-0">{snapshot.userCount}</h2>
+          <p class="text-muted mb-0 small">Registered Users</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Top Rated Items -->
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-star-fill me-2"></i>Top Rated Items</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3">Title</th>
+                  <th class="text-center">Type</th>
+                  <th class="text-end pe-3">Unit Cost</th>
+                  <th class="text-center">Rank</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#for item in snapshot.topRatedItems}
+                  <tr>
+                    <td class="ps-3">
+                      <span class="fw-medium">{item.title}</span>
+                    </td>
+                    <td class="text-center">
+                      {#if snapshot.topRatedItemTypes.get(item.id) == "Book"}
+                        <span class="badge bg-success"><i class="bi bi-book me-1"></i>Book</span>
+                      {#else}
+                        <span class="badge bg-warning text-dark"><i class="bi bi-disc me-1"></i>CD</span>
+                      {/if}
+                    </td>
+                    <td class="text-end pe-3">
+                      {#if item.unitCost}
+                        <span class="text-success fw-semibold">${item.unitCost}</span>
+                      {#else}
+                        <span class="text-muted">—</span>
+                      {/if}
+                    </td>
+                    <td class="text-center">
+                      <i class="bi bi-star-fill text-warning"></i>
+                      <span class="ms-1">{item.rank}</span>
+                    </td>
+                  </tr>
+                {/for}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer bg-light">
+          <small class="text-muted">
+            <i class="bi bi-info-circle me-1"></i>Items with maximum rank score (5 stars)
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price Distribution -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-pie-chart-fill me-2"></i>Price Distribution</h5>
+        </div>
+        <div class="card-body">
+          {#for entry in snapshot.priceDistribution.entrySet()}
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-medium">{entry.key}</span>
+                <span class="badge bg-primary rounded-pill">{entry.value}</span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div class="progress-bar bg-primary"
+                     role="progressbar"
+                     style="width: {snapshot.priceDistributionPercentages.get(entry.key)}%"
+                     aria-valuenow="{entry.value}"
+                     aria-valuemin="0"
+                     aria-valuemax="{snapshot.totalItems}">
+                </div>
+              </div>
+              <small class="text-muted">
+                {snapshot.priceDistributionPercentages.get(entry.key)}% of catalog
+              </small>
+            </div>
+          {/for}
+        </div>
+        <div class="card-footer bg-light">
+          <small class="text-muted">
+            <i class="bi bi-info-circle me-1"></i>Based on unit cost across {snapshot.totalItems} items
+          </small>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /row -->
+
+  <!-- Refresh timestamp JS -->
+  <script>
+    (function () {
+      var computedAt = {snapshot.computedAtMs};
+      function updateAge() {
+        var ageMs = Date.now() - computedAt;
+        var ageSec = Math.floor(ageMs / 1000);
+        var text;
+        if (ageSec < 60) {
+          text = ageSec + 's ago';
+        } else if (ageSec < 3600) {
+          text = Math.floor(ageSec / 60) + 'm ago';
+        } else {
+          text = Math.floor(ageSec / 3600) + 'h ago';
+        }
+        document.getElementById('refreshAge').textContent = text;
+      }
+      updateAge();
+      setInterval(updateAge, 5000);
+    })();
+  </script>
+
+{/include}
