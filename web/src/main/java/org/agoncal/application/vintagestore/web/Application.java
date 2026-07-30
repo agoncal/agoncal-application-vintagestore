@@ -25,6 +25,9 @@ public class Application extends Controller {
   @Inject
   UserSession userSession;
 
+  @Inject
+  StatisticsService statisticsService;
+
   @CheckedTemplate(requireTypeSafeExpressions = false)
   static class Templates {
     public static native TemplateInstance index();
@@ -40,6 +43,8 @@ public class Application extends Controller {
     public static native TemplateInstance terms(String selectedDoc);
 
     public static native TemplateInstance users(List<User> users, long userCount, long adminCount);
+
+    public static native TemplateInstance statistics(StatisticsSnapshot snapshot);
 
     public static native TemplateInstance signin(String loginError, String passwordError, String login);
 
@@ -101,6 +106,12 @@ public class Application extends Controller {
     long userCount = users.stream().filter(u -> u.role == UserRole.USER).count();
     long adminCount = users.stream().filter(u -> u.role == UserRole.ADMIN).count();
     return Templates.users(users, userCount, adminCount);
+  }
+
+  @Path("/view/statistics")
+  public TemplateInstance statistics() {
+    LOG.info("Entering statistics()");
+    return Templates.statistics(statisticsService.getStatistics());
   }
 
   @GET
