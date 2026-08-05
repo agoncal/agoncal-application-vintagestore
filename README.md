@@ -2,6 +2,14 @@
 
 A modular AI-powered e-commerce application demonstrating sophisticated chat capabilities using **Retrieval Augmented Generation (RAG)** and real-time WebSocket communication. The project is organized into four distinct modules showcasing AI-enabled applications with Quarkus and LangChain4j.
 
+## What is this project about?
+
+Vintage Store is a **Java/Quarkus demo application** that combines:
+- A classic online catalog for **books and CDs**
+- An **AI assistant** (LangChain4j + Claude) that can answer product and legal-document questions
+- A **RAG pipeline** that ingests PDF terms/policies and grounds chatbot responses
+- A modular architecture (`web`, `rag`, `mcp-currency`, `infrastructure`) showing how to build production-style AI features in a web app
+
 ## Features
 
 - 🛍️ **E-commerce Platform**: Browse and search books and CDs with comprehensive metadata
